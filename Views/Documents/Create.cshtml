@@ -1,0 +1,116 @@
+@using DocumentProcessing.ViewModels
+@using Microsoft.AspNetCore.Identity
+@model DocumentProcessing.ViewModels.DocumentViewModel
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Ворид намудан";
+}
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var admin = await UserManager.IsInRoleAsync(user, "Admin");
+    var manager = await UserManager.IsInRoleAsync(user, "Manager");
+    bool isAdminOrManager = admin || manager;
+}
+
+<h1>Ворид намудан</h1>
+
+<h4></h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RecipientId" value="@user.Id"/>
+
+            <div class="form-group">
+                <label asp-for="OwnerId" class="control-label"></label>
+                <select class="form-control" asp-for="OwnerId"
+                        asp-items="ViewBag.Owners">
+                </select>
+            </div>
+            <div class="form-group" id="applicantType">
+                <div class="form-check-inline">
+                    <input class="form-check-input" id="existingApplicant" asp-for="ApplicantType" type="radio" value="@ApplicantType.Existing"/>
+                    <label class="form-check-label" for="existingApplicant">
+                        аз руйхат
+                    </label>
+                </div>
+                <div class="form-check-inline">
+                    <input class="form-check-input" id="newApplicant" asp-for="ApplicantType" type="radio" value="@ApplicantType.New"/>
+                    <label class="form-check-label" for="newApplicant">
+                        Ариза/дигар
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" 
+                 id="existingApplicantGroup" 
+                 style="display: @(Model.ApplicantType == ApplicantType.Existing ? null : "none")">
+                <label asp-for="ApplicantId" class="control-label"></label>
+                <select class="form-control" asp-for="ApplicantId"
+                        asp-items="ViewBag.Applicants">
+                    <option></option>
+                </select>
+            </div>
+
+            <div class="form-group" id="newApplicantGroup" 
+                 style="display: @(Model.ApplicantType == ApplicantType.New ? null : "none")">
+                <label asp-for="Applicant" class="control-label"></label>
+                <input asp-for="Applicant" class="form-control"/>
+                <span asp-validation-for="Applicant" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" asp-for="EntryNumber"></label>
+                <input asp-for="EntryNumber" class="form-control"/>
+                <span asp-validation-for="EntryNumber" class="text-danger"></span>
+            </div>
+
+
+            @{
+                <div class="form-group">
+                    <label asp-for="PurposeId" class="control-label"></label>
+                    <select class="form-control" asp-for="PurposeId"
+                            disabled="@(isAdminOrManager ? null : "disabled")"
+                            asp-items="ViewBag.Purposes">
+                        <option></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="AppointmentNumber" class="control-label"></label>
+                    <input asp-for="AppointmentNumber" class="form-control" disabled="@(isAdminOrManager ? null : "disabled")"/>
+                    <span asp-validation-for="AppointmentNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="StatusId" class="control-label"></label>
+                    <select class="form-control" asp-for="StatusId"
+                            disabled="@(isAdminOrManager ? null : "disabled")"
+                            asp-items="ViewBag.Statuses">
+                        <option></option>
+                    </select>
+                </div>
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Илова намудан" class="btn btn-primary"/>
+                <a asp-action="Index" class="btn btn-default">Бекор</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+<div>
+    
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_DocumentScriptsPartial");
+    }
+}

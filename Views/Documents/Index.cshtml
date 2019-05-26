@@ -1,0 +1,86 @@
+@model IEnumerable<DocumentProcessing.ViewModels.DocumentListViewModel>
+
+@{
+    ViewData["Title"] = "Documents";
+}
+
+<h2></h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-default">
+        <i class="material-icons">add_box</i>
+    </a> Илова намудан
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Applicant)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EntryNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Purpose)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AppointmentNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Recipient)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.ScannedDocuments)
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Applicant)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EntryNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Purpose)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentNumber)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Recipient)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Recipient)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-default">
+                    <i class="material-icons"> edit </i>
+                </a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-default">
+                    <i class="material-icons">delete</i>
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
