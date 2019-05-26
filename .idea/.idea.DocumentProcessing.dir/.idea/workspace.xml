@@ -5,10 +5,7 @@
     <bookmark url="file://$PROJECT_DIR$/Data/ApplicationDataSeed.cs" line="78" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d512d1e-181c-4883-b43f-7ea64514a52e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DocumentProcessing.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DocumentProcessing.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/appsettings.json" afterDir="false" />
-    </list>
+    <list default="true" id="5d512d1e-181c-4883-b43f-7ea64514a52e" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -294,12 +291,12 @@
       <workItem from="1558678502280" duration="572000" />
       <workItem from="1558679358529" duration="23288000" />
       <workItem from="1558766729080" duration="10647000" />
-      <workItem from="1558781458721" duration="16648000" />
+      <workItem from="1558781458721" duration="16933000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54066000" />
+    <option name="totallyTimeSpent" value="54351000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -312,6 +309,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="813" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2639485" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -332,7 +330,7 @@
       <window_info anchor="bottom" id="Database Changes" order="11" />
       <window_info anchor="bottom" id="Unit Tests" order="12" />
       <window_info anchor="bottom" id="REST Client" order="13" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="14" visible="true" weight="0.48404992" />
+      <window_info anchor="bottom" id="Terminal" order="14" weight="0.48404992" />
       <window_info anchor="bottom" id="Event Log" order="15" side_tool="true" />
       <window_info anchor="bottom" id="Build" order="16" weight="0.4188627" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
