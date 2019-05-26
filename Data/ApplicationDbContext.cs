@@ -18,6 +18,8 @@ namespace DocumentProcessing.Data
         public DbSet<Status> Statuses { get; set; }
         
         public DbSet<Applicant> Applicants { get; set; }
+
+        public DbSet<ScannedFile> ScannedFiles { get; set; }
         
         public DbSet<DocumentOwner> DocumentOwners { get; set; }
         
@@ -28,6 +30,7 @@ namespace DocumentProcessing.Data
             modelBuilder.Entity<Document>()
                 .HasMany(x => x.ScannedFiles)
                 .WithOne(x => x.Document)
+                .HasForeignKey(x => x.DocumentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Purpose>()

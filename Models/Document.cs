@@ -2,22 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using DocumentProcessing.Abstraction;
 using Microsoft.AspNetCore.Identity;
 
 namespace DocumentProcessing.Models
 {
-    public class Document
+    public class Document : IDocumentModel
     {
         [Key]
         public Guid Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
         
         public long EntryNumber { get; set; }
         
         public string AppointmentNumber { get; set; }
         
-        public Guid ApplicantId { get; set; }
+        public Guid? ApplicantId { get; set; }
         
         public Guid? StatusId { get; set; }
         
@@ -41,6 +43,6 @@ namespace DocumentProcessing.Models
         [ForeignKey("StatusId")]
         public virtual Status Status { get; set; }
         
-        public virtual ICollection<ScannedFile> ScannedFiles { get; set; }
+        public virtual IEnumerable<ScannedFile> ScannedFiles { get; set; }
     }
 }

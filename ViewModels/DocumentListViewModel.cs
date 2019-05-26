@@ -6,6 +6,7 @@ namespace DocumentProcessing.ViewModels
 {
     public class DocumentListViewModel
     {
+        [DisplayName("№")]
         public Guid Id { get; set; }
         
         [DisplayName("Таърих")]
@@ -30,6 +31,6 @@ namespace DocumentProcessing.ViewModels
         public string Recipient { get; set; }
         
         [DisplayName("Нусхаи ҳуҷҷат")]
-        public List<string> ScannedDocuments { get; set; }
+        public List<ScannedFileViewModel> ScannedDocuments { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DocumentProcessing.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190525195947_FirstMigration")]
+    [Migration("20190526204001_FirstMigration")]
     partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,7 +92,7 @@ namespace DocumentProcessing.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("ApplicantId");
+                    b.Property<Guid?>("ApplicantId");
 
                     b.Property<string>("AppointmentNumber");
 
@@ -152,19 +152,21 @@ namespace DocumentProcessing.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ContentType");
+
                     b.Property<Guid>("DocumentId");
 
                     b.Property<byte[]>("File");
 
-                    b.Property<string>("OriginalFileName");
+                    b.Property<string>("FileName");
 
-                    b.Property<string>("UniqFileName");
+                    b.Property<long>("Length");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DocumentId");
 
-                    b.ToTable("ScannedFile");
+                    b.ToTable("ScannedFiles");
                 });
 
             modelBuilder.Entity("DocumentProcessing.Models.Status", b =>
@@ -290,8 +292,7 @@ namespace DocumentProcessing.Migrations
                 {
                     b.HasOne("DocumentProcessing.Models.Applicant", "Applicant")
                         .WithMany("Documents")
-                        .HasForeignKey("ApplicantId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ApplicantId");
 
                     b.HasOne("DocumentProcessing.Models.DocumentOwner", "Owner")
                         .WithMany("Documents")

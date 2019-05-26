@@ -6,11 +6,28 @@
 
 <h2></h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-default">
-        <i class="material-icons">add_box</i>
-    </a> Илова намудан
-</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <p>
+            <a asp-action="Create" class="btn btn-default">
+                <i class="material-icons">add_box</i>
+            </a> Илова намудан
+        </p>
+    </div>
+    <div class="col-md-4"></div>
+    <form class="col-md-4" asp-controller="Documents" asp-action="Index" method="get">
+        <div class="input-group">
+            <input type="text" class="form-control" name="q" value="@ViewBag.SearchText" placeholder="Ҷустуҷу...">
+            <div class="input-group-append">
+                <button class="btn btn-secondary" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
 <table class="table">
     <thead>
     <tr>
@@ -38,6 +55,10 @@
 
         <th>
             @Html.DisplayNameFor(model => model.ScannedDocuments)
+        </th>
+
+        <th>
+            Тагйир додан
         </th>
     </tr>
     </thead>
@@ -70,7 +91,12 @@
             </td>
 
             <td>
-                @Html.DisplayFor(modelItem => item.Recipient)
+                @foreach (var doc in item.ScannedDocuments)
+                {
+                    <div>
+                        <a asp-action="File" asp-route-id="@doc.Id">@doc.FileName</a>
+                    </div>
+                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-default">

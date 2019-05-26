@@ -1,11 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DocumentProcessing.Abstraction;
+using Microsoft.AspNetCore.Http;
 
 namespace DocumentProcessing.ViewModels
 {
-    public class DocumentViewModel
+    public class DocumentViewModel : IDocumentModel
     {
+        public Guid Id { get; set; }
+        
         public string RecipientId { get; set; }
         
         public ApplicantType ApplicantType { get; set; }
@@ -15,7 +20,7 @@ namespace DocumentProcessing.ViewModels
         public Guid OwnerId { get; set; }
         
         [DisplayName("Номи ташкилот")]
-        public string Applicant { get; set; }
+        public string ApplicantName { get; set; }
         
         [DisplayName("Номи ташкилот")]
         public Guid? ApplicantId { get; set; }
@@ -32,7 +37,5 @@ namespace DocumentProcessing.ViewModels
         
         [DisplayName("Ҳолати ҳуҷҷат")]
         public Guid? StatusId { get; set; }
-        
-        
     }
 }

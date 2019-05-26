@@ -211,7 +211,7 @@ namespace DocumentProcessing.Migrations
                     Date = table.Column<DateTime>(nullable: false),
                     EntryNumber = table.Column<long>(nullable: false),
                     AppointmentNumber = table.Column<string>(nullable: true),
-                    ApplicantId = table.Column<Guid>(nullable: false),
+                    ApplicantId = table.Column<Guid>(nullable: true),
                     StatusId = table.Column<Guid>(nullable: true),
                     PurposeId = table.Column<Guid>(nullable: true),
                     OwnerId = table.Column<Guid>(nullable: false),
@@ -225,7 +225,7 @@ namespace DocumentProcessing.Migrations
                         column: x => x.ApplicantId,
                         principalTable: "Applicants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Documents_DocumentOwners_OwnerId",
                         column: x => x.OwnerId,
@@ -253,20 +253,21 @@ namespace DocumentProcessing.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ScannedFile",
+                name: "ScannedFiles",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    OriginalFileName = table.Column<string>(nullable: true),
-                    UniqFileName = table.Column<string>(nullable: true),
+                    ContentType = table.Column<string>(nullable: true),
+                    Length = table.Column<long>(nullable: false),
+                    FileName = table.Column<string>(nullable: true),
                     File = table.Column<byte[]>(nullable: true),
                     DocumentId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScannedFile", x => x.Id);
+                    table.PrimaryKey("PK_ScannedFiles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ScannedFile_Documents_DocumentId",
+                        name: "FK_ScannedFiles_Documents_DocumentId",
                         column: x => x.DocumentId,
                         principalTable: "Documents",
                         principalColumn: "Id",
@@ -336,8 +337,8 @@ namespace DocumentProcessing.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScannedFile_DocumentId",
-                table: "ScannedFile",
+                name: "IX_ScannedFiles_DocumentId",
+                table: "ScannedFiles",
                 column: "DocumentId");
         }
 
@@ -359,7 +360,7 @@ namespace DocumentProcessing.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ScannedFile");
+                name: "ScannedFiles");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

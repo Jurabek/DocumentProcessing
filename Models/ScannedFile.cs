@@ -8,14 +8,16 @@ namespace DocumentProcessing.Models
         [Key]
         public Guid Id { get; set; }
 
-        public string OriginalFileName { get; set; }
+        public string ContentType { get; set; }
 
-        public string UniqFileName { get; set; }
+        public long Length { get; set; }
+
+        public string FileName { get; set; }
 
         public byte[] File { get; set; }
 
         public Guid DocumentId { get; set; }
-
+        
         public virtual Document Document { get; set; }
     }
 }

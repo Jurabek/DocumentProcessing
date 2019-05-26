@@ -20,9 +20,10 @@
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="RecipientId" value="@user.Id"/>
+            <input type="hidden" asp-for="Id"/>
 
             <div class="form-group">
                 <label asp-for="OwnerId" class="control-label"></label>
@@ -45,8 +46,8 @@
                 </div>
             </div>
 
-            <div class="form-group" 
-                 id="existingApplicantGroup" 
+            <div class="form-group"
+                 id="existingApplicantGroup"
                  style="display: @(Model.ApplicantType == ApplicantType.Existing ? null : "none")">
                 <label asp-for="ApplicantId" class="control-label"></label>
                 <select class="form-control" asp-for="ApplicantId"
@@ -55,11 +56,11 @@
                 </select>
             </div>
 
-            <div class="form-group" id="newApplicantGroup" 
+            <div class="form-group" id="newApplicantGroup"
                  style="display: @(Model.ApplicantType == ApplicantType.New ? null : "none")">
-                <label asp-for="Applicant" class="control-label"></label>
-                <input asp-for="Applicant" class="form-control"/>
-                <span asp-validation-for="Applicant" class="text-danger"></span>
+                <label asp-for="ApplicantName" class="control-label"></label>
+                <input asp-for="ApplicantName" class="form-control"/>
+                <span asp-validation-for="ApplicantName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -68,34 +69,36 @@
                 <span asp-validation-for="EntryNumber" class="text-danger"></span>
             </div>
 
-
-            @{
-                <div class="form-group">
-                    <label asp-for="PurposeId" class="control-label"></label>
-                    <select class="form-control" asp-for="PurposeId"
-                            disabled="@(isAdminOrManager ? null : "disabled")"
-                            asp-items="ViewBag.Purposes">
-                        <option></option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="AppointmentNumber" class="control-label"></label>
-                    <input asp-for="AppointmentNumber" class="form-control" disabled="@(isAdminOrManager ? null : "disabled")"/>
-                    <span asp-validation-for="AppointmentNumber" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="StatusId" class="control-label"></label>
-                    <select class="form-control" asp-for="StatusId"
-                            disabled="@(isAdminOrManager ? null : "disabled")"
-                            asp-items="ViewBag.Statuses">
-                        <option></option>
-                    </select>
-                </div>
-            }
+            <div class="form-group">
+                <label asp-for="PurposeId" class="control-label"></label>
+                <select class="form-control" asp-for="PurposeId"
+                        disabled="@(isAdminOrManager ? null : "disabled")"
+                        asp-items="ViewBag.Purposes">
+                    <option></option>
+                </select>
+            </div>
 
             <div class="form-group">
+                <label asp-for="AppointmentNumber" class="control-label"></label>
+                <input asp-for="AppointmentNumber" class="form-control" disabled="@(isAdminOrManager ? null : "disabled")"/>
+                <span asp-validation-for="AppointmentNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="StatusId" class="control-label"></label>
+                <select class="form-control" asp-for="StatusId"
+                        disabled="@(isAdminOrManager ? null : "disabled")"
+                        asp-items="ViewBag.Statuses">
+                    <option></option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <p>Cкан</p>
+                <input type="file" class="form-control" disabled="@(isAdminOrManager ? null : "disabled")" name="files" multiple>
+            </div>
+
+            <div class="form-control-file" style="padding-top: 15px">
                 <input type="submit" value="Илова намудан" class="btn btn-primary"/>
                 <a asp-action="Index" class="btn btn-default">Бекор</a>
             </div>
@@ -105,7 +108,7 @@
 </div>
 
 <div>
-    
+
 </div>
 
 @section Scripts {

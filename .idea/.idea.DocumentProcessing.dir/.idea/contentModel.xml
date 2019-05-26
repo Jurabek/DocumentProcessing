@@ -3,6 +3,9 @@
   <component name="ContentModelStore">
     <e p="$PROJECT_DIR$" t="IncludeRecursive">
       <e p=".gitignore" t="Include" />
+      <e p="Abstraction" t="Include">
+        <e p="IDocumentModel.cs" t="Include" />
+      </e>
       <e p="appsettings.Development.json" t="Include" />
       <e p="appsettings.json" t="Include" />
       <e p="bin" t="ExcludeRecursive" />
@@ -24,8 +27,8 @@
         <e p="UserRolesMapper.cs" t="Include" />
       </e>
       <e p="Migrations" t="Include">
-        <e p="20190525195947_FirstMigration.cs" t="Include" />
-        <e p="20190525195947_FirstMigration.Designer.cs" t="Include" />
+        <e p="20190526204001_FirstMigration.cs" t="Include" />
+        <e p="20190526204001_FirstMigration.Designer.cs" t="Include" />
         <e p="ApplicationDbContextModelSnapshot.cs" t="Include" />
       </e>
       <e p="Models" t="Include">
@@ -65,6 +68,7 @@
           <e p="IdentityRoleViewModel.cs" t="Include" />
           <e p="RoleViewModel.cs" t="Include" />
         </e>
+        <e p="ScannedFileViewModel.cs" t="Include" />
         <e p="UsersViewModel.cs" t="Include" />
       </e>
       <e p="Views" t="Include">
@@ -77,6 +81,7 @@
         </e>
         <e p="Documents" t="Include">
           <e p="Create.cshtml" t="Include" />
+          <e p="Delete.cshtml" t="Include" />
           <e p="Edit.cshtml" t="Include" />
           <e p="Index.cshtml" t="Include" />
         </e>
