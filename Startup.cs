@@ -35,15 +35,20 @@ namespace DocumentProcessing
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AutomaticAuthentication = false;
+            });
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
-            
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-            
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Lockout settings
@@ -70,10 +75,10 @@ namespace DocumentProcessing
                 options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
-            
+
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IUserRolesMapper, UserRolesMapper>();
-            
+
             services.AddMvc();
         }
 

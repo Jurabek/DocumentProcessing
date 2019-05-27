@@ -99,6 +99,7 @@ namespace DocumentProcessing.Data
                     {
                         var userName = section.GetValue<string>("UserName");
                         var name = section.GetValue<string>("Name");
+                        var type = section.GetValue<string>("Type");
                         var user = new ApplicationUser()
                         {
                             UserName = userName,
@@ -111,17 +112,17 @@ namespace DocumentProcessing.Data
 
                         if (createPowerUser.Succeeded)
                         {
-                            if (userName == "admin")
+                            if (type == "admin")
                             {
                                 await userManager.AddToRoleAsync(user, "Admin");
                             }
 
-                            if (userName == "manager")
+                            if (type == "manager")
                             {
                                 await userManager.AddToRoleAsync(user, "Manager");
                             }
 
-                            if (userName == "operator")
+                            if (type == "operator")
                             {
                                 await userManager.AddToRoleAsync(user, "Operator");
                             }
