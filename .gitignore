@@ -215,4 +215,5 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 Images/
+.idea/
 *.a
