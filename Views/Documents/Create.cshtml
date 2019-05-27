@@ -72,7 +72,6 @@
             <div class="form-group">
                 <label asp-for="PurposeId" class="control-label"></label>
                 <select class="form-control" asp-for="PurposeId"
-                        disabled="@(isAdminOrManager ? null : "disabled")"
                         asp-items="ViewBag.Purposes">
                     <option></option>
                 </select>
@@ -80,7 +79,7 @@
 
             <div class="form-group">
                 <label asp-for="AppointmentNumber" class="control-label"></label>
-                <input asp-for="AppointmentNumber" class="form-control" disabled="@(isAdminOrManager ? null : "disabled")"/>
+                <input asp-for="AppointmentNumber" class="form-control" />
                 <span asp-validation-for="AppointmentNumber" class="text-danger"></span>
             </div>
 
