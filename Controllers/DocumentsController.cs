@@ -38,42 +38,27 @@ namespace DocumentProcessing.Controllers
         public async Task<IActionResult> Index([FromQuery(Name = "q")] string searchText)
         {
             var documents = _context.Documents
-                .Select(d => new Document
-                {
-                    Id = d.Id,
-                    Date = d.Date,
-                    EntryNumber = d.EntryNumber,
-                    AppointmentNumber = d.AppointmentNumber,
-                    ApplicantId = d.ApplicantId,
-                    StatusId = d.StatusId,
-                    PurposeId = d.PurposeId,
-                    OwnerId = d.OwnerId,
-                    RecipientId = d.RecipientId,
-                    Recipient = d.Recipient,
-                    Applicant = d.Applicant,
-                    Owner = d.Owner,
-                    Purpose = d.Purpose,
-                    Status = d.Status,
-                    ScannedFiles = d.ScannedFiles.AsQueryable().Select(x => new ScannedFile
-                    {
-                        FileName = x.FileName, 
-                        Id = x.Id
-                    }).ToList()
-                });
+                .Include(x => x.Applicant)
+                .Include(x => x.Purpose)
+                .Include(x => x.Status)
+                .Include(x => x.ScannedFiles)
+                .Include(x => x.Owner)
+                .Include(x => x.Recipient);
 
             if (!string.IsNullOrEmpty(searchText))
             {
-                var filteredDocuments = documents
+                ViewBag.SearchText = searchText;
+
+                var filteredDocuments = await documents
                     .Where(x => x.Applicant.Name.Contains(searchText)
                                              || x.Owner.Name.Contains(searchText)
                                              || x.EntryNumber.ToString() == searchText
                                              || x.AppointmentNumber == searchText
                                              || x.Recipient.Name.Contains(searchText)
                                              || x.Purpose.Name.Contains(searchText)
-                                             || x.Status.Name.Contains(searchText)).ToList();
+                                             || x.Status.Name.Contains(searchText)).ToListAsync();
 
                 var result = _mapper.Map<IEnumerable<DocumentListViewModel>>(filteredDocuments);
-                ViewBag.SearchText = searchText;
                 return View(result);
             }
 
@@ -84,7 +69,9 @@ namespace DocumentProcessing.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            PopulateOwnersDropDownList(_context.DocumentOwners.FirstOrDefault());
+            var selectedOwner = _context.DocumentOwners.FirstOrDefaultAsync();
+            PopulateOwnersDropDownList(selectedOwner);
+            
             PopulateApplicantsDropDownList();
             PopulateStatusesDropDownList();
             PopulatePurposesDropDownList();
@@ -104,8 +91,7 @@ namespace DocumentProcessing.Controllers
 
                 if (files.Any())
                 {
-                    document.ScannedFiles = GetScannedFiles(files);
-                    ;
+                    document.ScannedFiles = await GetScannedFiles(files);
                 }
 
                 await _context.AddAsync(document);
@@ -125,21 +111,43 @@ namespace DocumentProcessing.Controllers
             SetSelectedDropDownLists(viewModel);
             return View(viewModel);
         }
-
-        private static IList<ScannedFile> GetScannedFiles(IList<IFormFile> files)
+        
+        [HttpPost]
+        public ActionResult Progress()
         {
+            return Content(Startup.Progress.ToString());
+        }
+
+        private static async Task<IList<ScannedFile>> GetScannedFiles(IList<IFormFile> files)
+        {
+            long totalBytes = files.Sum(f => f.Length);
             IList<ScannedFile> scannedFiles = new List<ScannedFile>();
             foreach (var f in files)
             {
-                using (var ms = new MemoryStream())
+                byte[] buffer = new byte[16 * 1024];
+                using (var output = new MemoryStream())
                 {
-                    f.CopyTo(ms);
+                    using (var input = f.OpenReadStream())
+                    {
+                        long totalReadBytes = 0;
+                        int readBytes;
+
+                        while ((readBytes = input.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            await output.WriteAsync(buffer, 0, readBytes);
+                            totalReadBytes += readBytes;
+                            var progress = (int)((float)totalReadBytes / (float)totalBytes * 100.0);
+                            Startup.Progress = progress < 0 ? 0 : progress;
+                            await Task.Delay(2);
+                        }
+                    }
+                    
                     scannedFiles.Add(new ScannedFile
                     {
                         FileName = f.FileName,
                         ContentType = f.ContentType,
                         Length = f.Length,
-                        File = ms.ToArray()
+                        File = output.ToArray()
                     });
                 }
             }
@@ -268,8 +276,10 @@ namespace DocumentProcessing.Controllers
                     await _context.SaveChangesAsync();
                     viewModel.ApplicantId = applicant.Id;
                 }
-
-                viewModel.ApplicantId = applicantExist?.Id;
+                else
+                {
+                    viewModel.ApplicantId = applicantExist.Id;
+                }
             }
         }
 

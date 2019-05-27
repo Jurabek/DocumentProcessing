@@ -26,6 +26,7 @@ namespace DocumentProcessing
         }
 
         public IConfiguration Configuration { get; }
+        public static int Progress { get; set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
