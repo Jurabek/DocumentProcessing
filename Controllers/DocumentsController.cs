@@ -186,6 +186,7 @@ namespace DocumentProcessing.Controllers
             if (ModelState.IsValid)
             {
                 var originalDocument = _context.Documents
+                    .AsNoTracking()
                     .FirstOrDefault(x => x.Id == viewModel.Id);
 
                 if (originalDocument == null)
@@ -196,7 +197,19 @@ namespace DocumentProcessing.Controllers
                 await CreateApplicantIfNotExist(viewModel);
                 var document = _mapper.Map<Document>(viewModel);
 
-                if (HasChangesBetweenTwoDocuments(originalDocument, document))
+                if (files.Any())
+                {
+                    var scannedFiles = await GetScannedFiles(files);
+                    foreach (var scannedFile in scannedFiles)
+                    {
+                        scannedFile.DocumentId = originalDocument.Id;
+                    }
+
+                    await _context.ScannedFiles.AddRangeAsync(scannedFiles);
+                    await _context.SaveChangesAsync();
+                }
+
+                if (HasChangesBetweenTwoDocuments(originalDocument, document) || files.Any())
                 {
                     try
                     {
@@ -212,6 +225,10 @@ namespace DocumentProcessing.Controllers
                                                      "Try again, and if the problem persists, " +
                                                      "see your system administrator.");
                     }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Has not changes!");
                 }
             }
 
