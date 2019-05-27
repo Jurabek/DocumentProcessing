@@ -50,7 +50,11 @@
                  id="existingApplicantGroup"
                  style="display: @(Model.ApplicantType == ApplicantType.Existing ? null : "none")">
                 <label asp-for="ApplicantId" class="control-label"></label>
-                <select class="form-control" asp-for="ApplicantId"
+                <select class="form-control selectpicker" 
+                        title="Ҷустуҷу..."
+                        asp-for="ApplicantId"
+                        data-show-subtext="true" 
+                        data-live-search="true"
                         asp-items="ViewBag.Applicants">
                     <option></option>
                 </select>
