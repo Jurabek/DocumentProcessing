@@ -51,12 +51,12 @@ namespace DocumentProcessing.Controllers
 
                 var filteredDocuments = await documents
                     .Where(x => x.Applicant.Name.Contains(searchText)
-                                             || x.Owner.Name.Contains(searchText)
-                                             || x.EntryNumber.ToString() == searchText
-                                             || x.AppointmentNumber == searchText
-                                             || x.Recipient.Name.Contains(searchText)
-                                             || x.Purpose.Name.Contains(searchText)
-                                             || x.Status.Name.Contains(searchText)).ToListAsync();
+                                || x.Owner.Name.Contains(searchText)
+                                || x.EntryNumber.ToString() == searchText
+                                || x.AppointmentNumber == searchText
+                                || x.Recipient.Name.Contains(searchText)
+                                || x.Purpose.Name.Contains(searchText)
+                                || x.Status.Name.Contains(searchText)).ToListAsync();
 
                 var result = _mapper.Map<IEnumerable<DocumentListViewModel>>(filteredDocuments);
                 return View(result);
@@ -71,7 +71,7 @@ namespace DocumentProcessing.Controllers
         {
             var selectedOwner = _context.DocumentOwners.FirstOrDefaultAsync();
             PopulateOwnersDropDownList(selectedOwner);
-            
+
             PopulateApplicantsDropDownList();
             PopulateStatusesDropDownList();
             PopulatePurposesDropDownList();
@@ -111,7 +111,7 @@ namespace DocumentProcessing.Controllers
             SetSelectedDropDownLists(viewModel);
             return View(viewModel);
         }
-        
+
         [HttpPost]
         public ActionResult Progress()
         {
@@ -136,12 +136,12 @@ namespace DocumentProcessing.Controllers
                         {
                             await output.WriteAsync(buffer, 0, readBytes);
                             totalReadBytes += readBytes;
-                            var progress = (int)((float)totalReadBytes / (float)totalBytes * 100.0);
+                            var progress = (int) ((float) totalReadBytes / (float) totalBytes * 100.0);
                             Startup.Progress = progress < 0 ? 0 : progress;
                             await Task.Delay(2);
                         }
                     }
-                    
+
                     scannedFiles.Add(new ScannedFile
                     {
                         FileName = f.FileName,
@@ -163,6 +163,7 @@ namespace DocumentProcessing.Controllers
             }
 
             var document = _context.Documents
+                .Include(x => x.ScannedFiles)
                 .AsNoTracking()
                 .FirstOrDefault(x => x.Id == id);
 
@@ -197,39 +198,81 @@ namespace DocumentProcessing.Controllers
                 await CreateApplicantIfNotExist(viewModel);
                 var document = _mapper.Map<Document>(viewModel);
 
-                if (files.Any())
+                var hasAddedFiles = files.Any();
+                var hasDocumentChanges = HasChangesBetweenTwoDocuments(originalDocument, document);
+                var hasRemovedFiles = viewModel.ScannedFiles.Any(x => x.IsDeleted);
+                bool hasError = false;
+
+                if (hasAddedFiles)
                 {
                     var scannedFiles = await GetScannedFiles(files);
                     foreach (var scannedFile in scannedFiles)
                     {
                         scannedFile.DocumentId = originalDocument.Id;
+                        await _context.ScannedFiles.AddAsync(scannedFile);
                     }
-
-                    await _context.ScannedFiles.AddRangeAsync(scannedFiles);
-                    await _context.SaveChangesAsync();
-                }
-
-                if (HasChangesBetweenTwoDocuments(originalDocument, document) || files.Any())
-                {
                     try
                     {
-                        document.Date = originalDocument.Date;
-                        
-                        _context.Update(document);
                         await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
                     }
                     catch (DbUpdateException)
                     {
                         ModelState.AddModelError("", "Unable to save changes. " +
                                                      "Try again, and if the problem persists, " +
                                                      "see your system administrator.");
+                        hasError = true;
                     }
                 }
-                else
+
+                if (hasRemovedFiles)
                 {
-                    ModelState.AddModelError("", "Has not changes!");
+                    var deletedScannedViewModels = viewModel
+                        .ScannedFiles
+                        .Where(x => x.IsDeleted)
+                        .Select(x => x.Id);
+
+                    var deletedFiles =
+                        _context.ScannedFiles.Select(x => x.Id)
+                            .Where(id => deletedScannedViewModels.Contains(id))
+                            .Select(id => new ScannedFile {Id = id});
+
+                    try
+                    {
+                        _context.RemoveRange(deletedFiles);
+                        _context.SaveChanges();
+                    }
+                    catch (DbUpdateException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                                                     "Try again, and if the problem persists, " +
+                                                     "see your system administrator.");
+                        hasError = true;
+                    }
                 }
+
+                if (hasDocumentChanges)
+                {
+                    try
+                    {
+                        document.Date = originalDocument.Date;
+                        _context.Update(document);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                                                     "Try again, and if the problem persists, " +
+                                                     "see your system administrator.");
+                        hasError = true;
+                    }
+                }
+
+                if ((hasAddedFiles || hasDocumentChanges || hasRemovedFiles) && !hasError)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ModelState.AddModelError("", "Has not changes!");
             }
 
             SetSelectedDropDownLists(viewModel);

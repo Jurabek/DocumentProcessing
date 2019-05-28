@@ -22,7 +22,7 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="RecipientId" />
+            <input type="hidden" asp-for="RecipientId"/>
             <input type="hidden" asp-for="Id"/>
 
             <div class="form-group">
@@ -50,12 +50,12 @@
                  id="existingApplicantGroup"
                  style="display: @(Model.ApplicantType == ApplicantType.Existing ? null : "none")">
                 <label asp-for="ApplicantId" class="control-label"></label>
-                <select class="form-control selectpicker" 
-                                            title="Ҷустуҷу..."
-                                            asp-for="ApplicantId"
-                                            data-show-subtext="true" 
-                                            data-live-search="true"
-                    asp-items="ViewBag.Applicants">
+                <select class="form-control selectpicker"
+                        title="Ҷустуҷу..."
+                        asp-for="ApplicantId"
+                        data-show-subtext="true"
+                        data-live-search="true"
+                        asp-items="ViewBag.Applicants">
                     <option></option>
                 </select>
             </div>
@@ -83,7 +83,7 @@
 
             <div class="form-group">
                 <label asp-for="AppointmentNumber" class="control-label"></label>
-                <input asp-for="AppointmentNumber" class="form-control" />
+                <input asp-for="AppointmentNumber" class="form-control"/>
                 <span asp-validation-for="AppointmentNumber" class="text-danger"></span>
             </div>
 
@@ -101,7 +101,12 @@
                 <input type="file" class="form-control" disabled="@(isAdminOrManager ? null : "disabled")" name="files" multiple>
             </div>
 
-
+            <div class="form-group">
+                <label class="control-label">Ҳуҷҷатҳо</label>
+                <div class="list-group">
+                    @Html.EditorFor(x => x.ScannedFiles)
+                </div>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Илова намудан" class="btn btn-primary"/>
                 <a asp-action="Index" class="btn btn-default">Бекор</a>

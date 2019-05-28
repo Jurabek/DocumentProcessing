@@ -1,0 +1,15 @@
+@model DocumentProcessing.ViewModels.ScannedFileViewModel
+<div class="list-group-item list-group-item-action flex-column align-items-start">
+    <input type="hidden" asp-for="Id"/>
+
+    <div class="d-flex w-100 justify-content-between">
+        <a asp-action="File" id="link_@Model.Id" asp-route-id="@Model.Id">@Model.FileName</a>
+        <div class="btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-outline-danger btn-sm">
+                <input asp-for="IsDeleted" class="form-control" id="@Model.Id" onchange="isDeleted(this.id)">
+                    <i class="fa fa-trash-alt"></i>
+                </input>
+            </label>
+        </div>
+    </div>
+</div>

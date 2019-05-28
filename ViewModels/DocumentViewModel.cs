@@ -37,5 +37,7 @@ namespace DocumentProcessing.ViewModels
         
         [DisplayName("Ҳолати ҳуҷҷат")]
         public Guid? StatusId { get; set; }
+
+        public List<ScannedFileViewModel> ScannedFiles { get; set; } = new List<ScannedFileViewModel>();
     }
 }

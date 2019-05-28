@@ -10,7 +10,7 @@ namespace DocumentProcessing.ViewModels
         public Guid Id { get; set; }
         
         [DisplayName("Таърих")]
-        public DateTime? Date { get; set; }
+        public string Date { get; set; }
         
         [DisplayName("Номи ташкилот")]
         public string Applicant { get; set; }

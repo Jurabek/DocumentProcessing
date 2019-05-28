@@ -7,5 +7,8 @@ namespace DocumentProcessing.ViewModels
         public Guid Id { get; set; }
 
         public string FileName { get; set; }
+        
+
+        public bool IsDeleted { get; set; }
     }
 }

@@ -12,12 +12,15 @@ namespace DocumentProcessing.Mappings
         public EntityToViewModelMappers()
         {
             CreateMap<ApplicationUser, UsersViewModel>();
-            CreateMap<DocumentViewModel, Document>();
+            CreateMap<DocumentViewModel, Document>()
+                .ForMember(x => x.ScannedFiles, opt => opt.Ignore());
 
             CreateMap<Document, DocumentViewModel>();
             CreateMap<ScannedFile, ScannedFileViewModel>();
 
             CreateMap<Document, DocumentListViewModel>()
+                .ForMember(x => x.Date, 
+                    map => map.MapFrom(x => x.Date.ToString("dd.MM.yyy")))
                 .ForMember(x => x.Applicant,
                     map => map.MapFrom(x => x.Applicant.Name))
                 .ForMember(x => x.Recipient,

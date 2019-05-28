@@ -1,11 +1,10 @@
-@using DocumentProcessing.ViewModels
 @using Microsoft.AspNetCore.Identity
 
 @model IEnumerable<DocumentProcessing.ViewModels.DocumentListViewModel>
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "Documents";
+    ViewData["Title"] = "Ҳуҷҷатҳо";
 }
 
 <h2></h2>
@@ -19,11 +18,11 @@
 
 <div class="row">
     <div class="col-md-4">
-        <p>
-            <a asp-action="Create" class="btn btn-default">
-                <i class="material-icons">add_box</i>
-            </a> Илова намудан
-        </p>
+        <a asp-action="Create" class="btn btn-labeled btn-primary">
+            <span class="btn-label">
+                <i class="fa fa-plus"></i>
+            </span> Илова намудан
+        </a>
     </div>
     <div class="col-md-4"></div>
     <form class="col-md-4" asp-controller="Documents" asp-action="Index" method="get">
@@ -39,7 +38,7 @@
 </div>
 
 <table class="table">
-    <thead>
+    <thead class="thead-light">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Applicant)
@@ -69,7 +68,7 @@
         @if (isAdminOrManager)
         {
             <th>
-                Тайғир додан
+                Тағйир додан
             </th>
         }
 
@@ -113,12 +112,12 @@
             </td>
             @if (isAdminOrManager)
             {
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-default">
-                        <i class="material-icons"> edit </i>
+                <td class="text-right">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light btn-sm">
+                        <i class="fa fa-pen"></i>
                     </a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-default">
-                        <i class="material-icons">delete</i>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-light btn-sm">
+                        <i class="fa fa-trash-alt"></i>
                     </a>
                 </td>
             }

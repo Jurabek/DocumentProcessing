@@ -127,6 +127,10 @@ namespace DocumentProcessing.Data
                                 await userManager.AddToRoleAsync(user, "Operator");
                             }
                         }
+                        else
+                        {
+                            logger.LogError(createPowerUser?.Errors?.FirstOrDefault()?.Description);
+                        }
                     }
                 }
             });
