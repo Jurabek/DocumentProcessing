@@ -20,6 +20,8 @@ namespace DocumentProcessing.Controllers
     [Authorize]
     public class DocumentsController : Controller
     {
+        private const int PageSize = 10;
+
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
@@ -35,7 +37,7 @@ namespace DocumentProcessing.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery(Name = "q")] string searchText)
+        public async Task<IActionResult> Index([FromQuery(Name = "q")] string searchText, int? pageNumber)
         {
             var documents = _context.Documents
                 .Include(x => x.Applicant)
@@ -49,29 +51,33 @@ namespace DocumentProcessing.Controllers
             {
                 ViewBag.SearchText = searchText;
 
-                var filteredDocuments = await documents
+                var filteredDocuments = documents
                     .Where(x => x.Applicant.Name.Contains(searchText)
                                 || x.Owner.Name.Contains(searchText)
                                 || x.EntryNumber.ToString() == searchText
                                 || x.AppointmentNumber == searchText
                                 || x.Recipient.Name.Contains(searchText)
                                 || x.Purpose.Name.Contains(searchText)
-                                || x.Status.Name.Contains(searchText)).ToListAsync();
+                                || x.Status.Name.Contains(searchText));
 
-                var result = _mapper.Map<IEnumerable<DocumentListViewModel>>(filteredDocuments);
+                var result = await MappedPaginatedList<DocumentListViewModel>
+                    .CreateAsync(filteredDocuments.AsNoTracking(), _mapper, pageNumber ?? 1, PageSize);
+
                 return View(result);
             }
 
-            var list = _mapper.Map<IEnumerable<DocumentListViewModel>>(documents.ToList());
+            var list = await MappedPaginatedList<DocumentListViewModel>
+                    .CreateAsync(documents.AsNoTracking(), _mapper, pageNumber ?? 1, PageSize);
+                
             return View(list);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var selectedOwner = _context.DocumentOwners.FirstOrDefaultAsync();
+            var selectedOwner = await _context.DocumentOwners.FirstOrDefaultAsync();
+            
             PopulateOwnersDropDownList(selectedOwner);
-
             PopulateApplicantsDropDownList();
             PopulateStatusesDropDownList();
             PopulatePurposesDropDownList();
@@ -174,6 +180,7 @@ namespace DocumentProcessing.Controllers
 
             var viewModel = _mapper.Map<DocumentViewModel>(document);
             viewModel.ApplicantType = ApplicantType.Existing;
+            
             SetSelectedDropDownLists(document);
 
             return View(viewModel);

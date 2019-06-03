@@ -1,6 +1,6 @@
 @using Microsoft.AspNetCore.Identity
 
-@model IEnumerable<DocumentProcessing.ViewModels.DocumentListViewModel>
+@model MappedPaginatedList<DocumentListViewModel>
 @inject UserManager<ApplicationUser> UserManager
 
 @{
@@ -41,29 +41,29 @@
     <thead class="thead-light">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Applicant)
+            @Html.DisplayNameFor(model => model.ItemType.Applicant)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Date)
+            @Html.DisplayNameFor(model => model.ItemType.Date)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EntryNumber)
+            @Html.DisplayNameFor(model => model.ItemType.EntryNumber)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Purpose)
+            @Html.DisplayNameFor(model => model.ItemType.Purpose)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AppointmentNumber)
+            @Html.DisplayNameFor(model => model.ItemType.AppointmentNumber)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Status)
+            @Html.DisplayNameFor(model => model.ItemType.Status)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Recipient)
+            @Html.DisplayNameFor(model => model.ItemType.Recipient)
         </th>
 
         <th>
-            @Html.DisplayNameFor(model => model.ScannedDocuments)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ScannedDocuments)
         </th>
         @if (isAdminOrManager)
         {
@@ -125,3 +125,26 @@
     }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<ul class="pagination">
+    <li class="page-item @prevDisabled">
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="page-link" >
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+        </a>
+    </li>
+    <li class="page-item @nextDisabled">
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+        </a>
+    </li>
+
+</ul>
