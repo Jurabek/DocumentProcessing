@@ -21,7 +21,7 @@ namespace DocumentProcessing.Controllers
     [Authorize]
     public class DocumentsController : Controller
     {
-        private const int PageSize = 3;
+        private const int PageSize = 10;
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
