@@ -50,16 +50,15 @@ namespace DocumentProcessing.Controllers
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
-                searchText = searchText.ToUpperInvariant();
-                
+
                 var filteredDocuments = documents
-                    .Where(x => x.Applicant.Name.CaseInsensitiveContains(searchText)
-                                || x.Owner.Name.ToUpperInvariant().Contains(searchText)
+                    .Where(x => x.Applicant.Name.Contains(searchText)
+                                || x.Owner.Name.Contains(searchText)
                                 || x.EntryNumber.ToString() == searchText
                                 || x.AppointmentNumber == searchText
-                                || x.Recipient.Name.ToUpperInvariant().Contains(searchText)
-                                || x.Purpose.Name.ToUpperInvariant().Contains(searchText)
-                                || x.Status.Name.ToUpperInvariant().Contains(searchText));
+                                || x.Recipient.Name.Contains(searchText)
+                                || x.Purpose.Name.Contains(searchText)
+                                || x.Status.Name.Contains(searchText));
 
                 var result = await MappedPaginatedList<DocumentListViewModel>
                     .CreateAsync(filteredDocuments.AsNoTracking(), _mapper, pageNumber ?? 1, PageSize);
@@ -76,9 +75,7 @@ namespace DocumentProcessing.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var selectedOwner = await _context.DocumentOwners
-                .OrderBy(x => x.Name)
-                .FirstOrDefaultAsync();
+            var selectedOwner = await _context.DocumentOwners.FirstOrDefaultAsync();
             
             PopulateOwnersDropDownList(selectedOwner);
             PopulateApplicantsDropDownList();

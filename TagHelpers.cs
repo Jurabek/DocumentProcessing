@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace DocumentProcessing
@@ -16,14 +15,6 @@ namespace DocumentProcessing
                 output.Attributes.Add(d);
             }
             base.Process(context, output);
-        }
-    }
-    
-    public static class Extensions
-    {
-        public static bool CaseInsensitiveContains(this string text, string value)
-        {
-            return text.IndexOf(value, StringComparison.CurrentCultureIgnoreCase) >= 0;
         }
     }
 }
