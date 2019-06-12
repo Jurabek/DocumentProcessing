@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace DocumentProcessing.Controllers
     [Authorize]
     public class DocumentsController : Controller
     {
-        private const int PageSize = 10;
+        private const int PageSize = 3;
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -52,13 +53,13 @@ namespace DocumentProcessing.Controllers
                 ViewBag.SearchText = searchText;
 
                 var filteredDocuments = documents
-                    .Where(x => x.Applicant.Name.Contains(searchText)
-                                || x.Owner.Name.Contains(searchText)
-                                || x.EntryNumber.ToString() == searchText
+                    .Where(x => x.Applicant.Name.CaseInsensitiveContains(searchText)
+                                || x.Owner.Name.CaseInsensitiveContains(searchText)
+                                || x.EntryNumber.ToString(CultureInfo.InvariantCulture) == searchText
                                 || x.AppointmentNumber == searchText
-                                || x.Recipient.Name.Contains(searchText)
-                                || x.Purpose.Name.Contains(searchText)
-                                || x.Status.Name.Contains(searchText));
+                                || x.Recipient.Name.CaseInsensitiveContains(searchText)
+                                || x.Purpose.Name.CaseInsensitiveContains(searchText)
+                                || x.Status.Name.CaseInsensitiveContains(searchText));
 
                 var result = await MappedPaginatedList<DocumentListViewModel>
                     .CreateAsync(filteredDocuments.AsNoTracking(), _mapper, pageNumber ?? 1, PageSize);
