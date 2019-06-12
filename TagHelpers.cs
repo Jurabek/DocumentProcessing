@@ -23,7 +23,7 @@ namespace DocumentProcessing
     {
         public static bool CaseInsensitiveContains(this string source, string toCheck)
         {
-            return source?.IndexOf(toCheck, StringComparison.OrdinalIgnoreCase) >= 0;
+            return source?.IndexOf(toCheck, StringComparison.InvariantCultureIgnoreCase) >= 0;
         }
     }
 }
