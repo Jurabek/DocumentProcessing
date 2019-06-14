@@ -41,7 +41,10 @@ namespace DocumentProcessing
         public static async Task<MappedPaginatedList<TResult>> CreateAsync<TSource>(IQueryable<TSource> source, IMapper mapper, int pageIndex, int pageSize)
         {
             var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            var items = await source
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             var mappedItems = mapper.Map<IEnumerable<TResult>>(items);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using DocumentProcessing.Abstraction;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using static DocumentProcessing.Helpers.FileHelpers;
 
 namespace DocumentProcessing.Controllers
 {
@@ -40,7 +42,7 @@ namespace DocumentProcessing.Controllers
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery(Name = "q")] string searchText, int? pageNumber)
         {
-            var documents = _context.Documents
+            var documents = _context.Documents.OrderByDescending(x => x.Date)
                 .Include(x => x.Applicant)
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
@@ -51,32 +53,39 @@ namespace DocumentProcessing.Controllers
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
-
+                
                 var filteredDocuments = documents
-                    .Where(x => x.Applicant.Name.CaseInsensitiveContains(searchText)
-                                || x.Owner.Name.CaseInsensitiveContains(searchText)
-                                || x.EntryNumber.ToString(CultureInfo.InvariantCulture) == searchText
-                                || x.AppointmentNumber == searchText
-                                || x.Recipient.Name.CaseInsensitiveContains(searchText)
-                                || x.Purpose.Name.CaseInsensitiveContains(searchText)
-                                || x.Status.Name.CaseInsensitiveContains(searchText));
+                    .Where(Search(searchText));
 
                 var result = await MappedPaginatedList<DocumentListViewModel>
-                    .CreateAsync(filteredDocuments.AsNoTracking(), _mapper, pageNumber ?? 1, PageSize);
+                    .CreateAsync(filteredDocuments, _mapper, pageNumber ?? 1, PageSize);
 
                 return View(result);
             }
 
             var list = await MappedPaginatedList<DocumentListViewModel>
-                    .CreateAsync(documents.AsNoTracking(), _mapper, pageNumber ?? 1, PageSize);
+                    .CreateAsync(documents, _mapper, pageNumber ?? 1, PageSize);
                 
             return View(list);
+        }
+
+        private Expression<Func<Document, bool>> Search(string searchText)
+        {
+            return x => x.Applicant.Name.CaseInsensitiveContains(searchText)
+                        || x.Owner.Name.CaseInsensitiveContains(searchText)
+                        || x.EntryNumber.ToString(CultureInfo.InvariantCulture) == searchText
+                        || x.AppointmentNumber == searchText
+                        || x.Recipient.Name.CaseInsensitiveContains(searchText)
+                        || x.Purpose.Name.CaseInsensitiveContains(searchText)
+                        || x.Status.Name.CaseInsensitiveContains(searchText);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var selectedOwner = await _context.DocumentOwners.FirstOrDefaultAsync();
+            var selectedOwner = await _context.DocumentOwners
+                .OrderBy(x => x.Name)
+                .FirstOrDefaultAsync();
             
             PopulateOwnersDropDownList(selectedOwner);
             PopulateApplicantsDropDownList();
@@ -125,42 +134,7 @@ namespace DocumentProcessing.Controllers
             return Content(Startup.Progress.ToString());
         }
 
-        private static async Task<IList<ScannedFile>> GetScannedFiles(IList<IFormFile> files)
-        {
-            long totalBytes = files.Sum(f => f.Length);
-            IList<ScannedFile> scannedFiles = new List<ScannedFile>();
-            foreach (var f in files)
-            {
-                byte[] buffer = new byte[16 * 1024];
-                using (var output = new MemoryStream())
-                {
-                    using (var input = f.OpenReadStream())
-                    {
-                        long totalReadBytes = 0;
-                        int readBytes;
-
-                        while ((readBytes = input.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            await output.WriteAsync(buffer, 0, readBytes);
-                            totalReadBytes += readBytes;
-                            var progress = (int) ((float) totalReadBytes / (float) totalBytes * 100.0);
-                            Startup.Progress = progress < 0 ? 0 : progress;
-                            await Task.Delay(2);
-                        }
-                    }
-
-                    scannedFiles.Add(new ScannedFile
-                    {
-                        FileName = f.FileName,
-                        ContentType = f.ContentType,
-                        Length = f.Length,
-                        File = output.ToArray()
-                    });
-                }
-            }
-
-            return scannedFiles;
-        }
+        
 
         public IActionResult Edit(Guid? id)
         {
