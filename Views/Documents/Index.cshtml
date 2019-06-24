@@ -25,28 +25,46 @@
             </span> Илова намудан
         </a>
     </div>
-    <div class="col-md-4"></div>
-    <form class="col-md-4" asp-controller="Documents" asp-action="Index" method="get">
-        <div class="input-group">
-            <input type="text" class="form-control" name="q" value="@ViewBag.SearchText" placeholder="Ҷустуҷу...">
-            <div class="input-group-append">
-                <button class="btn btn-secondary" type="submit">
-                    <i class="fa fa-search"></i>
-                </button>
+
+
+    <div class="col-md-4">
+        <form asp-controller="Documents" asp-action="Index" method="get">
+            <div class="input-group">
+                <input placeholder="Аз санаи:" data-provide="datepicker" class="form-control" id="dateFrom" name="dateFrom" value="@ViewBag.DateFrom"/>
+                <input placeholder="То санаи:" class="form-control" data-provide="datepicker" id="dateFor" name="dateFor" value="@ViewBag.DateFor"/>
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="fa fa-calendar-check"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
+
+    <div class="col-md-4">
+        <form asp-controller="Documents" asp-action="Index" method="get">
+            <div class="input-group">
+                <input type="text" class="form-control" name="q" value="@ViewBag.SearchText" placeholder="Ҷустуҷу...">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+
 </div>
 
 <table class="table">
     <thead class="thead-light">
     <tr>
-        @if (!string.IsNullOrEmpty(ViewBag.SearchText))
-        {
-            <th>
-                №
-            </th>
-        }
+        <th>
+            №
+        </th>
+
         <th>
             @Html.DisplayNameFor(model => model.ItemType.Applicant)
         </th>
@@ -85,14 +103,13 @@
     @foreach (var item in Model)
     {
         <tr>
-            @if (!string.IsNullOrEmpty(ViewBag.SearchText))
-            {
+            @{
                 var rowNo = (Model.PageIndex - 1) * 10 + i;
-                <td>
-                    @rowNo
-                </td>
                 i++;
             }
+            <td>
+                @rowNo
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Applicant)
             </td>
@@ -143,21 +160,45 @@
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    var startIndex = Math.Max(Model.PageIndex - 5, 1);
+    var finishIndex = Math.Min(Model.PageIndex + 5, Model.TotalPages);
 }
 <ul class="pagination">
     <li class="page-item @prevDisabled">
         <a asp-action="Index"
            asp-route-pageNumber="@(Model.PageIndex - 1)"
            asp-route-q="@ViewBag.SearchText"
+           asp-route-dateFrom="@ViewBag.DateFrom"
+           asp-route-dateFor="@ViewBag.DateFor"
            class="page-link">
             <span aria-hidden="true">&laquo;</span>
             <span class="sr-only">Previous</span>
         </a>
     </li>
+
+    @for (var j = startIndex; j <= finishIndex; j++)
+    {
+        var isActive = Model.PageIndex == j ? "active" : "";
+
+        <li class="page-item @isActive">
+            <a sp-action="Index"
+               asp-route-pageNumber="@j"
+               asp-route-q="@ViewBag.SearchText"
+               asp-route-dateFrom="@ViewBag.DateFrom"
+               asp-route-dateFor="@ViewBag.DateFor"
+               class="page-link">
+                @j</a>
+        </li>
+    }
+
+
     <li class="page-item @nextDisabled">
         <a asp-action="Index"
            asp-route-pageNumber="@(Model.PageIndex + 1)"
            asp-route-q="@ViewBag.SearchText"
+           asp-route-dateFrom="@ViewBag.DateFrom"
+           asp-route-dateFor="@ViewBag.DateFor"
            class="page-link">
             <span aria-hidden="true">&raquo;</span>
             <span class="sr-only">Next</span>

@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace DocumentProcessing.Models
 {
@@ -19,5 +21,8 @@ namespace DocumentProcessing.Models
         public Guid DocumentId { get; set; }
         
         public virtual Document Document { get; set; }
+
+        [NotMapped]
+        public DateTime UpdatedDate { get; set; }
     }
 }

@@ -40,7 +40,11 @@ namespace DocumentProcessing.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery(Name = "q")] string searchText, int? pageNumber)
+        public async Task<IActionResult> Index(
+            [FromQuery(Name = "q")] string searchText,
+            [FromQuery(Name = "dateFrom")] string dateFrom,
+            [FromQuery(Name = "dateFor")] string dateFor,
+            int? pageNumber)
         {
             var documents = _context.Documents.OrderByDescending(x => x.Date)
                 .Include(x => x.Applicant)
@@ -48,24 +52,28 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Status)
                 .Include(x => x.ScannedFiles)
                 .Include(x => x.Owner)
-                .Include(x => x.Recipient);
+                .Include(x => x.Recipient).AsQueryable();
+
+
+            if (!string.IsNullOrEmpty(dateFor) && !string.IsNullOrEmpty(dateFrom))
+            {
+                var dateFromDate = DateTime.ParseExact(dateFrom, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                var dateForDate = DateTime.ParseExact(dateFor, "dd.MM.yyyy", CultureInfo.CurrentCulture);
+                ViewBag.DateFor = dateFor;
+                ViewBag.DateFrom = dateFrom;
+
+                documents = documents.Where(x => x.Date >= dateFromDate && x.Date < dateForDate);
+            }
 
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
-                
-                var filteredDocuments = documents
-                    .Where(Search(searchText));
-
-                var result = await MappedPaginatedList<DocumentListViewModel>
-                    .CreateAsync(filteredDocuments, _mapper, pageNumber ?? 1, PageSize);
-
-                return View(result);
+                documents = documents.Where(Search(searchText));
             }
 
             var list = await MappedPaginatedList<DocumentListViewModel>
-                    .CreateAsync(documents, _mapper, pageNumber ?? 1, PageSize);
-                
+                .CreateAsync(documents, _mapper, pageNumber ?? 1, PageSize);
+
             return View(list);
         }
 
@@ -86,7 +94,7 @@ namespace DocumentProcessing.Controllers
             var selectedOwner = await _context.DocumentOwners
                 .OrderBy(x => x.Name)
                 .FirstOrDefaultAsync();
-            
+
             PopulateOwnersDropDownList(selectedOwner);
             PopulateApplicantsDropDownList();
             PopulateStatusesDropDownList();
@@ -133,9 +141,7 @@ namespace DocumentProcessing.Controllers
         {
             return Content(Startup.Progress.ToString());
         }
-
         
-
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -155,7 +161,7 @@ namespace DocumentProcessing.Controllers
 
             var viewModel = _mapper.Map<DocumentViewModel>(document);
             viewModel.ApplicantType = ApplicantType.Existing;
-            
+
             SetSelectedDropDownLists(document);
 
             return View(viewModel);
@@ -193,6 +199,7 @@ namespace DocumentProcessing.Controllers
                         scannedFile.DocumentId = originalDocument.Id;
                         await _context.ScannedFiles.AddAsync(scannedFile);
                     }
+
                     try
                     {
                         await _context.SaveChangesAsync();

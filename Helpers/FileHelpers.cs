@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,7 +39,8 @@ namespace DocumentProcessing.Helpers
                         FileName = f.FileName,
                         ContentType = f.ContentType,
                         Length = f.Length,
-                        File = output.ToArray()
+                        File = output.ToArray(),
+                        UpdatedDate = DateTime.Now
                     });
                 }
             }
