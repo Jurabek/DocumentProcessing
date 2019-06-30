@@ -22,32 +22,36 @@ namespace DocumentProcessing.Data
         {
             var policy = WebHostExtensions.CreatePolicy(logger, nameof(ApplicationDataSeed));
             NpgsqlConnection.GlobalTypeMapper.MapEnum<AppointmentCharacters>();
-            
+
             await policy.ExecuteAsync(async () =>
-            {   
-                foreach (var document in context.Documents.Include(x => x.Appointment).ToList())
+            {
+                foreach (var document in context.Documents.Include(x => x.Appointment)
+                    .Where(x => x.Appointment == null).ToList())
                 {
                     var appointmentNumber = document.AppointmentNumber;
-                    var characterOfAppointmentNumber = appointmentNumber.Substring(0, 1);
-                    var numberOfAppointmentNumber = appointmentNumber.Substring(1);
-                    
-                    Enum.TryParse(characterOfAppointmentNumber, out AppointmentCharacters character);
-                    int.TryParse(numberOfAppointmentNumber, out var number);
-
-                    var appointment = new Appointment
+                    if (!string.IsNullOrEmpty(appointmentNumber))
                     {
-                        Number = number,
-                        Character = character
-                    };
+                        var characterOfAppointmentNumber = appointmentNumber[0];
+                        if (Char.IsLetter(characterOfAppointmentNumber))
+                        {
+                            var numberOfAppointmentNumber = appointmentNumber.Substring(1);
 
-                    if (document.Appointment == null)
-                    {
-                        document.Appointment = appointment;
-                        context.Update(document);
-                        context.SaveChanges();
+                            Enum.TryParse(characterOfAppointmentNumber.ToString(), out AppointmentCharacters character);
+                            int.TryParse(numberOfAppointmentNumber, out var number);
+
+                            var appointment = new Appointment
+                            {
+                                Number = number,
+                                Character = character
+                            };
+
+                            document.Appointment = appointment;
+                            context.Update(document);
+                            context.SaveChanges();
+                        }
                     }
                 }
-                
+
                 var purposesList = new List<string>
                 {
                     "Тамдиди раводид",
@@ -104,7 +108,7 @@ namespace DocumentProcessing.Data
                     var applicants = applicantsList.Select(x => new Applicant {Name = x});
                     await context.AddRangeAsync(applicants);
                 }
-                
+
                 var _ = context.ChangeTracker.HasChanges() ? await context.SaveChangesAsync() : 0;
 
                 var roleNames = configuration.GetSection("UserSettings:Roles").Get<List<string>>();

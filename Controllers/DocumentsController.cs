@@ -192,6 +192,7 @@ namespace DocumentProcessing.Controllers
             if (ModelState.IsValid)
             {
                 var originalDocument = _context.Documents
+                    .Include(x => x.Appointment)
                     .AsNoTracking()
                     .FirstOrDefault(x => x.Id == viewModel.Id);
                 
@@ -266,7 +267,17 @@ namespace DocumentProcessing.Controllers
                     try
                     {
                         document.Date = originalDocument.Date;
-                        _context.Entry(document).State = EntityState.Modified;
+                        if (originalDocument.Appointment == null)
+                        {
+
+                            var createdAppointment = document.Appointment;
+                            createdAppointment.DocumentId = originalDocument.Id;
+                            
+                            _context.Entry(document.Appointment).State = EntityState.Added;
+                            _context.SaveChanges();
+                        }
+                        
+                        _context.Update(document);
                         await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateException ex)
@@ -341,7 +352,8 @@ namespace DocumentProcessing.Controllers
         private bool HasChangesBetweenTwoDocuments(Document originalDocument, Document document)
         {
             return originalDocument.ApplicantId != document.ApplicantId
-                   || originalDocument.AppointmentNumber != document.AppointmentNumber
+                   || originalDocument.Appointment?.Character != document.Appointment.Character
+                   || originalDocument.Appointment?.Number != document.Appointment.Number
                    || originalDocument.EntryNumber != document.EntryNumber
                    || originalDocument.OwnerId != document.OwnerId
                    || originalDocument.PurposeId != document.PurposeId

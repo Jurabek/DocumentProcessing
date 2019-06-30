@@ -88,7 +88,7 @@
                         <input type="hidden" value="@purpose.Character" id="hidden_@purpose.Id"/>
                     }
                     <label asp-for="PurposeId" class="control-label">Ҳарфи муроҷиат</label>
-                    <input class="form-control" readonly="readonly" id="purposeCharacter" />
+                    <input class="form-control" readonly="readonly" id="purposeCharacter"/>
                 </div>
             </div>
             <div class="form-group form-row">
@@ -100,6 +100,8 @@
                     <span asp-validation-for="Appointment.Character" class="text-danger"></span>
                 </div>
                 <div class="col-md-8">
+                    <input type="hidden" asp-for="Appointment.Id"/>
+                    <input type="hidden" asp-for="Appointment.DocumentId"/>
                     <label asp-for="Appointment.Number" class="control-label"></label>
                     <input asp-for="Appointment.Number" class="form-control"/>
                     <span asp-validation-for="Appointment.Number" class="text-danger"></span>
