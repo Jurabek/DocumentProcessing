@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace DocumentProcessing.Data
 {
@@ -19,9 +21,33 @@ namespace DocumentProcessing.Data
             ApplicationDbContext context)
         {
             var policy = WebHostExtensions.CreatePolicy(logger, nameof(ApplicationDataSeed));
-
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<AppointmentCharacters>();
+            
             await policy.ExecuteAsync(async () =>
-            {
+            {   
+                foreach (var document in context.Documents.Include(x => x.Appointment).ToList())
+                {
+                    var appointmentNumber = document.AppointmentNumber;
+                    var characterOfAppointmentNumber = appointmentNumber.Substring(0, 1);
+                    var numberOfAppointmentNumber = appointmentNumber.Substring(1);
+                    
+                    Enum.TryParse(characterOfAppointmentNumber, out AppointmentCharacters character);
+                    int.TryParse(numberOfAppointmentNumber, out var number);
+
+                    var appointment = new Appointment
+                    {
+                        Number = number,
+                        Character = character
+                    };
+
+                    if (document.Appointment == null)
+                    {
+                        document.Appointment = appointment;
+                        context.Update(document);
+                        context.SaveChanges();
+                    }
+                }
+                
                 var purposesList = new List<string>
                 {
                     "Тамдиди раводид",

@@ -31,12 +31,11 @@ namespace DocumentProcessing.ViewModels
 
         [DisplayName("Мақсади муроҷиат ")]
         public Guid? PurposeId { get; set; }
-
-        [DisplayName("Рақами талон")]
-        public string AppointmentNumber { get; set; }
         
         [DisplayName("Ҳолати ҳуҷҷат")]
         public Guid? StatusId { get; set; }
+
+        public AppointmentViewModel Appointment { get; set; }
 
         public List<ScannedFileViewModel> ScannedFiles { get; set; } = new List<ScannedFileViewModel>();
     }

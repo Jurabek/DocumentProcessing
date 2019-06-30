@@ -16,7 +16,7 @@ namespace DocumentProcessing.Models
         public DateTime Date { get; set; } = DateTime.Now;
         
         public long EntryNumber { get; set; }
-        
+
         public string AppointmentNumber { get; set; }
         
         public Guid? ApplicantId { get; set; }
@@ -42,7 +42,9 @@ namespace DocumentProcessing.Models
         
         [ForeignKey("StatusId")]
         public virtual Status Status { get; set; }
-        
+
+        public Appointment Appointment { get; set; }
+
         public virtual IEnumerable<ScannedFile> ScannedFiles { get; set; }
     }
 }

@@ -16,8 +16,18 @@ $(function () {
         }
     });
 
+
     $("#saveButton").click(function () {
         startUpdatingProgressIndicator();
+    });
+
+    var selectedPurpose = $('#PurposeId').find(":selected").val();
+    var characterOfPurpose = $('#hidden_' + selectedPurpose).val();
+    $('#purposeCharacter').val(characterOfPurpose);
+    
+    $('#PurposeId').on('change', function () {
+       var characterOfPurpose = $('#hidden_' + this.value).val();
+       $('#purposeCharacter').val(characterOfPurpose);
     });
 
     var intervalId;

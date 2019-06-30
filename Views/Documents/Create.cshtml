@@ -51,10 +51,10 @@
                  id="existingApplicantGroup"
                  style="display: @(Model.ApplicantType == ApplicantType.Existing ? null : "none")">
                 <label asp-for="ApplicantId" class="control-label"></label>
-                <select class="form-control selectpicker" 
+                <select class="form-control selectpicker"
                         title="Ҷустуҷу..."
                         asp-for="ApplicantId"
-                        data-show-subtext="true" 
+                        data-show-subtext="true"
                         data-live-search="true"
                         asp-items="ViewBag.Applicants">
                     <option></option>
@@ -74,20 +74,37 @@
                 <span asp-validation-for="EntryNumber" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="PurposeId" class="control-label"></label>
-                <select class="form-control" asp-for="PurposeId"
-                        asp-items="ViewBag.Purposes">
-                    <option></option>
-                </select>
+            <div class="form-group form-row">
+                <div class="col-md-8">
+                    <label asp-for="PurposeId" class="control-label"></label>
+                    <select class="form-control" asp-for="PurposeId"
+                            asp-items="ViewBag.Purposes">
+                        <option></option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    @foreach (var purpose in ViewBag.Purposes.Items)
+                    {
+                        <input type="hidden" value="@purpose.Character" id="hidden_@purpose.Id"/>
+                    }
+                    <label asp-for="PurposeId" class="control-label">Ҳарфи муроҷиат</label>
+                    <input class="form-control" readonly="readonly" id="purposeCharacter" />
+                </div>
             </div>
-
-            <div class="form-group">
-                <label asp-for="AppointmentNumber" class="control-label"></label>
-                <input asp-for="AppointmentNumber" class="form-control"/>
-                <span asp-validation-for="AppointmentNumber" class="text-danger"></span>
+            <div class="form-group form-row">
+                <div class="col-md-4">
+                    <label class="control-label" asp-for="Appointment.Character"></label>
+                    <select class="form-control" asp-for="Appointment.Character" asp-items="Html.GetEnumSelectList<AppointmentCharacters>()">
+                        <option selected="selected" value=""></option>
+                    </select>
+                    <span asp-validation-for="Appointment.Character" class="text-danger"></span>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Appointment.Number" class="control-label"></label>
+                    <input asp-for="Appointment.Number" class="form-control"/>
+                    <span asp-validation-for="Appointment.Number" class="text-danger"></span>
+                </div>
             </div>
-
             <div class="form-group">
                 <label asp-for="StatusId" class="control-label"></label>
                 <select class="form-control" asp-for="StatusId"
@@ -99,12 +116,12 @@
 
             <div class="form-group">
                 <p>Cкан</p>
-                <input type="file" class="form-control" disabled="@(isAdminOrManager ? null : "disabled")" name="files" multiple>
-               
+                <input type="file" class="form-control-file" disabled="@(isAdminOrManager ? null : "disabled")" name="files" multiple>
+
                 <div id="progress" class="progress" style="display: none;margin-top: 15px">
                     <div class="progress-bar" id="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                
+
             </div>
 
             <div class="form-control-file" style="padding-top: 15px">

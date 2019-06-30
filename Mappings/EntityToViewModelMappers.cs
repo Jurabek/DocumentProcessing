@@ -20,7 +20,7 @@ namespace DocumentProcessing.Mappings
 
             CreateMap<Document, DocumentListViewModel>()
                 .ForMember(x => x.Date, 
-                    map => map.MapFrom(x => x.Date.ToString("dd.MM.yyy")))
+                    map => map.MapFrom(x => x.Date))
                 .ForMember(x => x.Applicant,
                     map => map.MapFrom(x => x.Applicant.Name))
                 .ForMember(x => x.Recipient,
@@ -31,7 +31,9 @@ namespace DocumentProcessing.Mappings
                     map => map.MapFrom(x => x.Status.Name))
                 .ForMember(x => x.ScannedDocuments,
                     map => map.MapFrom(x => x.ScannedFiles));
-  
+            
+            CreateMap<Appointment, AppointmentViewModel>();
+            CreateMap<AppointmentViewModel, Appointment>();
         }
     }
 }

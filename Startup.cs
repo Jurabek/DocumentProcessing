@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DocumentProcessing.Data;
+using DocumentProcessing.Helpers;
 using DocumentProcessing.Mappings;
 using DocumentProcessing.Models;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +27,6 @@ namespace DocumentProcessing
         }
 
         public IConfiguration Configuration { get; }
-        public static int Progress { get; set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -79,7 +79,9 @@ namespace DocumentProcessing
 
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IUserRolesMapper, UserRolesMapper>();
+            services.AddTransient<IFileHelper, FileHelper>();
 
+            services.AddSession();
             services.AddMvc();
         }
 
@@ -101,6 +103,7 @@ namespace DocumentProcessing
             app.UseCookiePolicy();
             app.UseAuthentication();
 
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

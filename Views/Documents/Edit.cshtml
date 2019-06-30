@@ -73,18 +73,37 @@
                 <span asp-validation-for="EntryNumber" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="PurposeId" class="control-label"></label>
-                <select class="form-control" asp-for="PurposeId"
-                        asp-items="ViewBag.Purposes">
-                    <option></option>
-                </select>
+            <div class="form-group form-row">
+                <div class="col-md-8">
+                    <label asp-for="PurposeId" class="control-label"></label>
+                    <select class="form-control" asp-for="PurposeId"
+                            asp-items="ViewBag.Purposes">
+                        <option></option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    @foreach (var purpose in ViewBag.Purposes.Items)
+                    {
+                        <input type="hidden" value="@purpose.Character" id="hidden_@purpose.Id"/>
+                    }
+                    <label asp-for="PurposeId" class="control-label">Ҳарфи муроҷиат</label>
+                    <input class="form-control" readonly="readonly" id="purposeCharacter"/>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="AppointmentNumber" class="control-label"></label>
-                <input asp-for="AppointmentNumber" class="form-control"/>
-                <span asp-validation-for="AppointmentNumber" class="text-danger"></span>
+            <div class="form-group form-row">
+                <div class="col-md-4">
+                    <label class="control-label" asp-for="Appointment.Character"></label>
+                    <select class="form-control" asp-for="Appointment.Character" asp-items="Html.GetEnumSelectList<AppointmentCharacters>()">
+                        <option selected="selected" value=""></option>
+                    </select>
+                    <span asp-validation-for="Appointment.Character" class="text-danger"></span>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Appointment.Number" class="control-label"></label>
+                    <input asp-for="Appointment.Number" class="form-control"/>
+                    <span asp-validation-for="Appointment.Number" class="text-danger"></span>
+                </div>
             </div>
 
             <div class="form-group">
@@ -98,7 +117,7 @@
 
             <div class="form-group">
                 <p>Cкан</p>
-                <input type="file" class="form-control" disabled="@(isAdminOrManager ? null : "disabled")" name="files" multiple>
+                <input type="file" class="form-control-file" disabled="@(isAdminOrManager ? null : "disabled")" name="files" multiple>
             </div>
 
             <div class="form-group">

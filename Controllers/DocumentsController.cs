@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DocumentProcessing.Abstraction;
 using DocumentProcessing.Data;
+using DocumentProcessing.Helpers;
 using DocumentProcessing.Models;
 using DocumentProcessing.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using static DocumentProcessing.Helpers.FileHelpers;
+using Microsoft.Extensions.Logging;
 
 namespace DocumentProcessing.Controllers
 {
@@ -25,15 +27,23 @@ namespace DocumentProcessing.Controllers
     {
         private const int PageSize = 10;
 
+        public const int SqlServerViolationOfUniqueIndex = 2601;
+        public const int SqlServerViolationOfUniqueConstraint = 2627;
+        private readonly IFileHelper _fileHelper;
+        private readonly ILogger<DocumentsController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
 
         public DocumentsController(
+            IFileHelper fileHelper,
+            ILogger<DocumentsController> logger,
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             IMapper mapper)
         {
+            _fileHelper = fileHelper;
+            _logger = logger;
             _context = context;
             _userManager = userManager;
             _mapper = mapper;
@@ -42,8 +52,8 @@ namespace DocumentProcessing.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(
             [FromQuery(Name = "q")] string searchText,
-            [FromQuery(Name = "dateFrom")] string dateFrom,
-            [FromQuery(Name = "dateFor")] string dateFor,
+            [FromQuery(Name = "dateFrom")] string startDate,
+            [FromQuery(Name = "dateFor")] string endDate,
             int? pageNumber)
         {
             var documents = _context.Documents.OrderByDescending(x => x.Date)
@@ -52,17 +62,17 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Status)
                 .Include(x => x.ScannedFiles)
                 .Include(x => x.Owner)
-                .Include(x => x.Recipient).AsQueryable();
+                .Include(x => x.Recipient)
+                .Include(x => x.Appointment).AsQueryable();
 
-
-            if (!string.IsNullOrEmpty(dateFor) && !string.IsNullOrEmpty(dateFrom))
+            if (!string.IsNullOrEmpty(endDate) && !string.IsNullOrEmpty(startDate))
             {
-                var dateFromDate = DateTime.ParseExact(dateFrom, "dd.MM.yyyy", CultureInfo.InvariantCulture);
-                var dateForDate = DateTime.ParseExact(dateFor, "dd.MM.yyyy", CultureInfo.CurrentCulture);
-                ViewBag.DateFor = dateFor;
-                ViewBag.DateFrom = dateFrom;
-
-                documents = documents.Where(x => x.Date >= dateFromDate && x.Date < dateForDate);
+                var parsedStartDate = DateTime.ParseExact(startDate, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                var parsedEndDate = DateTime.ParseExact(endDate, "dd.MM.yyyy", CultureInfo.CurrentCulture);
+                
+                ViewBag.DateFor = endDate;
+                ViewBag.DateFrom = startDate;
+                documents = documents.Where(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
             }
 
             if (!string.IsNullOrEmpty(searchText))
@@ -70,6 +80,8 @@ namespace DocumentProcessing.Controllers
                 ViewBag.SearchText = searchText;
                 documents = documents.Where(Search(searchText));
             }
+
+            _logger.LogInformation(documents.ToSql());
 
             var list = await MappedPaginatedList<DocumentListViewModel>
                 .CreateAsync(documents, _mapper, pageNumber ?? 1, PageSize);
@@ -115,7 +127,7 @@ namespace DocumentProcessing.Controllers
 
                 if (files.Any())
                 {
-                    document.ScannedFiles = await GetScannedFiles(files);
+                    document.ScannedFiles = await _fileHelper.GetScannedFiles(files);
                 }
 
                 await _context.AddAsync(document);
@@ -124,11 +136,14 @@ namespace DocumentProcessing.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException ex)
                 {
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                                                 "Try again, and if the problem persists, " +
-                                                 "see your system administrator.");
+                    if (!CheckConstraintException(ex))
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                                                     "Try again, and if the problem persists, " +
+                                                     "see your system administrator.");
+                    }
                 }
             }
 
@@ -139,9 +154,10 @@ namespace DocumentProcessing.Controllers
         [HttpPost]
         public ActionResult Progress()
         {
-            return Content(Startup.Progress.ToString());
+            var progressResult = HttpContext.Session.GetInt32("progress").ToString();
+            return Content(progressResult);
         }
-        
+
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -151,6 +167,7 @@ namespace DocumentProcessing.Controllers
 
             var document = _context.Documents
                 .Include(x => x.ScannedFiles)
+                .Include(x => x.Appointment)
                 .AsNoTracking()
                 .FirstOrDefault(x => x.Id == id);
 
@@ -177,7 +194,7 @@ namespace DocumentProcessing.Controllers
                 var originalDocument = _context.Documents
                     .AsNoTracking()
                     .FirstOrDefault(x => x.Id == viewModel.Id);
-
+                
                 if (originalDocument == null)
                 {
                     return NotFound();
@@ -193,22 +210,24 @@ namespace DocumentProcessing.Controllers
 
                 if (hasAddedFiles)
                 {
-                    var scannedFiles = await GetScannedFiles(files);
-                    foreach (var scannedFile in scannedFiles)
-                    {
-                        scannedFile.DocumentId = originalDocument.Id;
-                        await _context.ScannedFiles.AddAsync(scannedFile);
-                    }
-
                     try
                     {
+                        var scannedFiles = await _fileHelper.GetScannedFiles(files);
+                        foreach (var scannedFile in scannedFiles)
+                        {
+                            scannedFile.DocumentId = originalDocument.Id;
+                            await _context.ScannedFiles.AddAsync(scannedFile);
+                        }
                         await _context.SaveChangesAsync();
                     }
-                    catch (DbUpdateException)
+                    catch (DbUpdateException ex)
                     {
-                        ModelState.AddModelError("", "Unable to save changes. " +
-                                                     "Try again, and if the problem persists, " +
-                                                     "see your system administrator.");
+                        if (!CheckConstraintException(ex))
+                        {
+                            ModelState.AddModelError("", "Unable to save changes. " +
+                                                         "Try again, and if the problem persists, " +
+                                                         "see your system administrator.");
+                        }
                         hasError = true;
                     }
                 }
@@ -223,18 +242,21 @@ namespace DocumentProcessing.Controllers
                     var deletedFiles =
                         _context.ScannedFiles.Select(x => x.Id)
                             .Where(id => deletedScannedViewModels.Contains(id))
-                            .Select(id => new ScannedFile {Id = id});
+                            .Select(id => new ScannedFile { Id = id });
 
                     try
                     {
                         _context.RemoveRange(deletedFiles);
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                     }
-                    catch (DbUpdateException)
+                    catch (DbUpdateException ex)
                     {
-                        ModelState.AddModelError("", "Unable to save changes. " +
+                        if (!CheckConstraintException(ex))
+                        {
+                            ModelState.AddModelError("", "Unable to save changes. " +
                                                      "Try again, and if the problem persists, " +
                                                      "see your system administrator.");
+                        }
                         hasError = true;
                     }
                 }
@@ -244,14 +266,17 @@ namespace DocumentProcessing.Controllers
                     try
                     {
                         document.Date = originalDocument.Date;
-                        _context.Update(document);
+                        _context.Entry(document).State = EntityState.Modified;
                         await _context.SaveChangesAsync();
                     }
-                    catch (DbUpdateException)
+                    catch (DbUpdateException ex)
                     {
-                        ModelState.AddModelError("", "Unable to save changes. " +
-                                                     "Try again, and if the problem persists, " +
-                                                     "see your system administrator.");
+                        if (!CheckConstraintException(ex))
+                        {
+                            ModelState.AddModelError("", "Unable to save changes. " +
+                                                         "Try again, and if the problem persists, " +
+                                                         "see your system administrator.");
+                        }
                         hasError = true;
                     }
                 }
@@ -266,6 +291,51 @@ namespace DocumentProcessing.Controllers
 
             SetSelectedDropDownLists(viewModel);
             return View(viewModel);
+        }
+
+
+        [HttpGet]
+        public IActionResult Delete(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var document = _context.Documents
+                .Where(x => x.Id == id)
+                .Include(x => x.Owner)
+                .Include(x => x.Applicant)
+                .Include(x => x.Recipient)
+                .Include(x => x.Purpose)
+                .Include(x => x.Status)
+                .FirstOrDefault();
+
+            var result = _mapper.Map<DocumentListViewModel>(document);
+
+            return View(result);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            var course = await _context.Documents.FindAsync(id);
+            _context.Documents.Remove(course);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult File(Guid id)
+        {
+            var file = _context.ScannedFiles.FirstOrDefault(x => x.Id == id);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            return File(file.File, file.ContentType, file.FileName);
         }
 
         private bool HasChangesBetweenTwoDocuments(Document originalDocument, Document document)
@@ -320,7 +390,7 @@ namespace DocumentProcessing.Controllers
 
                 if (applicantExist == null)
                 {
-                    var applicant = new Applicant {Name = viewModel.ApplicantName, Id = Guid.NewGuid()};
+                    var applicant = new Applicant { Name = viewModel.ApplicantName, Id = Guid.NewGuid() };
                     await _context.Applicants.AddAsync(applicant);
                     await _context.SaveChangesAsync();
                     viewModel.ApplicantId = applicant.Id;
@@ -364,48 +434,21 @@ namespace DocumentProcessing.Controllers
                 selectedApplicant);
         }
 
-        [HttpGet]
-        public IActionResult Delete(Guid? id)
+        private bool CheckConstraintException(DbUpdateException ex)
         {
-            if (id == null)
+            var sqlEx = ex?.InnerException as SqlException;
+            if (sqlEx != null)
             {
-                return NotFound();
+                //This is a DbUpdateException on a SQL database
+
+                if (sqlEx.Number == SqlServerViolationOfUniqueIndex ||
+                    sqlEx.Number == SqlServerViolationOfUniqueConstraint)
+                {
+                    ModelState.AddModelError("", "Рақами воридотӣ мавҷуд аст");
+                }
+                return true;
             }
-
-            var document = _context.Documents
-                .Where(x => x.Id == id)
-                .Include(x => x.Owner)
-                .Include(x => x.Applicant)
-                .Include(x => x.Recipient)
-                .Include(x => x.Purpose)
-                .Include(x => x.Status)
-                .FirstOrDefault();
-
-            var result = _mapper.Map<DocumentListViewModel>(document);
-
-            return View(result);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var course = await _context.Documents.FindAsync(id);
-            _context.Documents.Remove(course);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
-        public IActionResult File(Guid id)
-        {
-            var file = _context.ScannedFiles.FirstOrDefault(x => x.Id == id);
-            if (file == null)
-            {
-                return NotFound();
-            }
-
-            return File(file.File, file.ContentType, file.FileName);
+            return false;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocumentProcessing.ViewModels
 {
@@ -10,7 +11,9 @@ namespace DocumentProcessing.ViewModels
         public Guid Id { get; set; }
         
         [DisplayName("Таърих")]
-        public string Date { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        public DateTime Date { get; set; }
         
         [DisplayName("Номи ташкилот")]
         public string Applicant { get; set; }
@@ -20,9 +23,9 @@ namespace DocumentProcessing.ViewModels
         
         [DisplayName("Мақсади муроҷиат ")]
         public string Purpose { get; set; }
-
+        
         [DisplayName("№ талон")]
-        public string AppointmentNumber { get; set; }
+        public AppointmentViewModel Appointment { get; set; }
         
         [DisplayName("Ҳолати ҳуҷҷат")]
         public string Status { get; set; }

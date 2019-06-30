@@ -78,7 +78,7 @@
             @Html.DisplayNameFor(model => model.ItemType.Purpose)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ItemType.AppointmentNumber)
+            @Html.DisplayNameFor(model => model.ItemType.Appointment)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ItemType.Status)
@@ -123,7 +123,7 @@
                 @Html.DisplayFor(modelItem => item.Purpose)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentNumber)
+                @Html.DisplayFor(modelItem => item.Appointment.Title)
             </td>
 
             <td>
@@ -138,7 +138,7 @@
                 @foreach (var doc in item.ScannedDocuments)
                 {
                     <div>
-                        <a asp-action="File" asp-route-id="@doc.Id">@doc.FileName</a>
+                        <a asp-action="File" asp-route-id="@doc.Id">@doc.FileName</a> - @Html.DisplayFor(modelItem => doc.CreatedDate)
                     </div>
                 }
             </td>

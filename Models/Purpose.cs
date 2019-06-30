@@ -11,6 +11,8 @@ namespace DocumentProcessing.Models
 
         public string Name { get; set; }
 
+        public string Character { get; set; }
+
         public virtual ICollection<Document> Documents { get; set; }
     }
 }

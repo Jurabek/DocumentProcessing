@@ -8,9 +8,21 @@ using Microsoft.AspNetCore.Http;
 
 namespace DocumentProcessing.Helpers
 {
-    public static class FileHelpers
+    public interface IFileHelper
     {
-        public static async Task<IList<ScannedFile>> GetScannedFiles(IList<IFormFile> files)
+        Task<IList<ScannedFile>> GetScannedFiles(IList<IFormFile> files);
+    }
+
+    public class FileHelper : IFileHelper
+    {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public FileHelper(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public async Task<IList<ScannedFile>> GetScannedFiles(IList<IFormFile> files)
         {
             long totalBytes = files.Sum(f => f.Length);
             IList<ScannedFile> scannedFiles = new List<ScannedFile>();
@@ -29,7 +41,7 @@ namespace DocumentProcessing.Helpers
                             await output.WriteAsync(buffer, 0, readBytes);
                             totalReadBytes += readBytes;
                             var progress = (int) ((float) totalReadBytes / (float) totalBytes * 100.0);
-                            Startup.Progress = progress < 0 ? 0 : progress;
+                            _httpContextAccessor.HttpContext.Session.SetInt32("progress", progress < 0 ? 0 : progress);
                             await Task.Delay(2);
                         }
                     }
@@ -40,7 +52,7 @@ namespace DocumentProcessing.Helpers
                         ContentType = f.ContentType,
                         Length = f.Length,
                         File = output.ToArray(),
-                        UpdatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now
                     });
                 }
             }
