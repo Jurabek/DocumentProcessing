@@ -16,7 +16,7 @@ namespace DocumentProcessing.ViewModels
         public ApplicantType ApplicantType { get; set; }
         
         [DisplayName("Макони вуруди ҳуҷҷат")]
-        [Required]
+        [Required(ErrorMessage = "Макони вуруди ҳуҷҷат холи аст!")]
         public Guid OwnerId { get; set; }
         
         [DisplayName("Номи ташкилот")]
@@ -26,7 +26,7 @@ namespace DocumentProcessing.ViewModels
         public Guid? ApplicantId { get; set; }
 
         [DisplayName("Рақами воридотӣ")]
-        [Required]
+        [Required(ErrorMessage = "Рақами воридотӣ холи аст!")]
         public string EntryNumber { get; set; }
 
         [DisplayName("Мақсади муроҷиат ")]

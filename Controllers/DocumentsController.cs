@@ -269,11 +269,10 @@ namespace DocumentProcessing.Controllers
                         document.Date = originalDocument.Date;
                         if (originalDocument.Appointment == null)
                         {
-
                             var createdAppointment = document.Appointment;
                             createdAppointment.DocumentId = originalDocument.Id;
                             
-                            _context.Entry(document.Appointment).State = EntityState.Added;
+                            _context.Add(document.Appointment);
                             _context.SaveChanges();
                         }
                         

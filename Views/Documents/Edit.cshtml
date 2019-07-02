@@ -100,8 +100,11 @@
                     <span asp-validation-for="Appointment.Character" class="text-danger"></span>
                 </div>
                 <div class="col-md-8">
-                    <input type="hidden" asp-for="Appointment.Id"/>
-                    <input type="hidden" asp-for="Appointment.DocumentId"/>
+                    @if(Model.Appointment?.Id != Guid.Empty && Model.Appointment?.DocumentId != Guid.Empty) 
+                    {
+                        <input type="hidden" asp-for="Appointment.Id"/>
+                        <input type="hidden" asp-for="Appointment.DocumentId"/>
+                    }
                     <label asp-for="Appointment.Number" class="control-label"></label>
                     <input asp-for="Appointment.Number" class="form-control"/>
                     <span asp-validation-for="Appointment.Number" class="text-danger"></span>
