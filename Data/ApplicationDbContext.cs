@@ -43,10 +43,6 @@ namespace DocumentProcessing.Data
                 .HasForeignKey(x => x.DocumentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Document>()
-                .HasIndex(x => x.EntryNumber)
-                .IsUnique();
-
             modelBuilder.Entity<Purpose>()
                 .HasMany(x => x.Documents)
                 .WithOne(x => x.Purpose)

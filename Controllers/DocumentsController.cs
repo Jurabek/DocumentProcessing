@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
 
 namespace DocumentProcessing.Controllers
 {
@@ -29,20 +30,23 @@ namespace DocumentProcessing.Controllers
 
         public const int SqlServerViolationOfUniqueIndex = 2601;
         public const int SqlServerViolationOfUniqueConstraint = 2627;
-        private readonly IFileHelper _fileHelper;
+        private readonly IFileUploader _fileUploader;
+        private readonly IElectronicStamp _electronicStamp;
         private readonly ILogger<DocumentsController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
 
         public DocumentsController(
-            IFileHelper fileHelper,
+            IFileUploader fileUploader,
+            IElectronicStamp electronicStamp,
             ILogger<DocumentsController> logger,
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             IMapper mapper)
         {
-            _fileHelper = fileHelper;
+            _fileUploader = fileUploader;
+            _electronicStamp = electronicStamp;
             _logger = logger;
             _context = context;
             _userManager = userManager;
@@ -91,13 +95,15 @@ namespace DocumentProcessing.Controllers
 
         private Expression<Func<Document, bool>> Search(string searchText)
         {
-            return x => x.Applicant.Name.CaseInsensitiveContains(searchText)
-                        || x.Owner.Name.CaseInsensitiveContains(searchText)
-                        || x.EntryNumber.ToString(CultureInfo.InvariantCulture) == searchText
-                        || x.AppointmentNumber == searchText
-                        || x.Recipient.Name.CaseInsensitiveContains(searchText)
-                        || x.Purpose.Name.CaseInsensitiveContains(searchText)
-                        || x.Status.Name.CaseInsensitiveContains(searchText);
+            var upperSearchText = searchText.ToUpperInvariant();
+            
+            return x => x.Applicant.Name.ToUpperInvariant().Contains(upperSearchText)
+                        || x.Owner.Name.ToUpperInvariant().Contains(upperSearchText)
+                        || x.EntryNumber.ToString(CultureInfo.InvariantCulture).Equals(searchText)
+                        || x.Applicant.Name.ToUpperInvariant().Contains(upperSearchText)
+                        || x.Recipient.Name.ToUpperInvariant().Contains(upperSearchText)
+                        || x.Purpose.Name.ToUpperInvariant().Contains(upperSearchText)
+                        || x.Status.Name.ToUpperInvariant().Contains(upperSearchText);
         }
 
         [HttpGet]
@@ -127,7 +133,9 @@ namespace DocumentProcessing.Controllers
 
                 if (files.Any())
                 {
-                    document.ScannedFiles = await _fileHelper.GetScannedFiles(files);
+                    var newFiles = await _fileUploader.GetScannedFilesForDocument(document, files);
+                    
+                    document.ScannedFiles = newFiles;
                 }
 
                 await _context.AddAsync(document);
@@ -213,7 +221,7 @@ namespace DocumentProcessing.Controllers
                 {
                     try
                     {
-                        var scannedFiles = await _fileHelper.GetScannedFiles(files);
+                        var scannedFiles = await _fileUploader.GetScannedFilesForDocument(document, files);
                         foreach (var scannedFile in scannedFiles)
                         {
                             scannedFile.DocumentId = originalDocument.Id;
@@ -364,7 +372,7 @@ namespace DocumentProcessing.Controllers
         {
             if (viewModel.ApplicantId == null && string.IsNullOrEmpty(viewModel.ApplicantName))
             {
-                ModelState.AddModelError("", "Номи ташкилот холи аст!");
+                ModelState.AddModelError("ApplicantName", "Номи ташкилот холи аст!");
             }
         }
 

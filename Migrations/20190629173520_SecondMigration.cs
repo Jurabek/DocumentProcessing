@@ -41,12 +41,7 @@ namespace DocumentProcessing.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Appointment_DocumentId",
-                table: "Appointment",
-                column: "DocumentId",
-                unique: true);
+            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

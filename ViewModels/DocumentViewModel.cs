@@ -29,7 +29,8 @@ namespace DocumentProcessing.ViewModels
         [Required(ErrorMessage = "Рақами воридотӣ холи аст!")]
         public string EntryNumber { get; set; }
 
-        [DisplayName("Мақсади муроҷиат ")]
+        [DisplayName("Мақсади муроҷиат")]
+        [Required(ErrorMessage = "Мақсади муроҷиат холи аст!")]
         public Guid? PurposeId { get; set; }
         
         [DisplayName("Ҳолати ҳуҷҷат")]

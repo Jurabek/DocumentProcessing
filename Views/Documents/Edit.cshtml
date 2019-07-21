@@ -44,6 +44,7 @@
                         Ариза/дигар
                     </label>
                 </div>
+                <span asp-validation-for="ApplicantType" class="text-danger"></span>
             </div>
 
             <div class="form-group"
@@ -100,7 +101,7 @@
                     <span asp-validation-for="Appointment.Character" class="text-danger"></span>
                 </div>
                 <div class="col-md-8">
-                    @if(Model.Appointment?.Id != Guid.Empty && Model.Appointment?.DocumentId != Guid.Empty) 
+                    @if (Model.Appointment?.Id != Guid.Empty && Model.Appointment?.DocumentId != Guid.Empty)
                     {
                         <input type="hidden" asp-for="Appointment.Id"/>
                         <input type="hidden" asp-for="Appointment.DocumentId"/>

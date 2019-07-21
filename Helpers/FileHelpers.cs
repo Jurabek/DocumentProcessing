@@ -5,31 +5,39 @@ using System.Linq;
 using System.Threading.Tasks;
 using DocumentProcessing.Models;
 using Microsoft.AspNetCore.Http;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace DocumentProcessing.Helpers
 {
-    public interface IFileHelper
+    public interface IFileUploader
     {
-        Task<IList<ScannedFile>> GetScannedFiles(IList<IFormFile> files);
+        Task<IList<ScannedFile>> GetScannedFilesForDocument(Document document, IList<IFormFile> files);
     }
 
-    public class FileHelper : IFileHelper
+    public class FileUploader : IFileUploader
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IElectronicStamp _electronicStamp;
 
-        public FileHelper(IHttpContextAccessor httpContextAccessor)
+        public FileUploader(
+            IHttpContextAccessor httpContextAccessor,
+            IElectronicStamp electronicStamp)
         {
             _httpContextAccessor = httpContextAccessor;
+            _electronicStamp = electronicStamp;
         }
 
-        public async Task<IList<ScannedFile>> GetScannedFiles(IList<IFormFile> files)
+        public async Task<IList<ScannedFile>> GetScannedFilesForDocument(Document document, IList<IFormFile> files)
         {
             long totalBytes = files.Sum(f => f.Length);
             IList<ScannedFile> scannedFiles = new List<ScannedFile>();
             foreach (var f in files)
             {
                 byte[] buffer = new byte[16 * 1024];
-                using (var output = new MemoryStream())
+                using (var output = new MemoryStream()) 
                 {
                     using (var input = f.OpenReadStream())
                     {
@@ -42,18 +50,25 @@ namespace DocumentProcessing.Helpers
                             totalReadBytes += readBytes;
                             var progress = (int) ((float) totalReadBytes / (float) totalBytes * 100.0);
                             _httpContextAccessor.HttpContext.Session.SetInt32("progress", progress < 0 ? 0 : progress);
-                            await Task.Delay(2);
                         }
                     }
 
-                    scannedFiles.Add(new ScannedFile
+                    using (var image = Image.Load(output.ToArray()))
                     {
-                        FileName = f.FileName,
-                        ContentType = f.ContentType,
-                        Length = f.Length,
-                        File = output.ToArray(),
-                        CreatedDate = DateTime.Now
-                    });
+                        _electronicStamp.Process(image, document.EntryNumber.ToString(), document.Date);
+                        using (var newImage = new MemoryStream())
+                        {
+                            image.SaveAsJpeg(newImage);
+                            scannedFiles.Add(new ScannedFile
+                            {
+                                FileName = f.FileName,
+                                ContentType = f.ContentType,
+                                Length = f.Length,
+                                File = newImage.ToArray(),
+                                CreatedDate = DateTime.Now
+                            });
+                        }
+                    }
                 }
             }
 
