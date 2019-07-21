@@ -211,7 +211,8 @@ namespace DocumentProcessing.Controllers
 
                 await CreateApplicantIfNotExist(viewModel);
                 var document = _mapper.Map<Document>(viewModel);
-
+                document.Date = originalDocument.Date;
+                
                 var hasAddedFiles = files.Any();
                 var hasDocumentChanges = HasChangesBetweenTwoDocuments(originalDocument, document);
                 var hasRemovedFiles = viewModel.ScannedFiles.Any(x => x.IsDeleted);
@@ -274,7 +275,6 @@ namespace DocumentProcessing.Controllers
                 {
                     try
                     {
-                        document.Date = originalDocument.Date;
                         if (originalDocument.Appointment == null)
                         {
                             var createdAppointment = document.Appointment;
