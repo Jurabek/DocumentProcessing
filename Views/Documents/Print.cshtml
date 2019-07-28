@@ -1,0 +1,66 @@
+@model PrintViewModel
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="~/css/print.css"/>
+    <title>Document</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="tallon">
+        <table>
+            <tr>
+                <td>Рақами талон:</td>
+                <td>@Model.AppointmentNumber</td>
+            </tr>
+            <tr>
+                <td>Макони вуруди ҳуҷҷат: </td>
+                <td>@Model.Owner</td>
+            </tr>
+            <tr>
+                <td>Номи ташкилот: </td>
+                <td>@Model.Applicant</td>
+            </tr>
+            <tr>
+                <td>Мақсади Муроҷиат: </td>
+                <td>@Model.Purpose</td>
+            </tr>
+        </table>
+        <img alt="stamp" src="data:image;base64,@Model.Base64Stamp" class="img-stump"/>
+
+    </div>
+    <div class="tallon">
+        <table>
+            <tr>
+                <td>Рақами талон:</td>
+                <td>@Model.AppointmentNumber</td>
+            </tr>
+            <tr>
+                <td>Макони вуруди ҳуҷҷат: </td>
+                <td>@Model.Owner</td>
+            </tr>
+            <tr>
+                <td>Номи ташкилот: </td>
+                <td>@Model.Applicant</td>
+            </tr>
+            <tr>
+                <td>Мақсади Муроҷиат: </td>
+                <td>@Model.Purpose</td>
+            </tr>
+        </table>
+        <img alt="stamp" src="data:image;base64,@Model.Base64Stamp" class="img-stump"/>
+    </div>
+</div>
+<script src="~/js/print.js"></script>
+</body>
+</html>

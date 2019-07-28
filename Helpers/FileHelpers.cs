@@ -32,14 +32,14 @@ namespace DocumentProcessing.Helpers
 
         public async Task<IList<ScannedFile>> GetScannedFilesForDocument(Document document, IList<IFormFile> files)
         {
-            long totalBytes = files.Sum(f => f.Length);
-            IList<ScannedFile> scannedFiles = new List<ScannedFile>();
-            foreach (var f in files)
+            var totalBytes = files.Sum(f => f.Length);
+            var scannedFiles = new List<ScannedFile>();
+            foreach (var file in files)
             {
-                byte[] buffer = new byte[16 * 1024];
-                using (var output = new MemoryStream()) 
+                var buffer = new byte[16 * 1024];
+                using (var output = new MemoryStream())
                 {
-                    using (var input = f.OpenReadStream())
+                    using (var input = file.OpenReadStream())
                     {
                         long totalReadBytes = 0;
                         int readBytes;
@@ -55,16 +55,17 @@ namespace DocumentProcessing.Helpers
 
                     using (var image = Image.Load(output.ToArray()))
                     {
-                        _electronicStamp.Process(image, document.EntryNumber.ToString(), document.Date);
-                        using (var newImage = new MemoryStream())
+                        using (var imageStream = new MemoryStream())
                         {
-                            image.SaveAsJpeg(newImage);
+                            _electronicStamp.Process(image, document.EntryNumber.ToString(), document.Date);
+                            image.SaveAsJpeg(imageStream);
+                            
                             scannedFiles.Add(new ScannedFile
                             {
-                                FileName = f.FileName,
-                                ContentType = f.ContentType,
-                                Length = f.Length,
-                                File = newImage.ToArray(),
+                                FileName = file.FileName,
+                                ContentType = file.ContentType,
+                                Length = file.Length,
+                                File = imageStream.ToArray(),
                                 CreatedDate = DateTime.Now
                             });
                         }

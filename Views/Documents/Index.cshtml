@@ -145,6 +145,9 @@
             @if (isAdminOrManager)
             {
                 <td class="text-right">
+                    <a asp-action="Print" asp-route-id="@item.Id" target="_blank" class="btn btn-light btn-sm">
+                        <i class="fa fa-print"></i>
+                    </a>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light btn-sm">
                         <i class="fa fa-pen"></i>
                     </a>

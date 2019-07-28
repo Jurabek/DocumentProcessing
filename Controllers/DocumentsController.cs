@@ -7,6 +7,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using DocumentProcessing.Abstraction;
 using DocumentProcessing.Data;
 using DocumentProcessing.Helpers;
@@ -20,6 +22,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace DocumentProcessing.Controllers
 {
@@ -32,6 +36,7 @@ namespace DocumentProcessing.Controllers
         public const int SqlServerViolationOfUniqueConstraint = 2627;
         private readonly IFileUploader _fileUploader;
         private readonly IElectronicStamp _electronicStamp;
+        private readonly IConverter _converter;
         private readonly ILogger<DocumentsController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -40,6 +45,7 @@ namespace DocumentProcessing.Controllers
         public DocumentsController(
             IFileUploader fileUploader,
             IElectronicStamp electronicStamp,
+            IConverter converter,
             ILogger<DocumentsController> logger,
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -47,6 +53,7 @@ namespace DocumentProcessing.Controllers
         {
             _fileUploader = fileUploader;
             _electronicStamp = electronicStamp;
+            _converter = converter;
             _logger = logger;
             _context = context;
             _userManager = userManager;
@@ -73,7 +80,7 @@ namespace DocumentProcessing.Controllers
             {
                 var parsedStartDate = DateTime.ParseExact(startDate, "dd.MM.yyyy", CultureInfo.InvariantCulture);
                 var parsedEndDate = DateTime.ParseExact(endDate, "dd.MM.yyyy", CultureInfo.CurrentCulture);
-                
+
                 ViewBag.DateFor = endDate;
                 ViewBag.DateFrom = startDate;
                 documents = documents.Where(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
@@ -96,7 +103,7 @@ namespace DocumentProcessing.Controllers
         private Expression<Func<Document, bool>> Search(string searchText)
         {
             var upperSearchText = searchText.ToUpperInvariant();
-            
+
             return x => x.Applicant.Name.ToUpperInvariant().Contains(upperSearchText)
                         || x.Owner.Name.ToUpperInvariant().Contains(upperSearchText)
                         || x.EntryNumber.ToString(CultureInfo.InvariantCulture).Equals(searchText)
@@ -134,19 +141,18 @@ namespace DocumentProcessing.Controllers
                 if (files.Any())
                 {
                     var newFiles = await _fileUploader.GetScannedFilesForDocument(document, files);
-                    
                     document.ScannedFiles = newFiles;
                 }
 
-                await _context.AddAsync(document);
                 try
                 {
+                    await _context.AddAsync(document);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception ex) when (ex.GetType() == typeof(DbUpdateException))
                 {
-                    if (!CheckConstraintException(ex))
+                    if (!CheckConstraintException(ex as DbUpdateException))
                     {
                         ModelState.AddModelError("", "Unable to save changes. " +
                                                      "Try again, and if the problem persists, " +
@@ -203,7 +209,7 @@ namespace DocumentProcessing.Controllers
                     .Include(x => x.Appointment)
                     .AsNoTracking()
                     .FirstOrDefault(x => x.Id == viewModel.Id);
-                
+
                 if (originalDocument == null)
                 {
                     return NotFound();
@@ -212,7 +218,7 @@ namespace DocumentProcessing.Controllers
                 await CreateApplicantIfNotExist(viewModel);
                 var document = _mapper.Map<Document>(viewModel);
                 document.Date = originalDocument.Date;
-                
+
                 var hasAddedFiles = files.Any();
                 var hasDocumentChanges = HasChangesBetweenTwoDocuments(originalDocument, document);
                 var hasRemovedFiles = viewModel.ScannedFiles.Any(x => x.IsDeleted);
@@ -228,6 +234,7 @@ namespace DocumentProcessing.Controllers
                             scannedFile.DocumentId = originalDocument.Id;
                             await _context.ScannedFiles.AddAsync(scannedFile);
                         }
+
                         await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateException ex)
@@ -238,6 +245,7 @@ namespace DocumentProcessing.Controllers
                                                          "Try again, and if the problem persists, " +
                                                          "see your system administrator.");
                         }
+
                         hasError = true;
                     }
                 }
@@ -252,7 +260,7 @@ namespace DocumentProcessing.Controllers
                     var deletedFiles =
                         _context.ScannedFiles.Select(x => x.Id)
                             .Where(id => deletedScannedViewModels.Contains(id))
-                            .Select(id => new ScannedFile { Id = id });
+                            .Select(id => new ScannedFile {Id = id});
 
                     try
                     {
@@ -264,9 +272,10 @@ namespace DocumentProcessing.Controllers
                         if (!CheckConstraintException(ex))
                         {
                             ModelState.AddModelError("", "Unable to save changes. " +
-                                                     "Try again, and if the problem persists, " +
-                                                     "see your system administrator.");
+                                                         "Try again, and if the problem persists, " +
+                                                         "see your system administrator.");
                         }
+
                         hasError = true;
                     }
                 }
@@ -279,11 +288,11 @@ namespace DocumentProcessing.Controllers
                         {
                             var createdAppointment = document.Appointment;
                             createdAppointment.DocumentId = originalDocument.Id;
-                            
+
                             _context.Add(document.Appointment);
                             _context.SaveChanges();
                         }
-                        
+
                         _context.Update(document);
                         await _context.SaveChangesAsync();
                     }
@@ -295,6 +304,7 @@ namespace DocumentProcessing.Controllers
                                                          "Try again, and if the problem persists, " +
                                                          "see your system administrator.");
                         }
+
                         hasError = true;
                     }
                 }
@@ -376,6 +386,48 @@ namespace DocumentProcessing.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Print(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var document = _context.Documents
+                .Where(x => x.Id == id)
+                .Include(x => x.Owner)
+                .Include(x => x.Applicant)
+                .Include(x => x.Purpose)
+                .FirstOrDefault();
+
+            if (document == null)
+            {
+                return NotFound();
+            }
+            
+            using (Image<Rgba32> img = new Image<Rgba32>(260, 180))
+            {
+                img.Mutate(x => x.Fill(Rgba32.White));
+                _electronicStamp.Process(img, document.EntryNumber.ToString(), document.Date, true);
+                using (var ms = new MemoryStream())
+                {
+                    img.SaveAsJpeg(ms);
+
+                    var viewModel = new PrintViewModel
+                    {
+                        AppointmentNumber = document.AppointmentNumber,
+                        Owner = document.Owner.Name,
+                        Applicant = document.Applicant.Name,
+                        Purpose = document.Purpose.Name,
+                        Base64Stamp = Convert.ToBase64String(ms.ToArray())
+                    };
+                    
+                    return View(viewModel);
+                }
+            }
+        }
+
         private void SetSelectedDropDownLists(IDocumentModel document)
         {
             var selectedPurpose = _context.Purposes
@@ -405,11 +457,12 @@ namespace DocumentProcessing.Controllers
             if (viewModel.ApplicantType == ApplicantType.New)
             {
                 var applicantExist = await _context.Applicants
-                    .FirstOrDefaultAsync(x => x.Name == viewModel.ApplicantName);
+                    .FirstOrDefaultAsync(x =>
+                        string.Equals(x.Name, viewModel.ApplicantName, StringComparison.InvariantCultureIgnoreCase));
 
                 if (applicantExist == null)
                 {
-                    var applicant = new Applicant { Name = viewModel.ApplicantName, Id = Guid.NewGuid() };
+                    var applicant = new Applicant {Name = viewModel.ApplicantName, Id = Guid.NewGuid()};
                     await _context.Applicants.AddAsync(applicant);
                     await _context.SaveChangesAsync();
                     viewModel.ApplicantId = applicant.Id;
@@ -465,8 +518,10 @@ namespace DocumentProcessing.Controllers
                 {
                     ModelState.AddModelError("", "Рақами воридотӣ мавҷуд аст");
                 }
+
                 return true;
             }
+
             return false;
         }
     }

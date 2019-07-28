@@ -12,6 +12,7 @@ namespace DocumentProcessing.Helpers
     public interface IElectronicStamp
     {
         void Process(Image<Rgba32> img, string entryNumber, DateTime dateTime);
+        void Process(Image<Rgba32> img, string entryNumber, DateTime dateTime, bool stumpForReceipt);
     }
     
     public class ElectronicStamp : IElectronicStamp
@@ -22,9 +23,23 @@ namespace DocumentProcessing.Helpers
 
         public void Process(Image<Rgba32> img, string entryNumber, DateTime dateTime)
         {
+            Process(img, entryNumber, dateTime, false);
+        }
+        
+        public void Process(Image<Rgba32> img, string entryNumber, DateTime dateTime, bool stumpForReceipt)
+        {
             var mainRectSize = new SizeF(260, 180);
-            var mainRectPoint = new PointF(img.Width - mainRectSize.Width - Padding,
-                img.Height - mainRectSize.Height - Padding);
+            PointF mainRectPoint;
+            if (stumpForReceipt)
+            {
+                mainRectPoint = new PointF(0, 0);
+            }
+            else
+            {
+                mainRectPoint = new PointF(img.Width - mainRectSize.Width - Padding,
+                    img.Height - mainRectSize.Height - Padding);
+            }
+            
             var mainRect = new RectangleF(mainRectPoint, mainRectSize);
 
 

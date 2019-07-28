@@ -1,0 +1,22 @@
+.container {
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+}
+.tallon {
+    border: 1px solid gray;
+    margin: 0 10px;
+    text-align: right;
+}
+tr td:first-child {
+    font-weight: bold;
+}
+td, th {
+    border: none;
+    padding: 15px;
+    font-size: 22px;
+    text-align: left;
+}
+.img-stump {
+    margin: 15px;
+}

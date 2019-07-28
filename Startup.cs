@@ -1,5 +1,7 @@
 ﻿using System;
 using AutoMapper;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using DocumentProcessing.Data;
 using DocumentProcessing.Helpers;
 using DocumentProcessing.Mappings;
@@ -76,6 +78,7 @@ namespace DocumentProcessing
             services.AddTransient<IUserRolesMapper, UserRolesMapper>();
             services.AddTransient<IFileUploader, FileUploader>();
             services.AddTransient<IElectronicStamp, ElectronicStamp>();
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
             services.AddSession();
             services.AddMvc();
