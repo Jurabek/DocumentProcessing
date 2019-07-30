@@ -7,7 +7,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
-using DinkToPdf;
 using DinkToPdf.Contracts;
 using DocumentProcessing.Abstraction;
 using DocumentProcessing.Data;
@@ -371,7 +370,6 @@ namespace DocumentProcessing.Controllers
             return originalDocument.ApplicantId != document.ApplicantId
                    || originalDocument.Appointment?.Character != document.Appointment.Character
                    || originalDocument.Appointment?.Number != document.Appointment.Number
-                   || originalDocument.EntryNumber != document.EntryNumber
                    || originalDocument.OwnerId != document.OwnerId
                    || originalDocument.PurposeId != document.PurposeId
                    || originalDocument.StatusId != document.StatusId

@@ -49,10 +49,6 @@ namespace DocumentProcessing.Migrations
             migrationBuilder.DropTable(
                 name: "Appointment");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Documents_EntryNumber",
-                table: "Documents");
-
             migrationBuilder.DropColumn(
                 name: "CreatedDate",
                 table: "ScannedFiles");

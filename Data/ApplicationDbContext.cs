@@ -1,22 +1,28 @@
+using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using DocumentProcessing.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 
 namespace DocumentProcessing.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        private readonly IConfiguration _configuration;
+
         static ApplicationDbContext()
         {
             NpgsqlConnection.GlobalTypeMapper.MapEnum<AppointmentCharacters>();
         }
         
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, 
+            IConfiguration configuration) : base(options)
         {
+            _configuration = configuration;
         }
 
         public DbSet<Purpose> Purposes { get; set; }
@@ -36,6 +42,17 @@ namespace DocumentProcessing.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ForNpgsqlHasEnum<AppointmentCharacters>();
+
+            var lastEntryNumberString = _configuration.GetValue<string>("UserSettings:LastEntryNumber");
+
+            int.TryParse(lastEntryNumberString, out var lastEntryNumber);
+            
+            modelBuilder.HasSequence<long>("EntryNumbers")
+                .StartsAt(lastEntryNumber);
+            
+            modelBuilder.Entity<Document>()
+                .Property(o => o.EntryNumber)
+                .HasDefaultValueSql("nextval('\"EntryNumbers\"')");
 
             modelBuilder.Entity<Document>()
                 .HasMany(x => x.ScannedFiles)

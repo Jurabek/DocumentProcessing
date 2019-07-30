@@ -25,8 +25,6 @@ namespace DocumentProcessing.ViewModels
         [DisplayName("Номи ташкилот")]
         public Guid? ApplicantId { get; set; }
 
-        [DisplayName("Рақами воридотӣ")]
-        [Required(ErrorMessage = "Рақами воридотӣ холи аст!")]
         public string EntryNumber { get; set; }
 
         [DisplayName("Мақсади муроҷиат")]
