@@ -59,9 +59,9 @@ namespace DocumentProcessing.Helpers
                         {
                             _electronicStamp.Process(image, document.EntryNumber.ToString(), document.Date);
                             image.SaveAsJpeg(imageStream);
-                            
                             scannedFiles.Add(new ScannedFile
                             {
+                                DocumentId = document.Id,
                                 FileName = file.FileName,
                                 ContentType = file.ContentType,
                                 Length = file.Length,

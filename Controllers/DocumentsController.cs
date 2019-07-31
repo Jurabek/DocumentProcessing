@@ -31,8 +31,6 @@ namespace DocumentProcessing.Controllers
     {
         private const int PageSize = 10;
 
-        public const int SqlServerViolationOfUniqueIndex = 2601;
-        public const int SqlServerViolationOfUniqueConstraint = 2627;
         private readonly IFileUploader _fileUploader;
         private readonly IElectronicStamp _electronicStamp;
         private readonly IConverter _converter;
@@ -136,27 +134,25 @@ namespace DocumentProcessing.Controllers
             {
                 await CreateApplicantIfNotExist(viewModel);
                 var document = _mapper.Map<Document>(viewModel);
-
-                if (files.Any())
-                {
-                    var newFiles = await _fileUploader.GetScannedFilesForDocument(document, files);
-                    document.ScannedFiles = newFiles;
-                }
-
                 try
                 {
                     await _context.AddAsync(document);
                     await _context.SaveChangesAsync();
+                    
+                    if (files.Any())
+                    {
+                        var newFiles = await _fileUploader.GetScannedFilesForDocument(document, files);
+                        await _context.ScannedFiles.AddRangeAsync(newFiles);
+                        await _context.SaveChangesAsync();
+                    }
+                    
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex) when (ex.GetType() == typeof(DbUpdateException))
                 {
-                    if (!CheckConstraintException(ex as DbUpdateException))
-                    {
-                        ModelState.AddModelError("", "Unable to save changes. " +
-                                                     "Try again, and if the problem persists, " +
-                                                     "see your system administrator.");
-                    }
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                                                 "Try again, and if the problem persists, " +
+                                                 "see your system administrator.");
                 }
             }
 
@@ -181,7 +177,6 @@ namespace DocumentProcessing.Controllers
             var document = _context.Documents
                 .Include(x => x.ScannedFiles)
                 .Include(x => x.Appointment)
-                .AsNoTracking()
                 .FirstOrDefault(x => x.Id == id);
 
             if (document == null)
@@ -238,12 +233,9 @@ namespace DocumentProcessing.Controllers
                     }
                     catch (DbUpdateException ex)
                     {
-                        if (!CheckConstraintException(ex))
-                        {
-                            ModelState.AddModelError("", "Unable to save changes. " +
-                                                         "Try again, and if the problem persists, " +
-                                                         "see your system administrator.");
-                        }
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                                                     "Try again, and if the problem persists, " +
+                                                     "see your system administrator.");
 
                         hasError = true;
                     }
@@ -268,12 +260,9 @@ namespace DocumentProcessing.Controllers
                     }
                     catch (DbUpdateException ex)
                     {
-                        if (!CheckConstraintException(ex))
-                        {
-                            ModelState.AddModelError("", "Unable to save changes. " +
-                                                         "Try again, and if the problem persists, " +
-                                                         "see your system administrator.");
-                        }
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                                                     "Try again, and if the problem persists, " +
+                                                     "see your system administrator.");
 
                         hasError = true;
                     }
@@ -297,12 +286,9 @@ namespace DocumentProcessing.Controllers
                     }
                     catch (DbUpdateException ex)
                     {
-                        if (!CheckConstraintException(ex))
-                        {
-                            ModelState.AddModelError("", "Unable to save changes. " +
-                                                         "Try again, and if the problem persists, " +
-                                                         "see your system administrator.");
-                        }
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                                                     "Try again, and if the problem persists, " +
+                                                     "see your system administrator.");
 
                         hasError = true;
                     }
@@ -403,7 +389,7 @@ namespace DocumentProcessing.Controllers
             {
                 return NotFound();
             }
-            
+
             using (Image<Rgba32> img = new Image<Rgba32>(260, 180))
             {
                 img.Mutate(x => x.Fill(Rgba32.White));
@@ -420,7 +406,7 @@ namespace DocumentProcessing.Controllers
                         Purpose = document.Purpose.Name,
                         Base64Stamp = Convert.ToBase64String(ms.ToArray())
                     };
-                    
+
                     return View(viewModel);
                 }
             }
@@ -502,25 +488,6 @@ namespace DocumentProcessing.Controllers
                 "Id",
                 "Name",
                 selectedApplicant);
-        }
-
-        private bool CheckConstraintException(DbUpdateException ex)
-        {
-            var sqlEx = ex?.InnerException as SqlException;
-            if (sqlEx != null)
-            {
-                //This is a DbUpdateException on a SQL database
-
-                if (sqlEx.Number == SqlServerViolationOfUniqueIndex ||
-                    sqlEx.Number == SqlServerViolationOfUniqueConstraint)
-                {
-                    ModelState.AddModelError("", "Рақами воридотӣ мавҷуд аст");
-                }
-
-                return true;
-            }
-
-            return false;
         }
     }
 }
