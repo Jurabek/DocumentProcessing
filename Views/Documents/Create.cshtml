@@ -71,22 +71,23 @@
             </div>
 
             <div class="form-group form-row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <label asp-for="PurposeId" class="control-label"></label>
-                    <select class="form-control" asp-for="PurposeId"
+                    <select class="form-control" asp-for="PurposeId" id="PurposeId"
                             asp-items="ViewBag.Purposes">
                         <option></option>
                     </select>
-                     <span asp-validation-for="PurposeId" class="text-danger"></span>
+                    <span asp-validation-for="PurposeId" class="text-danger"></span>
                 </div>
-                <div class="col-md-4">
-                    @foreach (var purpose in ViewBag.Purposes.Items)
-                    {
-                        <input type="hidden" value="@purpose.Character" id="hidden_@purpose.Id"/>
-                    }
-                    <label asp-for="PurposeId" class="control-label">Ҳарфи муроҷиат</label>
-                    <input class="form-control" readonly="readonly" id="purposeCharacter"/>
-                </div>
+                <!-- <div class="col-md-4">
+        @foreach (var purpose in ViewBag.Purposes.Items)
+        {
+            <input type="hidden" value="@purpose.Character" id="hidden_@purpose.Id"/>
+        }
+        <label asp-for="PurposeId" class="control-label">Ҳарфи муроҷиат</label>
+        <input class="form-control" readonly="readonly" id="purposeCharacter"/>
+    </div>
+        -->
             </div>
             <div class="form-group form-row">
                 <div class="col-md-4">
@@ -98,7 +99,7 @@
                 </div>
                 <div class="col-md-8">
                     <label asp-for="Appointment.Number" class="control-label"></label>
-                    <input asp-for="Appointment.Number" class="form-control"/>
+                    <input asp-for="Appointment.Number" class="form-control" type="number"/>
                     <span asp-validation-for="Appointment.Number" class="text-danger"></span>
                 </div>
             </div>
