@@ -9,7 +9,7 @@ namespace DocumentProcessing.Migrations
 
             migrationBuilder.CreateSequence(
                 name: "EntryNumbers",
-                startValue: 2000L);
+                startValue: 11339L);
 
             migrationBuilder.AlterColumn<long>(
                 name: "EntryNumber",
