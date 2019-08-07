@@ -78,71 +78,71 @@
                     </select>
                 </div>
                 <!--<div class="col-md-4">
-                        @foreach (var purpose in ViewBag.Purposes.Items)
-                        {
-                            <input type="hidden" value="@purpose.Character" id="hidden_@purpose.Id"/>
-                        }
-                        <label asp-for="PurposeId" class="control-label">Ҳарфи муроҷиат</label>
-                        <input class="form-control" readonly="readonly" id="purposeCharacter"/>
-                    </div>-->
-                </div>
+            @foreach (var purpose in ViewBag.Purposes.Items)
+            {
+                <input type="hidden" value="@purpose.Character" id="hidden_@purpose.Id"/>
+            }
+            <label asp-for="PurposeId" class="control-label">Ҳарфи муроҷиат</label>
+            <input class="form-control" readonly="readonly" id="purposeCharacter"/>
+        </div>-->
+            </div>
 
-                <div class="form-group form-row">
-                    <div class="col-md-4">
-                        <label class="control-label" asp-for="Appointment.Character"></label>
-                        <select class="form-control" asp-for="Appointment.Character" asp-items="Html.GetEnumSelectList<AppointmentCharacters>()">
-                            <option selected="selected" value=""></option>
-                        </select>
-                        <span asp-validation-for="Appointment.Character" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-8">
-                        @if (Model.Appointment?.Id != Guid.Empty && Model.Appointment?.DocumentId != Guid.Empty)
-                        {
-                            <input type="hidden" asp-for="Appointment.Id"/>
-                            <input type="hidden" asp-for="Appointment.DocumentId"/>
-                        }
-                        <label asp-for="Appointment.Number" class="control-label"></label>
-                        <input asp-for="Appointment.Number" class="form-control"/>
-                        <span asp-validation-for="Appointment.Number" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="StatusId" class="control-label"></label>
-                    <select class="form-control" asp-for="StatusId"
-                            disabled="@(isAdminOrManager ? null : "disabled")"
-                            asp-items="ViewBag.Statuses">
-                        <option></option>
+            <div class="form-group form-row">
+                <div class="col-md-4">
+                    <label class="control-label" asp-for="Appointment.Character"></label>
+                    <select class="form-control" asp-for="Appointment.Character" asp-items="Html.GetEnumSelectList<AppointmentCharacters>()">
+                        <option selected="selected" value=""></option>
                     </select>
+                    <span asp-validation-for="Appointment.Character" class="text-danger"></span>
                 </div>
+                <div class="col-md-8">
+                    @if (Model.Appointment?.Id != Guid.Empty && Model.Appointment?.DocumentId != Guid.Empty)
+                    {
+                        <input type="hidden" asp-for="Appointment.Id"/>
+                        <input type="hidden" asp-for="Appointment.DocumentId"/>
+                    }
+                    <label asp-for="Appointment.Number" class="control-label"></label>
+                    <input asp-for="Appointment.Number" class="form-control"/>
+                    <span asp-validation-for="Appointment.Number" class="text-danger"></span>
+                </div>
+            </div>
 
-                <div class="form-group">
-                    <p>Cкан</p>
-                    <input type="file" class="form-control-file" disabled="@(isAdminOrManager ? null : "disabled")" name="files" multiple>
-                </div>
+            <div class="form-group">
+                <label asp-for="StatusId" class="control-label"></label>
+                <select class="form-control" asp-for="StatusId"
+                        disabled="@(isAdminOrManager ? null : "disabled")"
+                        asp-items="ViewBag.Statuses">
+                    <option></option>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label class="control-label">Ҳуҷҷатҳо</label>
-                    <div class="list-group">
-                        @Html.EditorFor(x => x.ScannedFiles)
-                    </div>
+            <div class="form-group">
+                <p>Cкан</p>
+                <input type="file" class="form-control-file" disabled="@(isAdminOrManager ? null : "disabled")" name="files" multiple>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Ҳуҷҷатҳо</label>
+                <div class="list-group">
+                    @Html.EditorFor(x => x.ScannedFiles)
                 </div>
-                <div class="form-group">
-                    <input type="submit" value="Илова намудан" class="btn btn-primary"/>
-                    <a asp-action="Index" class="btn btn-default">Бекор</a>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-4"></div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Илова намудан" class="btn btn-primary"/>
+                <a asp-action="Index" class="btn btn-default">Бекор</a>
+            </div>
+        </form>
     </div>
+    <div class="col-md-4"></div>
+</div>
 
-    <div>
+<div>
 
-    </div>
+</div>
 
-    @section Scripts {
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-            await Html.RenderPartialAsync("_DocumentScriptsPartial");
-        }
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_DocumentScriptsPartial");
     }
+}

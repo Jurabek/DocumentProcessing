@@ -218,3 +218,4 @@ Images/
 .idea/
 *.a
 appsettings.Development.json
+wwwroot/css/jquery.dataTables.min.css

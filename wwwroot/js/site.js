@@ -7,10 +7,10 @@ $('#dateFor').datepicker({
 });
 
 $('#dateFrom').datepicker({
-    language: 'tg's
+    language: 'tg'
 });
 
-$('select[name=PurposeId]').change(function () {  
+$('select[name=PurposeId]').change(function () {  // ищеть в документе 
     var $purpose = $("#PurposeId option:selected").text();
  
     if ($purpose == "Тасдики даъват") {
@@ -37,5 +37,8 @@ $('select[name=PurposeId]').change(function () {
     
      
 });
+
+
+
 
 
