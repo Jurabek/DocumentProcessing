@@ -29,7 +29,6 @@ namespace DocumentProcessing.Controllers
     [Authorize]
     public class DocumentsController : Controller
     {
-
         private const int PageSize = 10;
 
         private readonly IFileUploader _fileUploader;

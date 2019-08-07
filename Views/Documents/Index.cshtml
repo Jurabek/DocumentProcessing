@@ -16,168 +16,150 @@
 }
 <!-- Table with panel -->
 <div class="card card-cascade narrower">
-
-    <!--Card image-->
-    <div class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
-        <div class="">
-            <a asp-action="Create" class="btn btn-labeled btn-primary">
-                <span class="btn-label">
-                    <i class="fa fa-plus"></i>
-                </span> Илова намудан
-            </a>
-        </div>
-        <div class="col-md-3">
-            <form asp-controller="Documents" asp-action="Index" method="get">
-                <div class="input-group">
-                    <input placeholder="Аз санаи:" data-provide="datepicker" class="form-control" id="dateFrom" name="dateFrom" value="@ViewBag.DateFrom" />
-                    <input placeholder="То санаи:" class="form-control" data-provide="datepicker" id="dateFor" name="dateFor" value="@ViewBag.DateFor" />
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary" type="submit">
-                            <i class="fa fa-calendar-check"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div class="col-md-2">
-            <form asp-controller="Documents" asp-action="Index" method="get">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="q" value="@ViewBag.SearchText" placeholder="Ҷустуҷу...">
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-
-
-        </div>
-
+<div class="row">
+    <div class="col-md-4">
+        <a asp-action="Create" class="btn btn-labeled btn-primary">
+            <span class="btn-label">
+                <i class="fa fa-plus"></i>
+            </span> Илова намудан
+        </a>
     </div>
-    <!--/Card image-->
+    <div class="col-md-4">
+        <form asp-controller="Documents" asp-action="Index" method="get">
+            <div class="input-group">
+                <input placeholder="Аз санаи:" data-provide="datepicker" class="form-control" id="dateFrom" name="dateFrom" value="@ViewBag.DateFrom"/>
+                <input placeholder="То санаи:" class="form-control" data-provide="datepicker" id="dateFor" name="dateFor" value="@ViewBag.DateFor"/>
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="fa fa-calendar-check"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 
-    <div class="px-4">
+    <div class="col-md-4">
+        <form asp-controller="Documents" asp-action="Index" method="get">
+            <div class="input-group">
+                <input type="text" class="form-control" name="q" value="@ViewBag.SearchText" placeholder="Ҷустуҷу...">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
 
-        <div class="table-wrapper">
-            <!--Table-->
-            <table id="table" class="table table-hover mb-0">
-
-                <!--Table head-->
-                <thead>
-                    <tr>
-                        <th>
-                            <label class="form-check-label mr-2 label-table" for="checkbox">№</label>
-                        </th>
-                        <th class="th-lg">
-                            @Html.DisplayNameFor(model => model.ItemType.Applicant)
-                        </th>
-                        <th class="th-lg">
-                            @Html.DisplayNameFor(model => model.ItemType.Date)
-                        </th>
-                        <th class="th-lg">
-                            @Html.DisplayNameFor(model => model.ItemType.EntryNumber)
-                        </th>
-                        <th class="th-lg">
-                            @Html.DisplayNameFor(model => model.ItemType.Purpose)
-                        </th>
-                        <th class="th-lg todelete">
-                            @Html.DisplayNameFor(model => model.ItemType.Appointment)
-                        </th>
-                        <th class="th-lg todelete">
-                            @Html.DisplayNameFor(model => model.ItemType.Status)
-                        </th>
-                        <th class="th-lg">
-                            @Html.DisplayNameFor(model => model.ItemType.Recipient)
-                        </th>
-                        <th class="th-lg todelete">
-                            @Html.DisplayNameFor(model => model.FirstOrDefault().ScannedDocuments)
-                        </th>
-                        <th class="th-lg todelete">
-                            Тағйир додан
-                        </th>
-
-                    </tr>
-                </thead>
-                <!--Table head-->
-                <!--Table body-->
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            @{
-                                var rowNo = (Model.PageIndex - 1) * 10 + i;
-                                i++;
-                            }
-                            <td>
-                                @rowNo
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Applicant)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Date)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.EntryNumber)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Purpose)
-                            </td>
-                            <td class="todelete">
-                                @Html.DisplayFor(modelItem => item.Appointment.Title)
-                            </td>
-
-                            <td class="todelete">
-                                @Html.DisplayFor(modelItem => item.Status)
-                            </td>
-
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Recipient)
-                            </td>
-
-                            <td class="todelete">
-                                @foreach (var doc in item.ScannedDocuments)
-                                {
-                                    <div>
-                                        <a asp-action="File" asp-route-id="@doc.Id">@doc.FileName</a> - @Html.DisplayFor(modelItem => doc.CreatedDate)
-                                    </div>
-                                }
-                            </td>
-                            <td class="text-right todelete">
-                                <a asp-action="Print" asp-route-id="@item.Id" target="_blank" class="btn btn-light btn-sm">
-                                    <i class="fa fa-print"></i>
-                                </a>
-                                @if (isAdminOrManager)
-                                {
-
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light btn-sm">
-                                        <i class="fa fa-pen"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-light btn-sm">
-                                        <i class="fa fa-trash-alt"></i>
-                                    </a>
-
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-                <!--Table body-->
-            </table>
-
-            <!--Table-->
-        </div>
 
     </div>
 
 </div>
-
 <!--<input onclick="exportToExcell()" id="export" class="btn pmd-btn-fab pmd-ripple-effect btn-primary" type="button" value="Экспорт" style="position: fixed; bottom: 2%; right: 3%; height: 85px; border-radius: 52px;">-->
 <!-- Table with panel -->
 <br>
 <br>
+<table class="table">
+    <thead class="thead-light">
+    <tr>
+        <th>
+            №
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.ItemType.Applicant)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemType.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemType.EntryNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemType.Purpose)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemType.Appointment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemType.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemType.Recipient)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ScannedDocuments)
+        </th>
+        @if (isAdminOrManager)
+        {
+            <th>
+                Тағйир додан
+            </th>
+        }
+
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            @{
+                var rowNo = (Model.PageIndex - 1) * 10 + i;
+                i++;
+            }
+            <td>
+                @rowNo
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Applicant)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EntryNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Purpose)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Appointment.Title)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Recipient)
+            </td>
+
+            <td>
+                @foreach (var doc in item.ScannedDocuments)
+                {
+                    <div>
+                        <a asp-action="File" asp-route-id="@doc.Id">@doc.FileName</a> - @Html.DisplayFor(modelItem => doc.CreatedDate)
+                    </div>
+                }
+            </td>
+            @if (isAdminOrManager)
+            {
+                <td class="text-right">
+                    <a asp-action="Print" asp-route-id="@item.Id" target="_blank" class="btn btn-light btn-sm">
+                        <i class="fa fa-print"></i>
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light btn-sm">
+                        <i class="fa fa-pen"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-light btn-sm">
+                        <i class="fa fa-trash-alt"></i>
+                    </a>
+                </td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
@@ -189,23 +171,12 @@
 <ul class="pagination">
     <li class="page-item @prevDisabled">
         <a asp-action="Index"
-           asp-route-pageNumber="@(Model.PageIndex == startIndex)"
-           asp-route-q="@ViewBag.SearchText"
-           asp-route-dateFrom="@ViewBag.DateFrom"
-           asp-route-dateFor="@ViewBag.DateFor"
-           class="page-link">
-            <span aria-hidden="true">&laquo;</span>
-            <span class="sr-only">Previous</span>
-        </a>
-    </li>
-    <li class="page-item @prevDisabled">
-        <a asp-action="Index"
            asp-route-pageNumber="@(Model.PageIndex - 1)"
            asp-route-q="@ViewBag.SearchText"
            asp-route-dateFrom="@ViewBag.DateFrom"
            asp-route-dateFor="@ViewBag.DateFor"
            class="page-link">
-            <span aria-hidden="true">&larr;</span>
+            <span aria-hidden="true">&laquo;</span>
             <span class="sr-only">Previous</span>
         </a>
     </li>
@@ -221,25 +192,12 @@
                asp-route-dateFrom="@ViewBag.DateFrom"
                asp-route-dateFor="@ViewBag.DateFor"
                class="page-link">
-                @j
-            </a>
+                @j</a>
         </li>
     }
-
     <li class="page-item @nextDisabled">
         <a asp-action="Index"
            asp-route-pageNumber="@(Model.PageIndex + 1)"
-           asp-route-q="@ViewBag.SearchText"
-           asp-route-dateFrom="@ViewBag.DateFrom"
-           asp-route-dateFor="@ViewBag.DateFor"
-           class="page-link">
-            <span aria-hidden="true">&rarr;</span>
-            <span class="sr-only">Next</span>
-        </a>
-    </li>
-    <li class="page-item @nextDisabled">
-        <a asp-action="Index"
-           asp-route-pageNumber="@(Model.PageIndex + (finishIndex - Model.PageIndex))"
            asp-route-q="@ViewBag.SearchText"
            asp-route-dateFrom="@ViewBag.DateFrom"
            asp-route-dateFor="@ViewBag.DateFor"
@@ -248,8 +206,7 @@
             <span class="sr-only">Next</span>
         </a>
     </li>
-
 </ul>
-
 <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
 <!-- a ScriptManager is required when working with UpdatePanels -->
+

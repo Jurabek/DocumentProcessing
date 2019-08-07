@@ -7,7 +7,7 @@ $('#dateFor').datepicker({
 });
 
 $('#dateFrom').datepicker({
-    language: 'tg'
+    language: 'tg's
 });
 
 $('select[name=PurposeId]').change(function () {  
@@ -37,4 +37,5 @@ $('select[name=PurposeId]').change(function () {
     
      
 });
+
 

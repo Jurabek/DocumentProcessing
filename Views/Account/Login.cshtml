@@ -1,4 +1,4 @@
-﻿@using System.Linq
+@using System.Linq
 @using Microsoft.AspNetCore.Identity
 @model DocumentProcessing.ViewModels.LoginViewModel
 @inject SignInManager<ApplicationUser> SignInManager
@@ -9,40 +9,32 @@
 
 <div class="row">
     <div class="col-md-4"></div>
-    <div class="col-md-offset-3 col-md-4" style="padding-left: 60px; padding-right: 60px;">
+    <div class="col-md-4">
         <section>
-            <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-                <h4 class="heading">Дохилшавӣ.</h4>
+            <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                <h4>Log In.</h4>
+                <hr/>
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
-                    <input class="form-control" placeholder="Номи истифодабаранда" asp-for="UserName">
-                    <i class="fa fa-user"></i>
-                    @*<label asp-for="UserName"></label>
-                        <input asp-for="UserName" class="form-control" />
-                        <span asp-validation-for="UserName" class="text-danger"></span>*@
+                    <label asp-for="UserName"></label>
+                    <input asp-for="UserName" class="form-control"/>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="inputPassword" placeholder="Рамзи махфи" asp-for="Password">
-                    <i class="fa fa-lock"></i>
-                    @* <label asp-for="Password"></label>
-                        <input asp-for="Password" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>*@
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control"/>
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    @*<div class="checkbox">
-                            <label asp-for="RememberMe">
-                                <input asp-for="RememberMe" />
-                                @Html.DisplayNameFor(m => m.RememberMe)
-                            </label>
-                        </div>*@
-                    <div class="main-checkbox">
-                        <input type="checkbox" value="none" id="checkbox1" name="check" asp-for="RememberMe" />
-                        <label for="checkbox1"></label>
+                    <div class="checkbox">
+                        <label asp-for="RememberMe">
+                            <input asp-for="RememberMe"/>
+                            @Html.DisplayNameFor(m => m.RememberMe)
+                        </label>
                     </div>
-                    <span class="text">@Html.DisplayNameFor(m => m.RememberMe)</span>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-default">Даромад</button>
+                    <button type="submit" class="btn btn-primary">Log in</button>
                 </div>
 
             </form>

@@ -1,15 +1,14 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - Гардиши Ҳуҷҷат</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="~/css/site.css"/>
     <link href="~/css/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/font-awesome-min.css">
-    <link rel="stylesheet" href="~/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-datepicker.css">
 
@@ -21,80 +20,54 @@
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="margin-left: 50px;font-size: 20px;"><i class="fa fa-bookmark" aria-hidden="true"></i>   Гардиши Ҳуҷҷат</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-4"
                     aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Гардиши Ҳуҷҷат</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                            <i class="fa fa-home" style="margin-right: 10px;"></i> Асосӣ
-                            <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-area="" asp-controller="Documents" asp-action="Index">
-                            <i class="fa fa-file" style="margin-right: 10px;"></i> Ҳуҷҷатҳо
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent-4" style="margin-right: 50px;">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link btn2" aria-haspopup="true" aria-expanded="false">
-                            @await Html.PartialAsync("_LoginPartial")
-                        </a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Асосӣ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Documents" asp-action="Index">Ҳуҷҷатҳо</a>
                     </li>
                 </ul>
             </div>
-        </nav>
-        <!--/.Navbar -->
-        <!--       <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                    <div class="container">
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Гардиши Ҳуҷҷат</a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                                aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                            <ul class="navbar-nav flex-grow-1">
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Асосӣ</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Documents" asp-action="Index">Ҳуҷҷатҳо</a>
-                                </li>
-                            </ul>
-                        </div>
-                        @await Html.PartialAsync("_LoginPartial")
-                    </div>
-                </nav>
-        -->
-    </header>
-    <div class="container-fluid">
-        <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2019 - Гардиши Ҳуҷҷат
-            <a href="https://spitamen-it.com/">
-                <img width="120" style="margin:10px 0" src="Spitamen IT Logo V2.2.png" />
-            </a>
-            <!--<img width="120" style="margin:10px 0" src="Logo LetterReg.png" />-->
+            @await Html.PartialAsync("_LoginPartial")
         </div>
-    </footer>
+    </nav>
+</header>
+<div class="container-fluid">
+    <partial name="_CookieConsentPartial"/>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
 
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.tg.min.js" charset="UTF-8"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap-select.min.js"></script>
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2019 - Гардиши Ҳуҷҷат
+        <a href="https://spitamen-it.com/" >
+            <img width="120" style="margin:10px 0" src="Spitamen IT Logo V2.2.png"/>
+        </a>
+        <img width="120" style="margin:10px 0" src="Logo LetterReg.png"/>
+    </div>
+</footer>
 
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.tg.min.js" charset="UTF-8"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap-select.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    @RenderSection("Scripts", required: false)
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+@RenderSection("Scripts", required: false)
 </body>
 </html>
