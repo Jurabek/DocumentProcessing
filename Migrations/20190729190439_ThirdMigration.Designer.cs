@@ -22,7 +22,7 @@ namespace DocumentProcessing.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("Relational:Sequence:.EntryNumbers", "'EntryNumbers', '', '11339', '1', '', '', 'Int64', 'False'");
+                .HasAnnotation("Relational:Sequence:.EntryNumbers", "'EntryNumbers', '', '2000', '1', '', '', 'Int64', 'False'");
 
             modelBuilder.Entity("DocumentProcessing.Models.Applicant", b =>
                 {
