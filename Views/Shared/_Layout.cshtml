@@ -16,32 +16,6 @@
 </head>
 <body>
     <header style="font-size: 22px;">
-        <style>
-            .navbar {
-                box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
-                font-weight: 300;
-            }
-
-            .info-color {
-                background-color: #33b5e5 !important;
-            }
-
-            li.nav-item.active {
-                margin-left: 15px;
-                margin-right: 15px;
-            }
-
-            .btn-link {
-                font-weight: 400;
-                color: #ffffff;
-                background-color: transparent;
-            }
-
-            .btn1 {
-                margin-bottom: 0;
-                font-size: 18px;
-            }
-        </style>
         <!--Navbar -->
         <nav class="mb-1 navbar navbar-expand-lg navbar-dark info-color">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="margin-left: 50px;font-size: 20px;"><i class="fa fa-bookmark" aria-hidden="true"></i>   Гардиши Ҳуҷҷат</a>
@@ -119,12 +93,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.tg.min.js" charset="UTF-8"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap-select.min.js"></script>
 
-    <script src="~/js/xlsx.core.min.js"></script>
-    <script src="~/js/Blob.min.js"></script>
-    <script src="~/js/FileSaver.min.js"></script>
-    <script src="~/js/tableexport.js"></script>
-    <script src="~/js/dataTables.min.js"></script>
-    <script src="~/js/date.format.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)

@@ -10,7 +10,7 @@ $('#dateFrom').datepicker({
     language: 'tg'
 });
 
-$('select[name=PurposeId]').change(function () {  // ищеть в документе 
+$('select[name=PurposeId]').change(function () {  
     var $purpose = $("#PurposeId option:selected").text();
  
     if ($purpose == "Тасдики даъват") {
@@ -36,54 +36,5 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
     }
     
      
-});
-
-
-
-
-
-// paging with Jquery
-Date.prototype.format = function (mask, utc) {
-    return dateFormat(this, mask, utc);
-};
-const now = new Date();
-const date = now.format("dd mm yyyy");
-$(document).ready(function () {
-    $('#table').DataTable({
-        autoFill: true,
-        "pagingType": "full_numbers",
-        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "ҳамма"]],
-        "language": {
-            "paginate": {
-                "first": '<i class="fa fa-arrow-circle-left" aria-hidden="true"></i>',
-                "last": '<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>',
-                "previous": '<i class="fa fa-arrow-left" aria-hidden="true"></i>',
-                "next": '<i class="fa fa-arrow-right" aria-hidden="true"></i>',
-            },
-            "search": "Ҷустуҷӯ:",
-            "info": 'Намоиши _START_ то _END_ аз _TOTAL_ ҳуҷҷатҳо',
-            "lengthMenu": "Намоиши _MENU_ ҳуҷҷатҳо",
-            
-
-        }
-    });
-});
-
-var table = $("table").tableExport({
-    headings: true,                    // (Boolean), display table headings (th/td elements) in the <thead>
-    footers: true,                     // (Boolean), display table footers (th/td elements) in the <tfoot>
-    formats: ["xlsx"],    // (String[]), filetypes for the export
-    fileName: "Экспорт " + date,                    // (id, String), filename for the downloaded file
-    bootstrap: false,                   // (Boolean), style buttons using bootstrap
-    position: "bottom",                 // (top, bottom), position of the caption element relative to table
-    ignoreRows: true,                  // (Number, Number[]), row indices to exclude from the exported file(s)
-    ignoreCols: null,                  // (Number, Number[]), column indices to exclude from the exported file(s)
-    ignoreCSS: ".todelete",  // (selector, selector[]), selector(s) to exclude from the exported file(s)
-    trimWhitespace: true,             // (Boolean), remove all leading/trailing newlines, spaces, and tabs from cell text in the exported file(s)
-    buttons: false
-});
-
-$('#export').click(function () {
-    table.export("xls");
 });
 

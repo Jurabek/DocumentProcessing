@@ -30,7 +30,7 @@ namespace DocumentProcessing.Controllers
     public class DocumentsController : Controller
     {
 
-        private const int PageSize = 10000;
+        private const int PageSize = 10;
 
         private readonly IFileUploader _fileUploader;
         private readonly IElectronicStamp _electronicStamp;
