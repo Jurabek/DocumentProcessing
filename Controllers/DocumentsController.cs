@@ -69,6 +69,8 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Applicant)
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
+                .Include(x => x.VisaType)
+                .Include(x => x.VisaDateType)
                 .Include(x => x.ScannedFiles)
                 .Include(x => x.Owner)
                 .Include(x => x.Recipient)
@@ -105,10 +107,11 @@ namespace DocumentProcessing.Controllers
             return x => x.Applicant.Name.ToUpperInvariant().Contains(upperSearchText)
                         || x.Owner.Name.ToUpperInvariant().Contains(upperSearchText)
                         || x.EntryNumber.ToString(CultureInfo.InvariantCulture).Equals(searchText)
-                        || x.Applicant.Name.ToUpperInvariant().Contains(upperSearchText)
                         || x.Recipient.Name.ToUpperInvariant().Contains(upperSearchText)
                         || x.Purpose.Name.ToUpperInvariant().Contains(upperSearchText)
-                        || x.Status.Name.ToUpperInvariant().Contains(upperSearchText);
+                        || x.Status.Name.ToUpperInvariant().Contains(upperSearchText)
+                        || x.VisaType.Name.ToUpperInvariant().Contains(upperSearchText)
+                        || x.VisaDateType.Name.ToUpperInvariant().Contains(upperSearchText);
         }
 
         [HttpGet]
@@ -121,19 +124,25 @@ namespace DocumentProcessing.Controllers
             PopulateOwnersDropDownList(selectedOwner);
             PopulateApplicantsDropDownList();
             PopulateStatusesDropDownList();
+            PopulateVisaTypeDropDownList();
+            PopulateVisaDateTypeDropDownList();
             PopulatePurposesDropDownList();
 
             return View(new DocumentViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(DocumentViewModel viewModel, IList<IFormFile> files)
+        public async Task<IActionResult> Create(DocumentViewModel viewModel, IList<IFormFile> files, IFormCollection ifc)
+
         {
             ValidateApplicant(viewModel);
+            ValidatePurpose(viewModel);
+            string test = ifc["VisaId"];
 
             if (ModelState.IsValid)
             {
                 await CreateApplicantIfNotExist(viewModel);
+                await CreatePurposeIfNotExist(viewModel);
                 var document = _mapper.Map<Document>(viewModel);
                 try
                 {
@@ -187,6 +196,7 @@ namespace DocumentProcessing.Controllers
 
             var viewModel = _mapper.Map<DocumentViewModel>(document);
             viewModel.ApplicantType = ApplicantType.Existing;
+            viewModel.PurposeType = PurposeType.Existing;
 
             SetSelectedDropDownLists(document);
 
@@ -197,6 +207,7 @@ namespace DocumentProcessing.Controllers
         public async Task<IActionResult> EditPost(DocumentViewModel viewModel, IList<IFormFile> files)
         {
             ValidateApplicant(viewModel);
+            ValidatePurpose(viewModel);
 
             if (ModelState.IsValid)
             {
@@ -211,6 +222,7 @@ namespace DocumentProcessing.Controllers
                 }
 
                 await CreateApplicantIfNotExist(viewModel);
+                await CreatePurposeIfNotExist(viewModel);
                 var document = _mapper.Map<Document>(viewModel);
                 document.Date = originalDocument.Date;
 
@@ -236,7 +248,7 @@ namespace DocumentProcessing.Controllers
                     {
                         ModelState.AddModelError("", "Unable to save changes. " +
                                                      "Try again, and if the problem persists, " +
-                                                     "see your system administrator.");
+                                                     "see your system administrator." + ex.ToString());
 
                         hasError = true;
                     }
@@ -263,7 +275,7 @@ namespace DocumentProcessing.Controllers
                     {
                         ModelState.AddModelError("", "Unable to save changes. " +
                                                      "Try again, and if the problem persists, " +
-                                                     "see your system administrator.");
+                                                     "see your system administrator." + ex.ToString());
 
                         hasError = true;
                     }
@@ -281,6 +293,7 @@ namespace DocumentProcessing.Controllers
                             _context.Add(document.Appointment);
                             _context.SaveChanges();
                         }
+                        
 
                         _context.Update(document);
                         await _context.SaveChangesAsync();
@@ -289,7 +302,7 @@ namespace DocumentProcessing.Controllers
                     {
                         ModelState.AddModelError("", "Unable to save changes. " +
                                                      "Try again, and if the problem persists, " +
-                                                     "see your system administrator.");
+                                                     "see your system administrator." + ex.ToString());
 
                         hasError = true;
                     }
@@ -309,6 +322,30 @@ namespace DocumentProcessing.Controllers
 
 
         [HttpGet]
+        public IActionResult View(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var document = _context.Documents
+                .Where(x => x.Id == id)
+                .Include(x => x.Owner)
+                .Include(x => x.Applicant)
+                .Include(x => x.Recipient)
+                .Include(x => x.Purpose)
+                .Include(x => x.Status)
+                .Include(x => x.VisaType)
+                .Include(x => x.VisaDateType)
+                .Include(x => x.Appointment)
+
+                .FirstOrDefault();
+
+            var result = _mapper.Map<DocumentListViewModel>(document);
+
+            return View(result);
+        }
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -323,6 +360,10 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Recipient)
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
+                .Include(x => x.VisaType)
+                .Include(x => x.Appointment)
+                .Include(x => x.VisaDateType)
+
                 .FirstOrDefault();
 
             var result = _mapper.Map<DocumentListViewModel>(document);
@@ -357,9 +398,14 @@ namespace DocumentProcessing.Controllers
             return originalDocument.ApplicantId != document.ApplicantId
                    || originalDocument.Appointment?.Character != document.Appointment.Character
                    || originalDocument.Appointment?.Number != document.Appointment.Number
+                   || originalDocument.Appointment?.Number != document.Appointment.Number
+                   || originalDocument.VisaId != document.VisaId
+                   || originalDocument.VisaDate != document.VisaDate
                    || originalDocument.OwnerId != document.OwnerId
                    || originalDocument.PurposeId != document.PurposeId
                    || originalDocument.StatusId != document.StatusId
+                   || originalDocument.VisaTypeId != document.VisaTypeId
+                   || originalDocument.VisaDateTypeId != document.VisaDateTypeId
                    || originalDocument.ApplicantId != document.ApplicantId;
         }
 
@@ -368,6 +414,13 @@ namespace DocumentProcessing.Controllers
             if (viewModel.ApplicantId == null && string.IsNullOrEmpty(viewModel.ApplicantName))
             {
                 ModelState.AddModelError("ApplicantName", "Номи ташкилот холи аст!");
+            }
+        }
+        private void ValidatePurpose(DocumentViewModel viewModel)
+        {
+            if (viewModel.PurposeId == null && string.IsNullOrEmpty(viewModel.PurposeName))
+            {
+                ModelState.AddModelError("PurposeName", "Номи ташкилот холи аст!");
             }
         }
 
@@ -384,6 +437,11 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Owner)
                 .Include(x => x.Applicant)
                 .Include(x => x.Purpose)
+                .Include(x => x.VisaType)
+                //.Include(x => x.VisaId)
+                .Include(x => x.VisaDateType)
+                //.Include(x => x.VisaDate)
+                .Include(x => x.Recipient)
                 .FirstOrDefault();
 
             if (document == null)
@@ -405,6 +463,11 @@ namespace DocumentProcessing.Controllers
                         Owner = document.Owner.Name,
                         Applicant = document.Applicant.Name,
                         Purpose = document.Purpose.Name,
+                        Recipient = document.Recipient.Name,
+                        VisaType = document.VisaType.Name,
+                        VisaId = document.VisaId,
+                        VisaDateType = document.VisaDateType.Name,
+                        VisaDate = document.VisaDate,
                         Base64Stamp = Convert.ToBase64String(ms.ToArray())
                     };
 
@@ -423,6 +486,14 @@ namespace DocumentProcessing.Controllers
                 .AsNoTracking()
                 .FirstOrDefault(x => x.Id == document.StatusId);
 
+            var selectedVisaType = _context.VisaType
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == document.VisaTypeId);
+
+            var selectedVisaDateType = _context.VisaDateType
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == document.VisaDateTypeId);
+
             var selectedOwner = _context.DocumentOwners
                 .AsNoTracking()
                 .FirstOrDefault(x => x.Id == document.OwnerId);
@@ -435,6 +506,8 @@ namespace DocumentProcessing.Controllers
             PopulateOwnersDropDownList(selectedOwner);
             PopulatePurposesDropDownList(selectedPurpose);
             PopulateStatusesDropDownList(selectedStatus);
+            PopulateVisaTypeDropDownList(selectedVisaType);
+            PopulateVisaDateTypeDropDownList(selectedVisaDateType);
         }
 
         private async Task CreateApplicantIfNotExist(DocumentViewModel viewModel)
@@ -458,6 +531,27 @@ namespace DocumentProcessing.Controllers
                 }
             }
         }
+        private async Task CreatePurposeIfNotExist(DocumentViewModel viewModel)
+        {
+            if (viewModel.PurposeType == PurposeType.New)
+            {
+                var purposesExist = await _context.Purposes
+                    .FirstOrDefaultAsync(x =>
+                        string.Equals(x.Name, viewModel.PurposeName, StringComparison.InvariantCultureIgnoreCase));
+
+                if (purposesExist == null)
+                {
+                    var purposes = new Purpose { Name = viewModel.PurposeName, Id = Guid.NewGuid(), Character = null };
+                    await _context.Purposes.AddAsync(purposes);
+                    await _context.SaveChangesAsync();
+                    viewModel.PurposeId = purposes.Id;
+                }
+                else
+                {
+                    viewModel.PurposeId = purposesExist.Id;
+                }
+            }
+        }
 
         private void PopulatePurposesDropDownList(object selectedPurpose = null)
         {
@@ -473,6 +567,21 @@ namespace DocumentProcessing.Controllers
                 "Id",
                 "Name",
                 selectedStatus);
+        }
+        private void PopulateVisaTypeDropDownList(object selectedVisaType = null)
+        {
+            ViewBag.VisaType = new SelectList(_context.VisaType.AsNoTracking(),
+                "Id",
+                "Name",
+                selectedVisaType);
+        }
+
+        private void PopulateVisaDateTypeDropDownList(object selectedVisaDateType = null)
+        {
+            ViewBag.VisaDateType = new SelectList(_context.VisaDateType.AsNoTracking(),
+                "Id",
+                "Name",
+                selectedVisaDateType);
         }
 
         private void PopulateOwnersDropDownList(object selectedOwner = null)

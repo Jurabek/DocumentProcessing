@@ -113,7 +113,7 @@
                             <td>
                                 @rowNo
                             </td>
-                            <td style="width: 500px;">
+                            <td style="width: 400px;">
                                 @Html.DisplayFor(modelItem => item.Applicant)
                             </td>
                             <td>
@@ -126,7 +126,7 @@
                                 @Html.DisplayFor(modelItem => item.Purpose)
                             </td>
                             <td class="todelete">
-                                @Html.DisplayFor(modelItem => item.Appointment.Title)
+                                @Html.DisplayFor(modelItem => item.Appointment)
                             </td>
 
                             <td class="todelete">
@@ -145,7 +145,11 @@
                                     </div>
                                 }
                             </td>
+
                             <td class="text-right todelete">
+                                <a asp-action="View" asp-route-id="@item.Id" class="btn btn-light btn-sm">
+                                    <i class="fa fa-eye"></i>
+                                </a>
                                 <a asp-action="Print" asp-route-id="@item.Id" target="_blank" class="btn btn-light btn-sm">
                                     <i class="fa fa-print"></i>
                                 </a>

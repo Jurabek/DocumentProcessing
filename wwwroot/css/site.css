@@ -11,6 +11,9 @@ for details on configuring this project to bundle and minify static web assets. 
     border-radius: 15px;
     text-align: center;
 }
+h1 {
+    margin-left: 50px;
+}
 
 .form-horizontal .heading {
     display: block;
@@ -357,6 +360,9 @@ li.nav-item.active {
     margin-bottom: 0;
     font-size: 18px;
 }
+.dropdown-item:hover {
+    background-color: #33b5e5;
+}
 /*-----------------------------------------------------------------------------------
     ----------------------------------End new style----------------------------------
     ---------------------------------------------------------------------------------
@@ -457,4 +463,7 @@ body {
 
 .btn {
     margin-bottom: 10px;
+}
+.displayNone {
+    display: none;
 }

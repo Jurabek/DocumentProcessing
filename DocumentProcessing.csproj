@@ -5,6 +5,14 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="Views\Documents\View.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Documents\View.cshtml" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="DinkToPdf" Version="1.0.8" />

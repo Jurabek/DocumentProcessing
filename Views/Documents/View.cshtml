@@ -1,24 +1,17 @@
-@model DocumentProcessing.ViewModels.DocumentListViewModel
+﻿@model DocumentProcessing.ViewModels.DocumentListViewModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "View";
 }
 
-<h1>Нобуд кардан</h1>
+<h1>Пешнамоиш</h1>
 <hr>
 <div class="container">
-    <h3 style="text-align: center;">Мутмаин ҳастед, ки мехоҳед ин ҳуҷҷатро нобуд созед?</h3>
     <div class="card col-md-12">
         <br>
         <h4>Ҳуҷҷат</h4>
         <hr />
         <dl class="row">
-            <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.Id)
-            </dt>
-            <dd class="col-sm-8">
-                @Html.DisplayFor(model => model.Id)
-            </dd>
             <dt class="col-sm-4">
                 @Html.DisplayNameFor(model => model.Date)
             </dt>
@@ -55,18 +48,33 @@
             <dd class="col-sm-8">
                 @Html.DisplayFor(model => model.Appointment)
             </dd>
+
             <dt class="col-sm-4">
                 @Html.DisplayNameFor(model => model.EntryNumber)
             </dt>
             <dd class="col-sm-8">
                 @Html.DisplayFor(model => model.EntryNumber)
             </dd>
-        </dl>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaType)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.VisaType)
+            </dd>
 
-        <form asp-action="Delete">
-            <input type="hidden" asp-for="Id" />
-            <input type="submit" value="Нобуд кардан" class="btn btn-danger" /> |
-            <a asp-action="Index" class="btn btn-default">Бекор</a>
-        </form>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaDateType) @Html.DisplayNameFor(model => model.VisaDate)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.VisaDate)   @Html.DisplayFor(model => model.VisaDateType)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaId)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.VisaId)
+            </dd>
+        </dl>
     </div>
 </div>

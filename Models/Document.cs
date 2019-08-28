@@ -22,13 +22,21 @@ namespace DocumentProcessing.Models
         public Guid? ApplicantId { get; set; }
         
         public Guid? StatusId { get; set; }
-        
+
+        public Guid? VisaTypeId { get; set; }
+
+        public Guid? VisaDateTypeId { get; set; }
+
         public Guid? PurposeId { get; set; }
         
         public Guid OwnerId { get; set; }
         
         public string RecipientId { get; set; }
-        
+
+        public string VisaId { get; set; }
+
+        public string VisaDate { get; set; }
+
         public virtual ApplicationUser Recipient { get; set; }
         
         [ForeignKey("ApplicantId")]
@@ -42,6 +50,12 @@ namespace DocumentProcessing.Models
         
         [ForeignKey("StatusId")]
         public virtual Status Status { get; set; }
+
+        [ForeignKey("VisaTypeId")]
+        public virtual VisaType VisaType { get; set; }
+
+        [ForeignKey("VisaDateTypeId")]
+        public virtual VisaDateType VisaDateType { get; set; }
 
         public Appointment Appointment { get; set; }
 

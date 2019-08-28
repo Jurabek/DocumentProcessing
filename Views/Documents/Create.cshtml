@@ -23,24 +23,23 @@
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="RecipientId" value="@user.Id"/>
-            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="RecipientId" value="@user.Id" />
+            <input type="hidden" asp-for="Id" />
 
             <div class="form-group">
                 <label asp-for="OwnerId" class="control-label"></label>
                 <select class="form-control" asp-for="OwnerId"
-                        asp-items="ViewBag.Owners">
-                </select>
+                        asp-items="ViewBag.Owners"></select>
             </div>
             <div class="form-group" id="applicantType">
                 <div class="form-check-inline">
-                    <input class="form-check-input" id="existingApplicant" asp-for="ApplicantType" type="radio" value="@ApplicantType.Existing"/>
+                    <input class="form-check-input" id="existingApplicant" asp-for="ApplicantType" type="radio" value="@ApplicantType.Existing" />
                     <label class="form-check-label" for="existingApplicant">
-                        аз руйхат
+                        Аз рӯйхат
                     </label>
                 </div>
                 <div class="form-check-inline">
-                    <input class="form-check-input" id="newApplicant" asp-for="ApplicantType" type="radio" value="@ApplicantType.New"/>
+                    <input class="form-check-input" id="newApplicant" asp-for="ApplicantType" type="radio" value="@ApplicantType.New" />
                     <label class="form-check-label" for="newApplicant">
                         Ариза/дигар
                     </label>
@@ -53,7 +52,7 @@
                  style="display: @(Model.ApplicantType == ApplicantType.Existing ? null : "none")">
                 <label asp-for="ApplicantId" class="control-label"></label>
                 <select class="form-control selectpicker"
-                        title="Ҷустуҷу..."
+                        title="Ҷустуҷӯ..."
                         asp-for="ApplicantId"
                         data-show-subtext="true"
                         data-live-search="true"
@@ -66,20 +65,47 @@
             <div class="form-group" id="newApplicantGroup"
                  style="display: @(Model.ApplicantType == ApplicantType.New ? null : "none")">
                 <label asp-for="ApplicantName" class="control-label"></label>
-                <input asp-for="ApplicantName" class="form-control"/>
+                <input asp-for="ApplicantName" class="form-control" />
                 <span asp-validation-for="ApplicantName" class="text-danger"></span>
             </div>
 
-            <div class="form-group form-row">
-                <div class="col-md-12">
-                    <label asp-for="PurposeId" class="control-label"></label>
-                    <select class="form-control" asp-for="PurposeId" id="PurposeId"
-                            asp-items="ViewBag.Purposes">
-                        <option></option>
-                    </select>
-                    <span asp-validation-for="PurposeId" class="text-danger"></span>
+            <div class="form-group" id="purposeType">
+                <div class="form-check-inline">
+                    <input class="form-check-input" id="existingPurpose" asp-for="PurposeType" type="radio" value="@PurposeType.Existing" />
+                    <label class="form-check-label" for="existingPurpose">
+                        Аз рӯйхат
+                    </label>
                 </div>
-                <!-- <div class="col-md-4">
+                <div class="form-check-inline">
+                    <input class="form-check-input" id="newPurpose" asp-for="PurposeType" type="radio" value="@PurposeType.New" />
+                    <label class="form-check-label" for="newPurpose">
+                        Дигар
+                    </label>
+                </div>
+                <span asp-validation-for="PurposeType" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="existingPurposeGroup"
+                 style="display: @(Model.PurposeType == PurposeType.Existing ? null : "none")">
+
+                <label asp-for="PurposeId" class="control-label"></label>
+                <select class="form-control selectpicker" asp-for="PurposeId" id="PurposeId"
+                        title="Ҷустуҷӯ..."
+                        data-show-subtext="true"
+                        data-live-search="true"
+                        asp-items="ViewBag.Purposes">
+                    <option></option>
+                </select>
+                <span asp-validation-for="PurposeName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="newPurposeGroup"
+                 style="display: @(Model.PurposeType == PurposeType.New ? null : "none")">
+                <label asp-for="PurposeName" class="control-label"></label>
+                <input asp-for="PurposeName" class="form-control" />
+                <span asp-validation-for="PurposeName" class="text-danger"></span>
+            </div>
+            <!-- <div class="col-md-4">
         @foreach (var purpose in ViewBag.Purposes.Items)
         {
             <input type="hidden" value="@purpose.Character" id="hidden_@purpose.Id"/>
@@ -88,7 +114,7 @@
         <input class="form-control" readonly="readonly" id="purposeCharacter"/>
     </div>
         -->
-            </div>
+
             <div class="form-group form-row">
                 <div class="col-md-4">
                     <label class="control-label" asp-for="Appointment.Character"></label>
@@ -99,7 +125,7 @@
                 </div>
                 <div class="col-md-8">
                     <label asp-for="Appointment.Number" class="control-label"></label>
-                    <input asp-for="Appointment.Number" class="form-control" type="number"/>
+                    <input asp-for="Appointment.Number" class="form-control" type="number" />
                     <span asp-validation-for="Appointment.Number" class="text-danger"></span>
                 </div>
             </div>
@@ -110,12 +136,49 @@
                         asp-items="ViewBag.Statuses">
                     <option></option>
                 </select>
+                <span asp-validation-for="StatusId" class="text-danger"></span>
             </div>
+            
+            <div class="form-group row" id="visaid">
 
+                <p class="col-md-11">
+                    <label asp-for="VisaId.ID" class="control-label"></label>
+                    <input asp-for="VisaId.ID" class="form-control" type="text" />
+                    <span asp-validation-for="VisaId.ID" class="text-danger"></span>
+                    <h2 class="col-md-1" style="margin-top: 30px; padding-left: 3px;"><a href="#" id="addScnt"><i class="fa fa-plus-circle" aria-hidden="true"></i></a></h2>
+
+                </p>
+            </div>
             <div class="form-group">
-                <p>Cкан</p>
-                <input type="file" class="form-control-file" name="files" multiple>
+                <label asp-for="VisaTypeId" class="control-label"></label>
+                <select class="form-control" asp-for="VisaTypeId"
+                        asp-items="ViewBag.VisaType">
+                    <option></option>
+                </select>
+                <span asp-validation-for="VisaTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-md-4">
+                    <label class="control-label" asp-for="VisaDateTypeId"></label>
+                    <select class="form-control" asp-for="VisaDateTypeId" asp-items="ViewBag.VisaDateType">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="VisaDateTypeId" class="text-danger"></span>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="VisaDate" class="control-label"></label>
+                    <input asp-for="VisaDate" class="form-control" type="number" min="1" max="30" />
+                    <span asp-validation-for="VisaDate" class="text-danger" id="textChange"></span>
+                </div>
+            </div>
+            <div class="form-group">
 
+
+                <label asp-for="ScannedFiles" class="control-label"></label>
+                <input type="file" id="file" class="form-control-file" name="files" data-val="true" multiple data-val-required="File is required">
+                <span asp-validation-for="ScannedFiles" class="text-danger displayNone">Иловаи ҳуҷҷати сканшуда холи аст!</span>
+            </div>
+            <div class="form-group">
                 <div id="progress" class="progress" style="display: none;margin-top: 15px">
                     <div class="progress-bar" id="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
@@ -123,7 +186,7 @@
             </div>
 
             <div class="form-control-file" style="padding-top: 15px">
-                <input type="submit" id="saveButton" value="Илова намудан" class="btn btn-primary"/>
+                <input type="submit" id="saveButton" value="Илова намудан" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-default">Бекор</a>
             </div>
         </form>

@@ -25,8 +25,14 @@ namespace DocumentProcessing.Mappings
                     map => map.MapFrom(x => x.Applicant.Name))
                 .ForMember(x => x.Recipient,
                     map => map.MapFrom(x => x.Recipient.LastName + " " + x.Recipient.Name))
-                .ForMember(x => x.Purpose, 
+                .ForMember(x => x.Appointment,
+                    map => map.MapFrom(x => x.Appointment.Character +""+ x.Appointment.Number))
+                    .ForMember(x => x.Purpose,
                     map => map.MapFrom(x => x.Purpose.Name))
+                .ForMember(x => x.VisaType,
+                    map => map.MapFrom(x => x.VisaType.Name))
+                .ForMember(x => x.VisaDateType,
+                    map => map.MapFrom(x => x.VisaDateType.Name))
                 .ForMember(x => x.Status, 
                     map => map.MapFrom(x => x.Status.Name))
                 .ForMember(x => x.ScannedDocuments,

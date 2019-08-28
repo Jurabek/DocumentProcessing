@@ -25,7 +25,7 @@ namespace DocumentProcessing.ViewModels
         public string Purpose { get; set; }
         
         [DisplayName("№ талон")]
-        public AppointmentViewModel Appointment { get; set; }
+        public string Appointment { get; set; }
         
         [DisplayName("Ҳолати ҳуҷҷат")]
         public string Status { get; set; }
@@ -35,5 +35,20 @@ namespace DocumentProcessing.ViewModels
         
         [DisplayName("Нусхаи ҳуҷҷат")]
         public List<ScannedFileViewModel> ScannedDocuments { get; set; }
+
+        [DisplayName("ID-и дархост")]
+        public string VisaId { get; set; }
+
+        [DisplayName("то")]
+        public string VisaDate { get; set; }
+
+
+        [DisplayName("Навъи раводид")]
+        public string VisaType { get; set; }
+
+        [DisplayName("Мӯҳлати раводид")]
+        public string VisaDateType { get; set; }
+
+
     }
 }

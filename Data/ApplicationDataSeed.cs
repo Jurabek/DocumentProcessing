@@ -63,6 +63,33 @@ namespace DocumentProcessing.Data
                     "Тасдики даъват"
                 };
 
+                var  visadatetypeList = new List<string>
+                {
+                    "Рӯз",
+                    "Моҳ"
+                };
+
+                var visatypeList = new List<string>
+                {
+                "Раводиди дипломатии навъи «Д»",
+                "Раводиди хизматии навъи «Х»",
+                "Раводиди сармоягузории навъи «С»",
+                "Раводиди кории навъи «К»",
+                "Раводиди меҳнатии навъи «М»",
+                "Раводиди сайёҳии навъи «Т»",
+                "Раводиди таҳсилотии навъҳои «О1» ва «О2»",
+                "Раводиди хусусии навъҳои «ХС1» ва «ХС2»",
+                "Раводиди минтақаи озоди иқтисодии навъи «МОИ»",
+                "Раводиди нақлиётии навъи «Н»",
+                "Раводид барои истиқомати доимии навъи «ИД»",
+                "Раводиди воситаи ахбори оммаи навъи «Ж»",
+                "Раводиди табширии навъи «ТБ»",
+                "Раводиди башардӯстонаи навъи «Б»",
+                "Раводиди транзитии навъи «ТР»",
+                "Раводиди хуруҷии навъи «Хуруҷӣ»"
+                };
+
+
                 var ownersList = new List<string>
                 {
                     "СРК",
@@ -89,6 +116,18 @@ namespace DocumentProcessing.Data
                 {
                     var purposes = purposesList.Select(p => new Purpose {Name = p});
                     await context.AddRangeAsync(purposes);
+                }
+
+                if (!await context.VisaType.AnyAsync())
+                {
+                    var visatype = visatypeList.Select(v => new VisaType { Name = v });
+                    await context.AddRangeAsync(visatype);
+                }
+
+                if (!await context.VisaDateType.AnyAsync())
+                {
+                    var visadatetype = visadatetypeList.Select(v => new VisaDateType { Name = v });
+                    await context.AddRangeAsync(visadatetype);
                 }
 
                 if (!await context.DocumentOwners.AnyAsync())

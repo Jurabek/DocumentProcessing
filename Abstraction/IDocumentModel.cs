@@ -7,7 +7,9 @@ namespace DocumentProcessing.Abstraction
         Guid? ApplicantId { get; set; }
 
         Guid? StatusId { get; set; }
+        Guid? VisaTypeId { get; set; }
 
+        Guid? VisaDateTypeId { get; set; }
         Guid? PurposeId { get; set; }
 
         Guid OwnerId { get; set; }

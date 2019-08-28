@@ -1,4 +1,4 @@
-@model PrintViewModel
+﻿@model PrintViewModel
 
 @{
     Layout = null;
@@ -35,6 +35,22 @@
                 <td>Мақсади Муроҷиат: </td>
                 <td>@Model.Purpose</td>
             </tr>
+            <tr>
+                <td>Қабулкунанда: </td>
+                <td>@Model.Recipient</td>
+            </tr>
+            <tr>
+                <td>ID-и дархост: </td>
+                <td>@Model.VisaId</td>
+            </tr>
+            <tr>
+                <td>Навъи раводид: </td>
+                <td>@Model.VisaType</td>
+            </tr>
+            <tr>
+                <td>Мӯҳлати раводид: </td>
+                <td>@Model.VisaDate @Model.VisaDateType </td>
+            </tr>
         </table>
         <img alt="stamp" src="data:image;base64,@Model.Base64Stamp" class="img-stump"/>
 
@@ -56,6 +72,22 @@
             <tr>
                 <td>Мақсади Муроҷиат: </td>
                 <td>@Model.Purpose</td>
+            </tr>
+            <tr>
+                <td>Қабулкунанда: </td>
+                <td>@Model.Recipient</td>
+            </tr>
+            <tr>
+                <td>ID-и дархост: </td>
+                <td>@Model.VisaId</td>
+            </tr>
+            <tr>
+                <td>Навъи раводид: </td>
+                <td>@Model.VisaType</td>
+            </tr>
+            <tr>
+                <td>Мӯҳлати раводид: </td>
+                <td>@Model.VisaDate @Model.VisaDateType </td>
             </tr>
         </table>
         <img alt="stamp" src="data:image;base64,@Model.Base64Stamp" class="img-stump"/>
