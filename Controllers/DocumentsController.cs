@@ -360,7 +360,6 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Recipient)
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
-                
                 .Include(x => x.VisaType)
                 .Include(x => x.VisaDateType)
                 .Include(x => x.Appointment)
