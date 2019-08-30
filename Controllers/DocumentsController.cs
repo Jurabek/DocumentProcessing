@@ -484,8 +484,12 @@ namespace DocumentProcessing.Controllers
                     img.SaveAsJpeg(ms);
                     string[] strArr = null;
                     string split = document.VisaId;
+                    string str = "";
                     char[] splitchar = { ',' };
-                    strArr = split.Split(splitchar);
+                    if (String.IsNullOrEmpty(split)) {// strArr[0] = VisaID;
+                    } else { strArr = split.Split(splitchar); str = strArr[0]; }
+
+
                     var viewModel = new PrintViewModel
                     {
                         AppointmentNumber = document.AppointmentNumber,
@@ -493,9 +497,9 @@ namespace DocumentProcessing.Controllers
                         Applicant = document.Applicant.Name,
                         Purpose = document.Purpose.Name,
                         Recipient = document.Recipient.Name,
-                        VisaType = document.VisaType.Name,
-                        VisaId = strArr[0],
-                        VisaDateType = document.VisaDateType.Name,
+                        VisaType = document.VisaType?.Name,
+                        VisaId = str,
+                        VisaDateType = document.VisaDateType?.Name,
                         VisaDate = document.VisaDate,
                         Base64Stamp = Convert.ToBase64String(ms.ToArray())
                     };

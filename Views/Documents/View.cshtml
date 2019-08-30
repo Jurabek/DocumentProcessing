@@ -13,12 +13,6 @@
         <hr />
         <dl class="row">
             <dt class="col-sm-4">
-                @Html.DisplayNameFor(model => model.Id)
-            </dt>
-            <dd class="col-sm-8">
-                @Html.DisplayFor(model => model.Id)
-            </dd>
-            <dt class="col-sm-4">
                 @Html.DisplayNameFor(model => model.Date)
             </dt>
             <dd class="col-sm-8">
@@ -54,11 +48,32 @@
             <dd class="col-sm-8">
                 @Html.DisplayFor(model => model.Appointment)
             </dd>
+
             <dt class="col-sm-4">
                 @Html.DisplayNameFor(model => model.EntryNumber)
             </dt>
             <dd class="col-sm-8">
                 @Html.DisplayFor(model => model.EntryNumber)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaType)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.VisaType)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaDateType) @Html.DisplayNameFor(model => model.VisaDate)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.VisaDate)   @Html.DisplayFor(model => model.VisaDateType)
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaId)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.VisaId)
             </dd>
             <dt class="col-sm-4">
                 @Html.DisplayNameFor(model => model.Description)
