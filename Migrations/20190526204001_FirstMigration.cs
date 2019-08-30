@@ -242,7 +242,8 @@ namespace DocumentProcessing.Migrations
                     VisaTypeId = table.Column<Guid>(nullable: true),
                     VisaDateTypeId = table.Column<Guid>(nullable: true),
                     VisaId = table.Column<string>(nullable: true),
-                    VisaDate = table.Column<string>(nullable: true)
+                    VisaDate = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
 
                 },
                 constraints: table =>
