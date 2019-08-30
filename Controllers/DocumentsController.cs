@@ -29,10 +29,11 @@ namespace DocumentProcessing.Controllers
     [Authorize]
     public class DocumentsController : Controller
     {
-
+        public string VisaID = "";
         private const int PageSize = 10;
 
         private readonly IFileUploader _fileUploader;
+
         private readonly IElectronicStamp _electronicStamp;
         private readonly IConverter _converter;
         private readonly ILogger<DocumentsController> _logger;
@@ -138,7 +139,7 @@ namespace DocumentProcessing.Controllers
             ValidateApplicant(viewModel);
             ValidatePurpose(viewModel);
             string test = ifc["VisaId"];
-
+            VisaID = test;
             if (ModelState.IsValid)
             {
                 await CreateApplicantIfNotExist(viewModel);
@@ -146,6 +147,15 @@ namespace DocumentProcessing.Controllers
                 var document = _mapper.Map<Document>(viewModel);
                 try
                 {
+                    document.VisaId = VisaID;
+                    string[] strArr = null;
+                    RequestId req = new RequestId();
+                    Document doc = new Document();
+                    char[] splitchar = { ',' };
+                    if (String.IsNullOrEmpty(VisaID)) {  } else { strArr = VisaID.Split(splitchar); }
+
+                
+                  
                     await _context.AddAsync(document);
                     await _context.SaveChangesAsync();
                     
@@ -155,7 +165,21 @@ namespace DocumentProcessing.Controllers
                         await _context.ScannedFiles.AddRangeAsync(newFiles);
                         await _context.SaveChangesAsync();
                     }
-                    
+                    if (String.IsNullOrEmpty(VisaID)) { }
+                    else
+                    {
+                        foreach (var id in strArr)
+                        {
+
+                            req.Number = id;
+                            req.DocumentId = document.Id;
+                            req.Id = Guid.NewGuid();
+
+                            await _context.AddAsync(req);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex) when (ex.GetType() == typeof(DbUpdateException))
@@ -336,6 +360,7 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Recipient)
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
+                
                 .Include(x => x.VisaType)
                 .Include(x => x.VisaDateType)
                 .Include(x => x.Appointment)
@@ -359,6 +384,7 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Applicant)
                 .Include(x => x.Recipient)
                 .Include(x => x.Purpose)
+                
                 .Include(x => x.Status)
                 .Include(x => x.VisaType)
                 .Include(x => x.Appointment)
@@ -400,6 +426,7 @@ namespace DocumentProcessing.Controllers
                    || originalDocument.Appointment?.Number != document.Appointment.Number
                    || originalDocument.Appointment?.Number != document.Appointment.Number
                    || originalDocument.VisaId != document.VisaId
+                   || originalDocument.Description != document.Description
                    || originalDocument.VisaDate != document.VisaDate
                    || originalDocument.OwnerId != document.OwnerId
                    || originalDocument.PurposeId != document.PurposeId
@@ -456,7 +483,10 @@ namespace DocumentProcessing.Controllers
                 using (var ms = new MemoryStream())
                 {
                     img.SaveAsJpeg(ms);
-
+                    string[] strArr = null;
+                    string split = document.VisaId;
+                    char[] splitchar = { ',' };
+                    strArr = split.Split(splitchar);
                     var viewModel = new PrintViewModel
                     {
                         AppointmentNumber = document.AppointmentNumber,
@@ -465,7 +495,7 @@ namespace DocumentProcessing.Controllers
                         Purpose = document.Purpose.Name,
                         Recipient = document.Recipient.Name,
                         VisaType = document.VisaType.Name,
-                        VisaId = document.VisaId,
+                        VisaId = strArr[0],
                         VisaDateType = document.VisaDateType.Name,
                         VisaDate = document.VisaDate,
                         Base64Stamp = Convert.ToBase64String(ms.ToArray())

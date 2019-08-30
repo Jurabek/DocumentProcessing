@@ -39,9 +39,11 @@ namespace DocumentProcessing.ViewModels
         [DisplayName("ID-и дархост")]
         public string VisaId { get; set; }
 
+        [DisplayName("Эзоҳ")]
+        public string Description { get; set; }
+
         [DisplayName("то")]
         public string VisaDate { get; set; }
-
 
         [DisplayName("Навъи раводид")]
         public string VisaType { get; set; }

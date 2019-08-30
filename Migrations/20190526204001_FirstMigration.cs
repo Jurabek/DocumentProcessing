@@ -314,6 +314,25 @@ namespace DocumentProcessing.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+               name: "RequestId",
+               columns: table => new
+               {
+                   Id = table.Column<Guid>(nullable: false),
+                   Number = table.Column<string>(nullable: true),
+                   DocumentId = table.Column<Guid>(nullable: false)
+               },
+               constraints: table =>
+               {
+                   table.PrimaryKey("PK_RequestId", x => x.Id);
+                   table.ForeignKey(
+                       name: "FK_RequestId_Documents_DocumentId",
+                       column: x => x.DocumentId,
+                       principalTable: "Documents",
+                       principalColumn: "Id",
+                       onDelete: ReferentialAction.Cascade);
+               });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -390,6 +409,11 @@ namespace DocumentProcessing.Migrations
                 name: "IX_ScannedFiles_DocumentId",
                 table: "ScannedFiles",
                 column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RequestId_DocumentId",
+                table: "RequestId",
+                column: "DocumentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -411,6 +435,9 @@ namespace DocumentProcessing.Migrations
 
             migrationBuilder.DropTable(
                 name: "ScannedFiles");
+
+             migrationBuilder.DropTable(
+                name: "VisaId");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

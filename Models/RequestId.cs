@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentProcessing.Models
 {
-    public class VisaId
+    public class RequestId
     {
         [Key]
         public Guid Id { get; set; }
 
-        public string ID { get; set; }
+        public string Number { get; set; }
 
         public Guid DocumentId { get; set; }
 

@@ -83,17 +83,18 @@ function isDeleted(id) {
 }
 
 $(function () {
-    var scntDiv = $('#VisaId.ID');
-    var i = $('#VisaId.ID p').length + 1;
+    var scntDiv = $('#DivVisaId');
+    var i = $('#DivVisaId p').length + 1;
 
     $('#addScnt').click(function () {
-        $('<p class="col-md-12 row" style="margin-left: 0;"><input style="margin-top: 5px" class="form-control col-md-11" type="text" data-val="true" data-val-required="Id-и Раводид холи аст!" id="VisaId.ID" name="VisaId.ID" value=""> <a href="#" class="remScnt col-md-1" id="remScnt" style="font-size: 2em;"><i class="fa fa-minus-circle" style="color: red;" aria-hidden="true"></i></a></p>').appendTo(scntDiv);
+        
+        $('<p class="col-md-12 row" style="margin-left: 0;"><input style="margin-top: 5px" class="form-control col-md-11" type="text" data-val="true" data-val-required="Id-и Раводид холи аст!" id="VisaId" name="VisaId" value=""> <a href="#" class="remScnt col-md-1" id="remScnt" style="font-size: 2em;"><i class="fa fa-minus-circle" style="color: red;" aria-hidden="true"></i></a></p>').appendTo(scntDiv);
         i++;
         return false;
     });
 
 
-    $('#VisaId.ID').on('click', '.remScnt', function () {
+    $('#DivVisaId').on('click', '#remScnt', function () {
         if (i > 2) {
             $(this).parents('p').remove();
             i--;

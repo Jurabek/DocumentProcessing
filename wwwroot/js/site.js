@@ -15,24 +15,52 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
  
     if ($purpose == "Тасдики даъват") {
         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#VisaId').attr("required", "true");
+        $("#addScnt").css("display", "block");
+        $('#VisaId').removeAttr("disabled");
     } else if ($purpose == "Бакайдгирӣ") {
         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#VisaId').attr("disabled", "true");
+        $("#addScnt").css("display", "none");
     } else if ($purpose == "Хуручи") {
         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#VisaId').attr("disabled", "true");
+        $("#addScnt").css("display", "none");
     } else if ($purpose == "Таъйид") {
         $('#Appointment_Character option[value=2]').attr('selected', 'selected');
+        $('#VisaId').attr("disabled", "true");
+        $("#addScnt").css("display", "none");
     } else if ($purpose == "Апостилгузори") {
         $('#Appointment_Character option[value=2]').attr('selected', 'selected');
+        $('#VisaId').attr("disabled", "true");
+        $("#addScnt").css("display", "none");
     } else if ($purpose == "eVisa") {
         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#VisaId').attr("required", "true");
+        $("#addScnt").css("display", "block");
+        $('#VisaId').removeAttr("disabled");
     } else if ($purpose == "Тамдиди раводид") {
         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-    } else if ($purpose == "Роудспот") {
+        $('#VisaId').attr("required", "true");
+        $("#addScnt").css("display", "block");
+        $('#VisaId').removeAttr("disabled");
+    } else if ($purpose == "Раводид") {
         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#VisaId').attr("required", "true");
+        $("#addScnt").css("display", "block");
+        $('#VisaId').removeAttr("disabled");
+    }else if ($purpose == "Роудспот") {
+        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#VisaId').attr("disabled", "true");
+        $("#addScnt").css("display", "none");
     } else if ($purpose == "Иҷозати ГБАО") {
         $('#Appointment_Character option[value=3]').attr('selected', 'selected');
+        $('#VisaId').attr("disabled", "true");
+        $("#addScnt").css("display", "none");
     } else if ($purpose == " Сафари хидматӣ ба ҶХХ") {
         $('#Appointment_Character option[value=3]').attr('selected', 'selected');
+        $('#VisaId').attr("disabled", "true");
+        $("#addScnt").css("display", "none");
     }
     
      

@@ -39,6 +39,8 @@ namespace DocumentProcessing.Data
 
         public DbSet<ScannedFile> ScannedFiles { get; set; }
 
+        public DbSet<RequestId> RequestId { get; set; }
+
         public DbSet<DocumentOwner> DocumentOwners { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
