@@ -61,6 +61,12 @@
             <dd class="col-sm-8">
                 @Html.DisplayFor(model => model.EntryNumber)
             </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
         </dl>
 
         <form asp-action="Delete">

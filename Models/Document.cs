@@ -33,7 +33,7 @@ namespace DocumentProcessing.Models
         
         public string RecipientId { get; set; }
 
-        public string VisaId { get; set; }
+        public string Description { set; get; }
 
         public string VisaDate { get; set; }
 
@@ -60,5 +60,7 @@ namespace DocumentProcessing.Models
         public Appointment Appointment { get; set; }
 
         public virtual IEnumerable<ScannedFile> ScannedFiles { get; set; }
+
+        public string VisaId { get; set; }
     }
 }

@@ -219,3 +219,6 @@ Images/
 *.a
 appsettings.Development.json
 wwwroot/css/jquery.dataTables.min.css
+DocumentProcessing.csproj
+Views/DocumentProcessing.sln
+DocumentProcessing.csproj

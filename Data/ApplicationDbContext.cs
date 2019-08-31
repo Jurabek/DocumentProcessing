@@ -1,4 +1,4 @@
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using DocumentProcessing.Models;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using DocumentProcessing.ViewModels;
 
 namespace DocumentProcessing.Data
 {
@@ -38,6 +39,8 @@ namespace DocumentProcessing.Data
         public DbSet<Applicant> Applicants { get; set; }
 
         public DbSet<ScannedFile> ScannedFiles { get; set; }
+
+        public DbSet<RequestId> RequestId { get; set; }
 
         public DbSet<DocumentOwner> DocumentOwners { get; set; }
 
@@ -101,5 +104,7 @@ namespace DocumentProcessing.Data
                 .WithOne(x => x.Document)
                 .HasForeignKey<Appointment>(x => x.DocumentId);
         }
+
+        public DbSet<DocumentProcessing.ViewModels.DocumentListViewModel> DocumentListViewModel { get; set; }
     }
 }
