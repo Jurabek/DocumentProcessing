@@ -43,16 +43,16 @@ namespace DocumentProcessing.ViewModels
 
 
         [DisplayName("то")]
-        [Required(ErrorMessage = "Мӯҳлати раводид холи аст!")]
+    
         [StringLength(2, MinimumLength = 1, ErrorMessage = "Хадди нихоии раками ичозатшуда барои Рӯз то 30 ва барои Мох то 32")]
         public string VisaDate { get; set; }
 
         [DisplayName("Навъи раводид")]
-        [Required(ErrorMessage = "ID холи аст!")]
+       
         public Guid? VisaTypeId { get; set; }
 
         [DisplayName("Мӯҳлати раводид")]
-        [Required(ErrorMessage = "Мӯҳлати раводид холи аст!")]
+        
         public Guid? VisaDateTypeId { get; set; }
 
         [DisplayName("Эзоҳ")]
