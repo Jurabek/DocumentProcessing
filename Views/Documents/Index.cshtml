@@ -26,6 +26,7 @@
                 </span> Илова намудан
             </a>
         </div>
+        
         <div class="col-md-3">
             <form asp-controller="Documents" asp-action="Index" method="get">
                 <div class="input-group">
@@ -62,7 +63,7 @@
 
         <div class="table-wrapper">
             <!--Table-->
-            <table id="table" class="table table-hover mb-0">
+            <table id="Экспорт" class="table table-hover mb-0">
 
                 <!--Table head-->
                 <thead>
@@ -182,6 +183,7 @@
 <!-- Table with panel -->
 <br>
 <br>
+
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";

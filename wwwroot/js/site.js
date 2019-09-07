@@ -153,3 +153,57 @@ $('#VisaDate').change(function () {
     }, 300);
 
 });
+
+// expot to excell
+function exportToExcell() {
+
+    // внешний скрипт для форматирование даты
+    Date.prototype.format = function (mask, utc) {
+        return dateFormat(this, mask, utc);
+    };
+    const now = new Date();
+    const date = now.format("dd mm yyyy");
+    const content = document.getElementById('table');
+    const file = new FileReader();
+    const mimiType = 'application/x-msexcell;charset=utf-8';
+    const blob = new Blob([unescape(content.outerHTML)], { type: mimiType });
+    file.readAsDataURL(blob);
+    file.onload = (e) => {
+        // window.open(file.result.toString(), '_blank'); // Cкачивание без название файла
+
+        var a = document.createElement("a"); // создание тега а
+        a.href = file.result; //  Файл в формате base64 присвоение к href
+        a.download = "Экспорт " + date + ".xls"; // Название файла
+        document.body.appendChild(a); // добавление в тело документа тега а
+        a.click(); // имитация клика
+        setTimeout(function () {
+            document.body.removeChild(a); // удаление тега а из тело документа
+        }, 0);
+    };
+
+
+    
+}
+Date.prototype.format = function (mask, utc) {
+    return dateFormat(this, mask, utc);
+};
+ const now = new Date();
+ $date = now.format("dd mm yyyy");
+/* Defaults */
+
+ $("table").tableExport({
+    headings: true,                    // (Boolean), display table headings (th/td elements) in the <thead>
+    footers: true,                     // (Boolean), display table footers (th/td elements) in the <tfoot>
+    formats: ["xlsx"],    // (String[]), filetypes for the export
+    fileName: 'Экспорт 123',                    // (id, String), filename for the downloaded file
+    bootstrap: true,                   // (Boolean), style buttons using bootstrap
+    position: "bottom",                 // (top, bottom), position of the caption element relative to table
+    ignoreRows: null,                  // (Number, Number[]), row indices to exclude from the exported file(s)
+    ignoreCols: [5, 6, 8, 9],                  // (Number, Number[]), column indices to exclude from the exported file(s)
+    ignoreCSS: "td.todelete",  // (selector, selector[]), selector(s) to exclude from the exported file(s)
+    emptyCSS: ".tableexport-empty",    // (selector, selector[]), selector(s) to replace cells with an empty string in the exported file(s)
+    trimWhitespace: true              // (Boolean), remove all leading/trailing newlines, spaces, and tabs from cell text in the exported file(s)
+});
+
+
+$(".xlsx").html('<i class="fas fa-file-excel"></i>');

@@ -61,6 +61,9 @@ namespace DocumentProcessing.Models
 
         public virtual IEnumerable<ScannedFile> ScannedFiles { get; set; }
 
+        public virtual IEnumerable<RequestId> RequestId { get; set; }
+
         public string VisaId { get; set; }
+
     }
 }

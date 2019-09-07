@@ -64,6 +64,7 @@ namespace DocumentProcessing.Controllers
             [FromQuery(Name = "q")] string searchText,
             [FromQuery(Name = "dateFrom")] string startDate,
             [FromQuery(Name = "dateFor")] string endDate,
+            [FromQuery(Name = "selectCount")] string selectCount,
             int? pageNumber)
         {
             var documents = _context.Documents.OrderByDescending(x => x.Date)
@@ -76,7 +77,7 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Owner)
                 .Include(x => x.Recipient)
                 .Include(x => x.Appointment).AsQueryable();
-
+            int documentCount = 10;
             if (!string.IsNullOrEmpty(endDate) && !string.IsNullOrEmpty(startDate))
             {
                 var parsedStartDate = DateTime.ParseExact(startDate, "dd.MM.yyyy", CultureInfo.InvariantCulture);
@@ -84,19 +85,21 @@ namespace DocumentProcessing.Controllers
 
                 ViewBag.DateFor = endDate;
                 ViewBag.DateFrom = startDate;
+                documentCount = documents.Count(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
                 documents = documents.Where(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
             }
 
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
+                documentCount = documents.Count(Search(searchText));
                 documents = documents.Where(Search(searchText));
             }
 
             _logger.LogInformation(documents.ToSql());
 
             var list = await MappedPaginatedList<DocumentListViewModel>
-                .CreateAsync(documents, _mapper, pageNumber ?? 1, PageSize);
+                .CreateAsync(documents, _mapper, pageNumber ?? 1, documentCount);
 
             return View(list);
         }
@@ -386,7 +389,6 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Recipient)
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
-
                 .Include(x => x.VisaType)
                 .Include(x => x.VisaDateType)
                 .Include(x => x.Appointment)
@@ -411,7 +413,6 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Applicant)
                 .Include(x => x.Recipient)
                 .Include(x => x.Purpose)
-                
                 .Include(x => x.Status)
                 .Include(x => x.VisaType)
                 .Include(x => x.Appointment)
