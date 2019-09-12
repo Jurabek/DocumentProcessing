@@ -11,6 +11,8 @@
     var admin = await UserManager.IsInRoleAsync(user, "Admin");
     var manager = await UserManager.IsInRoleAsync(user, "Manager");
     bool isAdminOrManager = admin || manager;
+    
+
 }
 
 <h1>Ворид намудан</h1>
@@ -143,7 +145,7 @@
 
                 <p class="col-md-11">
                     <label asp-for="VisaId" class="control-label"></label>
-                    <input asp-for="VisaId" class="form-control" type="text" />
+                    <input asp-for="VisaId" class="form-control" type="number" />
                     <span asp-validation-for="VisaId" class="text-danger"></span>
                     <h2 class="col-md-1" style="margin-top: 30px; padding-left: 3px;"><a href="#" id="addScnt"><i class="fa fa-plus-circle" aria-hidden="true"></i></a></h2>
 

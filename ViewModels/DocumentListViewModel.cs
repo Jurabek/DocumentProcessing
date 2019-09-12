@@ -51,6 +51,7 @@ namespace DocumentProcessing.ViewModels
         [DisplayName("Мӯҳлати раводид")]
         public string VisaDateType { get; set; }
 
-
+        [DisplayName("ID - дархост")]
+        public string RequestId { get; set; }
     }
 }

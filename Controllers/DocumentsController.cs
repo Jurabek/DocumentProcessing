@@ -216,6 +216,12 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Appointment)
                 .FirstOrDefault(x => x.Id == id);
 
+            var request_Id = _context.RequestId.AsQueryable();
+            request_Id = request_Id.Where(x => x.DocumentId == document.Id);
+            var request_Id_Count = request_Id.Count();
+            ViewBag.reg = request_Id;
+            ViewBag.reqCount = request_Id_Count;
+            
             if (document == null)
             {
                 return NotFound();
@@ -231,8 +237,15 @@ namespace DocumentProcessing.Controllers
         }
 
         [HttpPost, ActionName("Edit")]
-        public async Task<IActionResult> EditPost(DocumentViewModel viewModel, IList<IFormFile> files)
+        public async Task<IActionResult> EditPost(DocumentViewModel viewModel, IList<IFormFile> files, IFormCollection ifc)
         {
+            string test = ifc["VisaId"];
+            string[] strArr = null;
+            RequestId req = new RequestId();
+            char[] splitchar = { ',' };
+
+            VisaID = test;
+            if (String.IsNullOrEmpty(VisaID)) { } else { strArr = VisaID.Split(splitchar); }
             ValidateApplicant(viewModel);
             ValidatePurpose(viewModel);
 
@@ -253,10 +266,46 @@ namespace DocumentProcessing.Controllers
                 var document = _mapper.Map<Document>(viewModel);
                 document.Date = originalDocument.Date;
 
+                var request_Id = _context.RequestId.AsQueryable();
+                request_Id = request_Id.Where(x => x.DocumentId == document.Id);
+                var request_Id_Count = request_Id.Count();
+                ViewBag.reg = request_Id;
+                ViewBag.reqCount = request_Id_Count;
                 var hasAddedFiles = files.Any();
+                var hasRequestIdChanges = false;
                 var hasDocumentChanges = HasChangesBetweenTwoDocuments(originalDocument, document);
                 var hasRemovedFiles = viewModel.ScannedFiles.Any(x => x.IsDeleted);
                 bool hasError = false;
+
+              
+
+                try
+                {
+                    _context.RemoveRange(request_Id);
+                    await _context.SaveChangesAsync();
+                    hasRequestIdChanges = true;
+                }
+                catch (DbUpdateException ex)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                                                 "Try again, and if the problem persists, " +
+                                                 "see your system administrator." + ex.ToString());
+
+                    hasError = true;
+                }
+
+
+                foreach (var id in strArr)
+                {
+
+                    req.Number = id;
+                    req.DocumentId = document.Id;
+                    req.Id = Guid.NewGuid();
+
+                    await _context.AddAsync(req);
+                    await _context.SaveChangesAsync();
+                    hasRequestIdChanges = true;
+                }
 
                 if (hasAddedFiles)
                 {
@@ -335,7 +384,7 @@ namespace DocumentProcessing.Controllers
                     }
                 }
 
-                if ((hasAddedFiles || hasDocumentChanges || hasRemovedFiles) && !hasError)
+                if ((hasAddedFiles || hasDocumentChanges || hasRemovedFiles || hasRequestIdChanges) && !hasError)
                 {
                     return RedirectToAction(nameof(Index));
                 }
@@ -395,6 +444,24 @@ namespace DocumentProcessing.Controllers
 
                 .FirstOrDefault();
 
+            var request_Id = _context.RequestId.AsQueryable();
+            request_Id = request_Id.Where(x => x.DocumentId == document.Id);
+            var request_Id_Count = request_Id.Count();
+            string ReqId = "";
+            var count = 0;
+            foreach (var i in request_Id)
+            {
+                count++;
+                if (count == 1)
+                {
+                    ReqId = i.Number;
+                }
+                else
+                {
+                    ReqId = ReqId + ',' + i.Number;
+                }
+            }
+            ViewBag.ReqId = ReqId;
             var result = _mapper.Map<DocumentListViewModel>(document);
 
             return View(result);
@@ -420,6 +487,24 @@ namespace DocumentProcessing.Controllers
 
                 .FirstOrDefault();
 
+            var request_Id = _context.RequestId.AsQueryable();
+            request_Id = request_Id.Where(x => x.DocumentId == document.Id);
+            var request_Id_Count = request_Id.Count();
+            string ReqId = "";
+            var count = 0;
+            foreach (var i in request_Id)
+            {
+                count++;
+                if (count == 1)
+                {
+                    ReqId = i.Number;
+                }
+                else
+                {
+                    ReqId = ReqId + ',' + i.Number;
+                }
+            }
+            ViewBag.ReqId = ReqId;
             var result = _mapper.Map<DocumentListViewModel>(document);
 
             return View(result);
@@ -487,6 +572,7 @@ namespace DocumentProcessing.Controllers
             {
                 return NotFound();
             }
+           
 
             var document = _context.Documents
                 .Where(x => x.Id == id)
@@ -504,6 +590,20 @@ namespace DocumentProcessing.Controllers
             {
                 return NotFound();
             }
+            var request_Id = _context.RequestId.AsQueryable();
+            request_Id = request_Id.Where(x => x.DocumentId == document.Id);
+            var request_Id_Count = request_Id.Count();
+            var count = 0;
+            var firstReqId = "";
+            foreach (var i in request_Id)
+            {
+                count++;
+                if (count == 1)
+                {
+                    firstReqId = i.Number;
+                }
+            }
+            ViewBag.firstReqId = firstReqId;
 
             using (Image<Rgba32> img = new Image<Rgba32>(260, 180))
             {

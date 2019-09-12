@@ -68,6 +68,9 @@ namespace DocumentProcessing.ViewModels
 
         [DisplayName("ID-и дархост")]
         
-        public string VisaId { get; set; } 
+        public string VisaId { get; set; }
+
+
+        public int request_Id { get; set; }
     }
 }

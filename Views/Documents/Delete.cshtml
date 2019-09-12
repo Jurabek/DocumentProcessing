@@ -62,6 +62,26 @@
                 @Html.DisplayFor(model => model.EntryNumber)
             </dd>
             <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaId)
+            </dt>
+            <dd class="col-sm-8">
+                @ViewBag.ReqId
+            </dd>
+
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaDateType)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.VisaDate)   @Html.DisplayFor(model => model.VisaDateType)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.VisaType)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.VisaType)
+            </dd>
+
+            <dt class="col-sm-4">
                 @Html.DisplayNameFor(model => model.Description)
             </dt>
             <dd class="col-sm-8">
