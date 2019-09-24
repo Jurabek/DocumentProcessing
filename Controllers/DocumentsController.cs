@@ -99,7 +99,7 @@ namespace DocumentProcessing.Controllers
             _logger.LogInformation(documents.ToSql());
 
             var list = await MappedPaginatedList<DocumentListViewModel>
-                .CreateAsync(documents, _mapper, pageNumber ?? 1, documentCount);
+                .CreateAsync(documents, _mapper, pageNumber ?? 1, PageSize);
 
             return View(list);
         }
