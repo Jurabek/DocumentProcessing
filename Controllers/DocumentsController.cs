@@ -85,14 +85,14 @@ namespace DocumentProcessing.Controllers
 
                 ViewBag.DateFor = endDate;
                 ViewBag.DateFrom = startDate;
-                documentCount = documents.Count(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
+                // documentCount = documents.Count(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
                 documents = documents.Where(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
             }
 
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
-                documentCount = documents.Count(Search(searchText));
+                // documentCount = documents.Count(Search(searchText));
                 documents = documents.Where(Search(searchText));
             }
 
