@@ -294,17 +294,20 @@ namespace DocumentProcessing.Controllers
                     hasError = true;
                 }
 
-
-                foreach (var id in strArr)
+                if (String.IsNullOrEmpty(test)) { }
+                else
                 {
+                    foreach (var id in strArr)
+                    {
 
-                    req.Number = id;
-                    req.DocumentId = document.Id;
-                    req.Id = Guid.NewGuid();
+                        req.Number = id;
+                        req.DocumentId = document.Id;
+                        req.Id = Guid.NewGuid();
 
-                    await _context.AddAsync(req);
-                    await _context.SaveChangesAsync();
-                    hasRequestIdChanges = true;
+                        await _context.AddAsync(req);
+                        await _context.SaveChangesAsync();
+                        hasRequestIdChanges = true;
+                    }
                 }
 
                 if (hasAddedFiles)
