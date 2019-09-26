@@ -25,7 +25,7 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
         $('#VisaDateTypeId').removeAttr("disabled");
         $('#VisaDate').removeAttr("disabled");
     } else if ($purpose == "Бақайдгирӣ") {
-       $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
         $('#VisaId').attr("disabled", "true");
         $('#VisaTypeId').attr("disabled", "true");
         $('#VisaDateTypeId').attr("disabled", "true");
@@ -53,7 +53,7 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
         $('#VisaDate').attr("disabled", "true");
         $("#addScnt").css("display", "none");
     } else if ($purpose == "eVisa") {
-         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
         $('#VisaId').attr("required", "true");
         $('#VisaTypeId').attr("required", "true");
         $('#VisaDateTypeId').attr("required", "true");
@@ -64,7 +64,7 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
         $('#VisaDateTypeId').removeAttr("disabled");
         $('#VisaDate').removeAttr("disabled");
     } else if ($purpose == "Тамдиди раводид") {
-         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
         $('#VisaId').attr("required", "true");
         $('#VisaTypeId').attr("required", "true");
         $('#VisaDateTypeId').attr("required", "true");
@@ -75,7 +75,7 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
         $('#VisaDateTypeId').removeAttr("disabled");
         $('#VisaDate').removeAttr("disabled");
     } else if ($purpose == "Роудспот") {
-         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
         $('#VisaId').attr("disabled", "true");
         $('#VisaTypeId').attr("disabled", "true");
         $('#VisaDateTypeId').attr("disabled", "true");
@@ -102,11 +102,61 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
         $('#VisaDateTypeId').attr("disabled", "true");
         $('#VisaDate').attr("disabled", "true");
         $("#addScnt").css("display", "none");
+    } else {
+        
+        $('#VisaId').attr("disabled", "true");
+        $('#VisaTypeId').attr("disabled", "true");
+        $('#VisaDateTypeId').attr("disabled", "true");
+        $('#VisaDate').attr("disabled", "true");
+        $("#addScnt").css("display", "none");
     }
 
 
 });
 
+var $purpose = $("#PurposeId option:selected").text();
+
+if ($purpose == "Тасдиқи даъват") {
+    $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+    $('#VisaId').attr("required", "true");
+    $('#VisaTypeId').attr("required", "true");
+    $('#VisaDateTypeId').attr("required", "true");
+    $('#VisaDate').attr("required", "true");
+    $("#addScnt").css("display", "block");
+    $('#VisaId').removeAttr("disabled");
+    $('#VisaTypeId').removeAttr("disabled");
+    $('#VisaDateTypeId').removeAttr("disabled");
+    $('#VisaDate').removeAttr("disabled");
+} else if ($purpose == "eVisa") {
+    $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+    $('#VisaId').attr("required", "true");
+    $('#VisaTypeId').attr("required", "true");
+    $('#VisaDateTypeId').attr("required", "true");
+    $('#VisaDate').attr("required", "true");
+    $("#addScnt").css("display", "block");
+    $('#VisaId').removeAttr("disabled");
+    $('#VisaTypeId').removeAttr("disabled");
+    $('#VisaDateTypeId').removeAttr("disabled");
+    $('#VisaDate').removeAttr("disabled");
+} else if ($purpose == "Тамдиди раводид") {
+    $('#Appointment_Character option[value=1]').attr('selected', 'selected');
+    $('#VisaId').attr("required", "true");
+    $('#VisaTypeId').attr("required", "true");
+    $('#VisaDateTypeId').attr("required", "true");
+    $('#VisaDate').attr("required", "true");
+    $("#addScnt").css("display", "block");
+    $('#VisaId').removeAttr("disabled");
+    $('#VisaTypeId').removeAttr("disabled");
+    $('#VisaDateTypeId').removeAttr("disabled");
+    $('#VisaDate').removeAttr("disabled");
+}  else {
+
+    $('#VisaId').attr("disabled", "true");
+    $('#VisaTypeId').attr("disabled", "true");
+    $('#VisaDateTypeId').attr("disabled", "true");
+    $('#VisaDate').attr("disabled", "true");
+    $("#addScnt").css("display", "none");
+}
 
 $('#saveButton').click(function () {
     if (document.getElementById("file").files.length == 0) {
