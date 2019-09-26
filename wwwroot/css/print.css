@@ -1,5 +1,5 @@
 .container {
-    margin-top: 10%;
+    margin-top: 20px;
     display: flex;
     justify-content: center;
 }
@@ -17,6 +17,6 @@ td, th {
     font-size: 15px;
     text-align: left;
 }
-    .img-stump {
+.img-stump {
     margin: 15px;
 }
