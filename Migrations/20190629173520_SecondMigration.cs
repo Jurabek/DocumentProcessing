@@ -41,13 +41,31 @@ namespace DocumentProcessing.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-           
+            migrationBuilder.CreateTable(
+               name: "VisaId",
+               columns: table => new
+               {
+                   Id = table.Column<Guid>(nullable: false),
+                   ID = table.Column<string>(nullable: false),
+                   DocumentId = table.Column<Guid>(nullable: false)
+               },
+               constraints: table =>
+               {
+                   table.PrimaryKey("PK_VisaId", x => x.Id);
+                   table.ForeignKey(
+                       name: "FK_VisaId_Documents_DocumentId",
+                       column: x => x.DocumentId,
+                       principalTable: "Documents",
+                       principalColumn: "Id",
+                       onDelete: ReferentialAction.Cascade);
+               });
 
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-           
+            migrationBuilder.DropTable(
+                name: "VisaId");
 
             migrationBuilder.DropTable(
                name: "Appointment");

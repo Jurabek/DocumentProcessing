@@ -39,9 +39,7 @@ namespace DocumentProcessing.ViewModels
         [DisplayName("Ҳолати ҳуҷҷат")]
 
         public Guid? StatusId { get; set; }
-
-
-
+        
         [DisplayName("то")]
     
         [StringLength(2, MinimumLength = 1, ErrorMessage = "Хадди нихоии раками ичозатшуда барои Рӯз то 30 ва барои Мох то 32")]
