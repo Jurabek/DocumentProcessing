@@ -37,56 +37,6 @@ namespace DocumentProcessing.Models
 
         public string VisaDate { get; set; }
 
-        //
-        public DateTime DeadLineDate { get; set; }
-
-        public Guid? DocTypeId { get; set; }
-
-        public long OutgoingNumber { get; set; }
-
-        public long OutDocDate { get; set; }
-
-        public Guid? DirectionId { get; set; }
-
-        public string SeenById { get; set; }
-
-        public string Note { get; set; }
-
-        public string Additional { get; set; }
-
-        public long Count { get; set; }
-
-        public string SignById { get; set; }
-
-        public bool Control { get; set; }
-
-        public Guid? DepartmentId { get; set; }
-
-        public string AddedUserId { get; set; }
-
-        public string EditedUserId { get; set; }
-
-
-
-        public virtual ApplicationUser SeenBy { get; set; }
-
-        public virtual ApplicationUser SignBy { get; set; }
-
-        public virtual ApplicationUser AddedUser { get; set; }
-
-        public virtual ApplicationUser EditedUser { get; set; }
-
-        [ForeignKey("DocTypeId")]
-        public virtual DocType DocTypes { get; set; }
-
-        [ForeignKey("DirectionId")]
-        public virtual Direction Direction { get; set; }
-
-        [ForeignKey("DepartmentId")]
-        public virtual Department Department { get; set; }
-
-
-
         public virtual ApplicationUser Recipient { get; set; }
         
         [ForeignKey("ApplicantId")]

@@ -60,7 +60,6 @@ namespace DocumentProcessing.Migrations
                        onDelete: ReferentialAction.Cascade);
                });
 
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

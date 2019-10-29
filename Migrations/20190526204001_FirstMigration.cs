@@ -73,51 +73,6 @@ namespace DocumentProcessing.Migrations
                     table.PrimaryKey("PK_DocumentOwners", x => x.Id);
                 });
 
-      
-
-
-            migrationBuilder.CreateTable(
-               name: "DocTypes",
-               columns: table => new
-               {
-                   Id = table.Column<Guid>(nullable: false),
-                   Name = table.Column<string>(nullable: true)
-               },
-               constraints: table =>
-               {
-                   table.PrimaryKey("PK_DocTypes", x => x.Id);
-               });
-
-            migrationBuilder.CreateTable(
-               name: "Directions",
-               columns: table => new
-               {
-                   Id = table.Column<Guid>(nullable: false),
-                   Name = table.Column<string>(nullable: true)
-               },
-               constraints: table =>
-               {
-                   table.PrimaryKey("PK_Directions", x => x.Id);
-               });
-
-            migrationBuilder.CreateTable(
-               name: "Departments",
-               columns: table => new
-               {
-                   Id = table.Column<Guid>(nullable: false),
-                   Name = table.Column<string>(nullable: true)
-               },
-               constraints: table =>
-               {
-                   table.PrimaryKey("PK_Departments", x => x.Id);
-               });
-
-
-
-
-
-
-
             migrationBuilder.CreateTable(
                 name: "Purposes",
                 columns: table => new
@@ -260,32 +215,7 @@ namespace DocumentProcessing.Migrations
                     StatusId = table.Column<Guid>(nullable: true),
                     PurposeId = table.Column<Guid>(nullable: true),
                     OwnerId = table.Column<Guid>(nullable: false),
-                    RecipientId = table.Column<string>(nullable: true),
-
-
-                    DeadLineDate = table.Column<DateTime>(nullable: false),
-                    OutgoingNumber = table.Column<long>(nullable: false),
-                    OutDocDate = table.Column<DateTime>(nullable: false),
-
-
-                    SeenById = table.Column<string>(nullable: true),
-
-                    Note = table.Column<string>(nullable: true),
-                    Additional = table.Column<string>(nullable: true),
-                    Count = table.Column<long>(nullable: false),
-                    SignById = table.Column<string>(nullable: true),
-                    Control=table.Column<bool>(nullable: true),
-
-                    AddedUserId= table.Column<string>(nullable: true),
-                    EditedUserId = table.Column<string>(nullable: true),//
-
-
-
-                    DocTypeId = table.Column<Guid>(nullable: false),
-                    DirectionId = table.Column<Guid>(nullable: true),
-                    DepartmentId = table.Column<Guid>(nullable: true),
-
-
+                    RecipientId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -320,52 +250,6 @@ namespace DocumentProcessing.Migrations
                         principalTable: "Statuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-
-
-                    table.ForeignKey(
-                       name: "FK_Documents_DocTypes_DocTypeId",
-                       column: x => x.DocTypeId,
-                       principalTable: "DocTypes",
-                       principalColumn: "Id",
-                       onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Documents_Directions_DirectionId",
-                        column: x => x.DirectionId,
-                        principalTable: "Directions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Documents_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-
-                    table.ForeignKey(
-                        name: "FK_Documents_AspNetUsers_SeenById",
-                        column: x => x.SeenById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                       name: "FK_Documents_AspNetUsers_SignById",
-                       column: x => x.SignById,
-                       principalTable: "AspNetUsers",
-                       principalColumn: "Id",
-                       onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                       name: "FK_Documents_AspNetUsers_AddedUserId",
-                       column: x => x.AddedUserId,
-                       principalTable: "AspNetUsers",
-                       principalColumn: "Id",
-                       onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                       name: "FK_Documents_AspNetUsers_EditedUserId",
-                       column: x => x.EditedUserId,
-                       principalTable: "AspNetUsers",
-                       principalColumn: "Id",
-                       onDelete: ReferentialAction.Restrict);
-
                 });
 
             migrationBuilder.CreateTable(
@@ -456,33 +340,6 @@ namespace DocumentProcessing.Migrations
                 name: "IX_ScannedFiles_DocumentId",
                 table: "ScannedFiles",
                 column: "DocumentId");
-
-
-            migrationBuilder.CreateIndex(
-               name: "IX_Documents_DocTypeId",
-               table: "Documents",
-               column: "DocTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_DirectionId",
-                table: "Documents",
-                column: "DirectionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_DepartmentId",
-                table: "Documents",
-                column: "DepartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_SeenById",
-                table: "Documents",
-                column: "SeenById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_SignById",
-                table: "Documents",
-                column: "SignById");
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -525,17 +382,6 @@ namespace DocumentProcessing.Migrations
 
             migrationBuilder.DropTable(
                 name: "Statuses");
-
-
-
-            migrationBuilder.DropTable(
-                name: "DocTypes");
-
-            migrationBuilder.DropTable(
-                name: "Departments");
-
-            migrationBuilder.DropTable(
-                name: "Directions");
         }
     }
 }
