@@ -70,5 +70,19 @@ namespace DocumentProcessing.ViewModels
 
 
         public int request_Id { get; set; }
+
+        //
+        [DisplayName("Намуди хуҷҷат")]
+
+        public Guid? DocTypeId { get; set; }
+
+        [DisplayName("Ба ки")]
+
+        public Guid? DirectionId { get; set; }
+
+        [DisplayName("Ташкилот")]
+
+        public Guid? DepartmentId { get; set; }
+
     }
 }

@@ -112,6 +112,33 @@ namespace DocumentProcessing.Data
                     "ҶДММ Ташкилоти Д"
                 };
 
+
+
+                //
+
+
+                var docTypeList = new List<string>
+                {
+                    "docType А",
+                    "docType Б",
+                    "docType С",
+                    "docType Д"
+                };
+                var directionList = new List<string>
+                {
+                    "direction А",
+                    "direction Б",
+                    "direction С",
+                    "direction Д"
+                };
+                var departmentList = new List<string>
+                {
+                    "department А",
+                    "department Б",
+                    "department С",
+                    "department Д"
+                };
+
                 if (!await context.Purposes.AnyAsync())
                 {
                     var purposes = purposesList.Select(p => new Purpose {Name = p});
@@ -147,6 +174,26 @@ namespace DocumentProcessing.Data
                     var applicants = applicantsList.Select(x => new Applicant {Name = x});
                     await context.AddRangeAsync(applicants);
                 }
+
+
+
+                if (!await context.DocTypes.AnyAsync())
+                {
+                    var docType = docTypeList.Select(x => new DocType { Name = x });
+                    await context.AddRangeAsync(docType);
+                }
+                if (!await context.Directions.AnyAsync())
+                {
+                    var direction = directionList.Select(x => new Direction { Name = x });
+                    await context.AddRangeAsync(direction);
+                }
+                if (!await context.Departments.AnyAsync())
+                {
+                    var department = departmentList.Select(x => new Department { Name = x });
+                    await context.AddRangeAsync(department);
+                }
+
+
 
                 var _ = context.ChangeTracker.HasChanges() ? await context.SaveChangesAsync() : 0;
 

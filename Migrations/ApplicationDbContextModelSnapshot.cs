@@ -144,6 +144,37 @@ namespace DocumentProcessing.Migrations
 
                     b.Property<Guid?>("VisaTypeId");
 
+
+                    //
+                    b.Property<DateTime>("DeadLineDate");
+
+                    b.Property<Guid?>("DocTypeId");
+
+                    b.Property<long>("OutgoingNumber");
+
+                    b.Property<DateTime>("OutDocDate");
+
+                    b.Property<Guid?>("DirectionId");
+
+                    b.Property<string>("SeenById");
+
+                    b.Property<string>("Note");
+
+                    b.Property<string>("Additional");
+
+                    b.Property<long>("Count");
+
+                    b.Property<string>("SignById");
+
+                    b.Property<bool>("Control");
+
+                    b.Property<string>("AddedUserId");
+
+                    b.Property<Guid?>("DepartmentId");
+
+                    b.Property<string>("EditedUserId");
+                    //
+
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicantId");
@@ -163,6 +194,20 @@ namespace DocumentProcessing.Migrations
                     b.HasIndex("EntryNumber", "AppointmentNumber");
 
                     b.ToTable("Documents");
+
+
+                    //
+
+                    b.HasIndex("DocTypeId");
+
+                    b.HasIndex("DirectionId");
+
+                    b.HasIndex("SeenById");
+
+                    b.HasIndex("SignById");
+
+                    b.HasIndex("DepartmentId");
+                    //
                 });
 
             modelBuilder.Entity("DocumentProcessing.Models.DocumentOwner", b =>
@@ -380,6 +425,55 @@ namespace DocumentProcessing.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+
+            //
+
+
+            modelBuilder.Entity("DocumentProcessing.Models.DocType", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
+
+                b.Property<string>("Name");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Name");
+
+                b.ToTable("Doctypes");
+            });
+
+            modelBuilder.Entity("DocumentProcessing.Models.Direction", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
+
+                b.Property<string>("Name");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Name");
+
+                b.ToTable("Directions");
+            });
+            modelBuilder.Entity("DocumentProcessing.Models.Department", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
+
+                b.Property<string>("Name");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Name");
+
+                b.ToTable("Departments");
+            });
+            //
+
+
+
+
             modelBuilder.Entity("DocumentProcessing.Models.Appointment", b =>
                 {
                     b.HasOne("DocumentProcessing.Models.Document", "Document")
@@ -418,6 +512,35 @@ namespace DocumentProcessing.Migrations
                     b.HasOne("DocumentProcessing.Models.VisaType", "VisaType")
                         .WithMany("Documents")
                         .HasForeignKey("VisaTypeId");
+
+
+                    b.HasOne("DocumentProcessing.Models.DocType", "DocTypes")
+                        .WithMany("Documents")
+                        .HasForeignKey("DocTypeId");
+
+                    b.HasOne("DocumentProcessing.Models.ApplicationUser", "SeenBy")
+                        .WithMany()
+                        .HasForeignKey("SeenById");
+                    b.HasOne("DocumentProcessing.Models.Direction", "Directions")
+                        .WithMany("Documents")
+                        .HasForeignKey("DirectionId");
+
+                    b.HasOne("DocumentProcessing.Models.ApplicationUser", "SignBy")
+                        .WithMany()
+                        .HasForeignKey("SignById");
+
+                    b.HasOne("DocumentProcessing.Models.Department", "Departments")
+                        .WithMany("Documents")
+                        .HasForeignKey("DepartmentId");
+
+                    b.HasOne("DocumentProcessing.Models.ApplicationUser", "AddedUser")
+                       .WithMany()
+                       .HasForeignKey("AddedUserId");
+
+                    b.HasOne("DocumentProcessing.Models.ApplicationUser", "EditedUser")
+                       .WithMany()
+                       .HasForeignKey("EditedUserId");
+
                 });
 
             modelBuilder.Entity("DocumentProcessing.Models.RequestId", b =>

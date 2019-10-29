@@ -44,6 +44,14 @@ namespace DocumentProcessing.Data
 
         public DbSet<DocumentOwner> DocumentOwners { get; set; }
 
+        //
+
+        public DbSet<DocType> DocTypes { get; set; }
+
+        public DbSet<Department> Departments { get; set; }
+
+        public DbSet<Direction> Directions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -121,6 +129,33 @@ namespace DocumentProcessing.Data
             
             modelBuilder.Entity<ApplicationUser>()
                 .HasIndex(x => x.Name);
+
+            //
+            modelBuilder.Entity<DocType>()
+               .HasMany(x => x.Documents)
+               .WithOne(x => x.DocTypes)
+               .IsRequired(false);
+
+            modelBuilder.Entity<Direction>()
+                .HasMany(x => x.Documents)
+                .WithOne(x => x.Direction)
+                .IsRequired(false);
+
+            modelBuilder.Entity<Department>()
+                .HasMany(x => x.Documents)
+                .WithOne(x => x.Department)
+                .IsRequired(false);
+
+            modelBuilder.Entity<DocType>()
+                .HasIndex(x => x.Name);
+
+            modelBuilder.Entity<Direction>()
+                .HasIndex(x => x.Name);
+
+            modelBuilder.Entity<Department>()
+                .HasIndex(x => x.Name);
+
+            
         }
     }
 }
