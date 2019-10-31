@@ -34,6 +34,8 @@ namespace DocumentProcessing.Data
 
         public DbSet<VisaType> VisaType { get; set; }
 
+        public DbSet<Registration> Registration { get; set; }
+
         public DbSet<VisaDateType> VisaDateType { get; set; }
 
         public DbSet<Applicant> Applicants { get; set; }
@@ -81,6 +83,11 @@ namespace DocumentProcessing.Data
                 .HasMany(x => x.Documents)
                 .WithOne(x => x.VisaType)
                 .IsRequired(false);
+
+            modelBuilder.Entity<Registration>()
+               .HasMany(x => x.Documents)
+               .WithOne(x => x.Registration)
+               .IsRequired(false);
 
             modelBuilder.Entity<VisaDateType>()
             .HasMany(x => x.Documents)

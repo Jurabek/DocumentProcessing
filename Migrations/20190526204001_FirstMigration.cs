@@ -109,6 +109,17 @@ namespace DocumentProcessing.Migrations
                    table.PrimaryKey("PK_VisaType", x => x.Id);
                });
             migrationBuilder.CreateTable(
+              name: "Registration",
+              columns: table => new
+              {
+                  Id = table.Column<Guid>(nullable: false),
+                  Name = table.Column<string>(nullable: true)
+              },
+              constraints: table =>
+              {
+                  table.PrimaryKey("PK_Registration", x => x.Id);
+              });
+            migrationBuilder.CreateTable(
               name: "VisaDateType",
               columns: table => new
               {
@@ -241,6 +252,7 @@ namespace DocumentProcessing.Migrations
                     RecipientId = table.Column<string>(nullable: true),
                     VisaTypeId = table.Column<Guid>(nullable: true),
                     VisaDateTypeId = table.Column<Guid>(nullable: true),
+                    RegistrationId = table.Column<Guid>(nullable: true),
                     VisaId = table.Column<string>(nullable: true),
                     VisaDate = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
@@ -285,6 +297,12 @@ namespace DocumentProcessing.Migrations
                         principalTable: "VisaType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                       name: "FK_Documents_Registration_RegistrationId",
+                       column: x => x.RegistrationId,
+                       principalTable: "Registration",
+                       principalColumn: "Id",
+                       onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Documents_VisaDateType_VisaDateTypeId",
                         column: x => x.VisaDateTypeId,
@@ -402,6 +420,11 @@ namespace DocumentProcessing.Migrations
                 column: "VisaTypeId");
 
             migrationBuilder.CreateIndex(
+               name: "IX_Documents_RegistrationId",
+               table: "Documents",
+               column: "RegistrationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Documents_VisaDatetypeId",
                 table: "Documents",
                 column: "VisaDateTypeId");
@@ -463,6 +486,9 @@ namespace DocumentProcessing.Migrations
 
             migrationBuilder.DropTable(
                name: "VisaType");
+
+            migrationBuilder.DropTable(
+             name: "Registration");
 
             migrationBuilder.DropTable(
               name: "VisaDateType");

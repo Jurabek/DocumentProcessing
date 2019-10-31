@@ -132,6 +132,8 @@ namespace DocumentProcessing.Migrations
 
                     b.Property<Guid?>("VisaTypeId");
 
+                    b.Property<Guid?>("RegistrationId");
+
                     b.Property<Guid?>("VisaDateTypeId");
 
                     b.HasKey("Id");
@@ -151,6 +153,8 @@ namespace DocumentProcessing.Migrations
                     b.HasIndex("VisaDate");
 
                     b.HasIndex("VisaTypeId");
+
+                    b.HasIndex("RegistrationId");
 
                     b.HasIndex("VisaDateTypeId");
 
@@ -229,6 +233,18 @@ namespace DocumentProcessing.Migrations
                 b.HasKey("Id");
 
                 b.ToTable("VisaType");
+            });
+
+            modelBuilder.Entity("DocumentProcessing.Models.Registration", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
+
+                b.Property<string>("Name");
+
+                b.HasKey("Id");
+
+                b.ToTable("Registration");
             });
 
             modelBuilder.Entity("DocumentProcessing.Models.VisaDateType", b =>
@@ -384,6 +400,11 @@ namespace DocumentProcessing.Migrations
                     b.HasOne("DocumentProcessing.Models.VisaType", "VisaType")
                        .WithMany("Documents")
                        .HasForeignKey("VisaTypeId");
+
+
+                    b.HasOne("DocumentProcessing.Models.Registration", "Registration")
+                       .WithMany("Documents")
+                       .HasForeignKey("RegistrationId");
 
                     b.HasOne("DocumentProcessing.Models.VisaDateType", "VisaDateType")
                        .WithMany("Documents")

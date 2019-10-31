@@ -48,6 +48,9 @@ namespace DocumentProcessing.ViewModels
         [DisplayName("Навъи раводид")]
         public string VisaType { get; set; }
 
+        [DisplayName("Бақайдгирӣ")]
+        public string Registration { get; set; }
+
         [DisplayName("Мӯҳлати раводид")]
         public string VisaDateType { get; set; }
 

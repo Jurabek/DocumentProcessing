@@ -24,35 +24,7 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
         $('#VisaTypeId').removeAttr("disabled");
         $('#VisaDateTypeId').removeAttr("disabled");
         $('#VisaDate').removeAttr("disabled");
-    } else if ($purpose == "Бақайдгирӣ") {
-        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-        $('#VisaId').attr("disabled", "true");
-        $('#VisaTypeId').attr("disabled", "true");
-        $('#VisaDateTypeId').attr("disabled", "true");
-        $('#VisaDate').attr("disabled", "true");
-        $("#addScnt").css("display", "none");
-    } else if ($purpose == "Хуруҷӣ") {
-        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-        $('#VisaId').attr("disabled", "true");
-        $('#VisaTypeId').attr("disabled", "true");
-        $('#VisaDateTypeId').attr("disabled", "true");
-        $('#VisaDate').attr("disabled", "true");
-        $("#addScnt").css("display", "none");
-    } else if ($purpose == "Таъйид") {
-        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-        $('#VisaId').attr("disabled", "true");
-        $('#VisaTypeId').attr("disabled", "true");
-        $('#VisaDateTypeId').attr("disabled", "true");
-        $('#VisaDate').attr("disabled", "true");
-        $("#addScnt").css("display", "none");
-    } else if ($purpose == "Апостилгузорӣ") {
-        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-        $('#VisaId').attr("disabled", "true");
-        $('#VisaTypeId').attr("disabled", "true");
-        $('#VisaDateTypeId').attr("disabled", "true");
-        $('#VisaDate').attr("disabled", "true");
-        $("#addScnt").css("display", "none");
-    } else if ($purpose == "eVisa") {
+    }  else if ($purpose == "eVisa") {
         $('#Appointment_Character option[value=1]').attr('selected', 'selected');
         $('#VisaId').attr("required", "true");
         $('#VisaTypeId').attr("required", "true");
@@ -74,35 +46,7 @@ $('select[name=PurposeId]').change(function () {  // ищеть в докуме�
         $('#VisaTypeId').removeAttr("disabled");
         $('#VisaDateTypeId').removeAttr("disabled");
         $('#VisaDate').removeAttr("disabled");
-    } else if ($purpose == "Роудспот") {
-        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-        $('#VisaId').attr("disabled", "true");
-        $('#VisaTypeId').attr("disabled", "true");
-        $('#VisaDateTypeId').attr("disabled", "true");
-        $('#VisaDate').attr("disabled", "true");
-        $("#addScnt").css("display", "none");
-    } else if ($purpose == "Иҷозати ГБАО") {
-        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-        $('#VisaId').attr("disabled", "true");
-        $('#VisaTypeId').attr("disabled", "true");
-        $('#VisaDateTypeId').attr("disabled", "true");
-        $('#VisaDate').attr("disabled", "true");
-        $("#addScnt").css("display", "none");
-    } else if ($purpose == " Сафари хизматӣ ба ҶХХ") {
-        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-        $('#VisaId').attr("disabled", "true");
-        $('#VisaTypeId').attr("disabled", "true");
-        $('#VisaDateTypeId').attr("disabled", "true");
-        $('#VisaDate').attr("disabled", "true");
-        $("#addScnt").css("display", "none");
-    } else if ($purpose == "Шиноснома") {
-        $('#Appointment_Character option[value=1]').attr('selected', 'selected');
-        $('#VisaId').attr("disabled", "true");
-        $('#VisaTypeId').attr("disabled", "true");
-        $('#VisaDateTypeId').attr("disabled", "true");
-        $('#VisaDate').attr("disabled", "true");
-        $("#addScnt").css("display", "none");
-    } else {
+    }  else {
         
         $('#VisaId').attr("disabled", "true");
         $('#VisaTypeId').attr("disabled", "true");
@@ -180,7 +124,7 @@ $('#file').change(function () {
 
 
 
-$textChange = 'Ҳадди ниҳоии рақами иҷозатшуда барои Рӯз то 30 ва барои Моҳ то 32';
+$textChange = 'Ҳадди ниҳоии рақами иҷозатшуда барои Рӯз то 30 ва барои Моҳ то 36';
 
 $('select[name=VisaDateTypeId]').change(function () {
     var $VisaDateType = $("#VisaDateTypeId option:selected").text();
@@ -191,8 +135,8 @@ $('select[name=VisaDateTypeId]').change(function () {
         $textChange = 'Ҳадди ниҳоии рақами иҷозатшуда барои Рӯз аз 1 то 30';
     } else if ($VisaDateType == "Моҳ") {
 
-        $('#VisaDate').attr({ 'max': '32', 'min': '1', 'data_val_length': 'Sorry only 25 characters allowed for ProductName' });
-        $textChange = 'Ҳадди ниҳоии рақами иҷозатшуда барои Моҳ аз 1 то 32';
+        $('#VisaDate').attr({ 'max': '36', 'min': '1', 'data_val_length': 'Sorry only 25 characters allowed for ProductName' });
+        $textChange = 'Ҳадди ниҳоии рақами иҷозатшуда барои Моҳ аз 1 то 36';
     }
 });
 
@@ -200,7 +144,7 @@ $('#VisaDate').change(function () {
     setTimeout(function () {
 
         $('#textChange').text($textChange);
-    }, 300);
+    }, 200);
 
 });
 
@@ -250,7 +194,7 @@ Date.prototype.format = function (mask, utc) {
     position: "bottom",                 // (top, bottom), position of the caption element relative to table
     ignoreRows: null,                  // (Number, Number[]), row indices to exclude from the exported file(s)
     ignoreCols: [5, 6, 8, 9],                  // (Number, Number[]), column indices to exclude from the exported file(s)
-    ignoreCSS: "td.todelete",  // (selector, selector[]), selector(s) to exclude from the exported file(s)
+    ignoreCSS: "td.todelete",            // (selector, selector[]), selector(s) to exclude from the exported file(s)
     emptyCSS: ".tableexport-empty",    // (selector, selector[]), selector(s) to replace cells with an empty string in the exported file(s)
     trimWhitespace: true              // (Boolean), remove all leading/trailing newlines, spaces, and tabs from cell text in the exported file(s)
 });

@@ -48,8 +48,10 @@ namespace DocumentProcessing.ViewModels
         public string VisaDate { get; set; }
 
         [DisplayName("Навъи раводид")]
-       
         public Guid? VisaTypeId { get; set; }
+
+        [DisplayName("Бақайдгирӣ")]
+        public Guid? RegistrationId { get; set; }
 
         [DisplayName("Мӯҳлати раводид")]
         

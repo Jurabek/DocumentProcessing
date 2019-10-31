@@ -25,6 +25,8 @@ namespace DocumentProcessing.Models
 
         public Guid? VisaTypeId { get; set; }
 
+        public Guid? RegistrationId { get; set; }
+
         public Guid? VisaDateTypeId { get; set; }
 
         public Guid? PurposeId { get; set; }
@@ -53,6 +55,9 @@ namespace DocumentProcessing.Models
 
         [ForeignKey("VisaTypeId")]
         public virtual VisaType VisaType { get; set; }
+
+        [ForeignKey("RegistrationId")]
+        public virtual Registration Registration { get; set; }
 
         [ForeignKey("VisaDateTypeId")]
         public virtual VisaDateType VisaDateType { get; set; }
