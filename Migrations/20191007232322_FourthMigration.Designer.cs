@@ -4,15 +4,17 @@ using DocumentProcessing.Data;
 using DocumentProcessing.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DocumentProcessing.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191007232322_FourthMigration")]
+    partial class FourthMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,8 +140,6 @@ namespace DocumentProcessing.Migrations
 
                     b.Property<string>("VisaDate");
 
-                    b.Property<Guid?>("RegistrationId");
-
                     b.Property<Guid?>("VisaDateTypeId");
 
                     b.Property<string>("VisaId");
@@ -161,10 +161,6 @@ namespace DocumentProcessing.Migrations
                     b.HasIndex("VisaDateTypeId");
 
                     b.HasIndex("VisaTypeId");
-
-                    b.HasIndex("RegistrationId");
-
-                    b.HasIndex("VisaDateTypeId");
 
                     b.HasIndex("EntryNumber", "AppointmentNumber");
 
@@ -266,23 +262,6 @@ namespace DocumentProcessing.Migrations
 
                     b.ToTable("VisaDateType");
                 });
-
-            modelBuilder.Entity("DocumentProcessing.Models.Registration", b =>
-            {
-                b.Property<Guid>("Id")
-                    .ValueGeneratedOnAdd();
-
-                b.Property<string>("Name");
-
-                b.HasKey("Id");
-
-                b.ToTable("Registration");
-            });
-
-            modelBuilder.Entity("DocumentProcessing.Models.VisaDateType", b =>
-            {
-                b.Property<Guid>("Id")
-                    .ValueGeneratedOnAdd();
 
             modelBuilder.Entity("DocumentProcessing.Models.VisaType", b =>
                 {
@@ -443,21 +422,12 @@ namespace DocumentProcessing.Migrations
                         .HasForeignKey("VisaTypeId");
                 });
 
-                    b.HasOne("DocumentProcessing.Models.Registration", "Registration")
-                       .WithMany("Documents")
-                       .HasForeignKey("RegistrationId");
-
-                    b.HasOne("DocumentProcessing.Models.VisaDateType", "VisaDateType")
-                       .WithMany("Documents")
-                       .HasForeignKey("VisaDateTypeId");
-
             modelBuilder.Entity("DocumentProcessing.Models.RequestId", b =>
                 {
                     b.HasOne("DocumentProcessing.Models.Document", "Document")
                         .WithMany("RequestId")
                         .HasForeignKey("DocumentId")
                         .OnDelete(DeleteBehavior.Cascade);
-
                 });
 
             modelBuilder.Entity("DocumentProcessing.Models.ScannedFile", b =>

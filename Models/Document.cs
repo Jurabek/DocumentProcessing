@@ -69,6 +69,5 @@ namespace DocumentProcessing.Models
         public virtual IEnumerable<RequestId> RequestId { get; set; }
 
         public string VisaId { get; set; }
-
     }
 }

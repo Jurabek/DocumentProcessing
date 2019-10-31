@@ -19,8 +19,8 @@ namespace DocumentProcessing.Data
         {
             NpgsqlConnection.GlobalTypeMapper.MapEnum<AppointmentCharacters>();
         }
-        
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, 
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,
             IConfiguration configuration) : base(options)
         {
             _configuration = configuration;
@@ -55,10 +55,10 @@ namespace DocumentProcessing.Data
             var lastEntryNumberString = _configuration.GetValue<string>("UserSettings:LastEntryNumber");
 
             int.TryParse(lastEntryNumberString, out var lastEntryNumber);
-            
+
             modelBuilder.HasSequence<long>("EntryNumbers")
                 .StartsAt(lastEntryNumber);
-            
+
             modelBuilder.Entity<Document>()
                 .Property(o => o.EntryNumber)
                 .HasDefaultValueSql("nextval('\"EntryNumbers\"')");
@@ -69,11 +69,14 @@ namespace DocumentProcessing.Data
                 .HasForeignKey(x => x.DocumentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Document>()
+                .HasIndex(x => new {x.EntryNumber, x.AppointmentNumber});
+
             modelBuilder.Entity<Purpose>()
                 .HasMany(x => x.Documents)
                 .WithOne(x => x.Purpose)
                 .IsRequired(false);
-
+            
             modelBuilder.Entity<Status>()
                 .HasMany(x => x.Documents)
                 .WithOne(x => x.Status)
@@ -90,18 +93,21 @@ namespace DocumentProcessing.Data
                .IsRequired(false);
 
             modelBuilder.Entity<VisaDateType>()
-            .HasMany(x => x.Documents)
-            .WithOne(x => x.VisaDateType)
-            .IsRequired(false);
+                .HasMany(x => x.Documents)
+                .WithOne(x => x.VisaDateType)
+                .IsRequired(false);
 
             modelBuilder.Entity<DocumentOwner>()
                 .HasMany(x => x.Documents)
                 .WithOne(x => x.Owner);
 
+            modelBuilder.Entity<DocumentOwner>()
+                .HasIndex(x => x.Name);
+            
             modelBuilder.Entity<Applicant>()
                 .HasMany(x => x.Documents)
                 .WithOne(x => x.Applicant);
-
+            
             modelBuilder.Entity<Document>()
                 .HasOne(x => x.Recipient)
                 .WithMany();
@@ -110,8 +116,18 @@ namespace DocumentProcessing.Data
                 .HasOne(x => x.Appointment)
                 .WithOne(x => x.Document)
                 .HasForeignKey<Appointment>(x => x.DocumentId);
+            
+            modelBuilder.Entity<Applicant>()
+                .HasIndex(x => x.Name);
+            
+            modelBuilder.Entity<Purpose>()
+                .HasIndex(x => x.Name);
+            
+            modelBuilder.Entity<Status>()
+                .HasIndex(x => x.Name);
+            
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(x => x.Name);
         }
-
-        public DbSet<DocumentProcessing.ViewModels.DocumentListViewModel> DocumentListViewModel { get; set; }
     }
 }
