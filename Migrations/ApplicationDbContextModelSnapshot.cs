@@ -31,8 +31,6 @@ namespace DocumentProcessing.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name");
-
                     b.ToTable("Applicants");
                 });
 
@@ -80,8 +78,6 @@ namespace DocumentProcessing.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name");
-
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -122,8 +118,6 @@ namespace DocumentProcessing.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("Description");
-
                     b.Property<long>("EntryNumber")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("nextval('\"EntryNumbers\"')");
@@ -136,15 +130,11 @@ namespace DocumentProcessing.Migrations
 
                     b.Property<Guid?>("StatusId");
 
-                    b.Property<string>("VisaDate");
+                    b.Property<Guid?>("VisaTypeId");
 
                     b.Property<Guid?>("RegistrationId");
 
                     b.Property<Guid?>("VisaDateTypeId");
-
-                    b.Property<string>("VisaId");
-
-                    b.Property<Guid?>("VisaTypeId");
 
                     b.HasKey("Id");
 
@@ -158,15 +148,15 @@ namespace DocumentProcessing.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.HasIndex("VisaDateTypeId");
+                    b.HasIndex("VisaId");
+
+                    b.HasIndex("VisaDate");
 
                     b.HasIndex("VisaTypeId");
 
                     b.HasIndex("RegistrationId");
 
                     b.HasIndex("VisaDateTypeId");
-
-                    b.HasIndex("EntryNumber", "AppointmentNumber");
 
                     b.ToTable("Documents");
                 });
@@ -179,8 +169,6 @@ namespace DocumentProcessing.Migrations
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name");
 
                     b.ToTable("DocumentOwners");
                 });
@@ -196,25 +184,7 @@ namespace DocumentProcessing.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name");
-
                     b.ToTable("Purposes");
-                });
-
-            modelBuilder.Entity("DocumentProcessing.Models.RequestId", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("DocumentId");
-
-                    b.Property<string>("Number");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentId");
-
-                    b.ToTable("RequestId");
                 });
 
             modelBuilder.Entity("DocumentProcessing.Models.ScannedFile", b =>
@@ -250,22 +220,20 @@ namespace DocumentProcessing.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name");
-
                     b.ToTable("Statuses");
                 });
 
-            modelBuilder.Entity("DocumentProcessing.Models.VisaDateType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+            modelBuilder.Entity("DocumentProcessing.Models.VisaType", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("VisaDateType");
-                });
+                b.ToTable("VisaType");
+            });
 
             modelBuilder.Entity("DocumentProcessing.Models.Registration", b =>
             {
@@ -284,17 +252,12 @@ namespace DocumentProcessing.Migrations
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity("DocumentProcessing.Models.VisaType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                b.Property<string>("Name");
 
-                    b.Property<string>("Name");
+                b.HasKey("Id");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("VisaType");
-                });
+                b.ToTable("VisaDateType");
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -434,14 +397,10 @@ namespace DocumentProcessing.Migrations
                         .WithMany("Documents")
                         .HasForeignKey("StatusId");
 
-                    b.HasOne("DocumentProcessing.Models.VisaDateType", "VisaDateType")
-                        .WithMany("Documents")
-                        .HasForeignKey("VisaDateTypeId");
-
                     b.HasOne("DocumentProcessing.Models.VisaType", "VisaType")
-                        .WithMany("Documents")
-                        .HasForeignKey("VisaTypeId");
-                });
+                       .WithMany("Documents")
+                       .HasForeignKey("VisaTypeId");
+
 
                     b.HasOne("DocumentProcessing.Models.Registration", "Registration")
                        .WithMany("Documents")
@@ -450,14 +409,6 @@ namespace DocumentProcessing.Migrations
                     b.HasOne("DocumentProcessing.Models.VisaDateType", "VisaDateType")
                        .WithMany("Documents")
                        .HasForeignKey("VisaDateTypeId");
-
-            modelBuilder.Entity("DocumentProcessing.Models.RequestId", b =>
-                {
-                    b.HasOne("DocumentProcessing.Models.Document", "Document")
-                        .WithMany("RequestId")
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                 });
 
             modelBuilder.Entity("DocumentProcessing.Models.ScannedFile", b =>

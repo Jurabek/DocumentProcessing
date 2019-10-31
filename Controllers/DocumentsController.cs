@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using DinkToPdf.Contracts;
 using DocumentProcessing.Abstraction;
 using DocumentProcessing.Data;
 using DocumentProcessing.Helpers;
@@ -13,6 +15,7 @@ using DocumentProcessing.Models;
 using DocumentProcessing.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -30,22 +33,29 @@ namespace DocumentProcessing.Controllers
         private const int PageSize = 10;
 
         private readonly IFileUploader _fileUploader;
+
         private readonly IElectronicStamp _electronicStamp;
+        private readonly IConverter _converter;
         private readonly ILogger<DocumentsController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
 
         public DocumentsController(
             IFileUploader fileUploader,
             IElectronicStamp electronicStamp,
+            IConverter converter,
             ILogger<DocumentsController> logger,
             ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
             IMapper mapper)
         {
             _fileUploader = fileUploader;
             _electronicStamp = electronicStamp;
+            _converter = converter;
             _logger = logger;
             _context = context;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
@@ -54,6 +64,7 @@ namespace DocumentProcessing.Controllers
             [FromQuery(Name = "q")] string searchText,
             [FromQuery(Name = "dateFrom")] string startDate,
             [FromQuery(Name = "dateFor")] string endDate,
+            [FromQuery(Name = "selectCount")] string selectCount,
             int? pageNumber)
         {
             var documents = _context.Documents.OrderByDescending(x => x.Date)
@@ -67,20 +78,22 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Owner)
                 .Include(x => x.Recipient)
                 .Include(x => x.Appointment).AsQueryable();
-
-                 if (!string.IsNullOrEmpty(endDate) && !string.IsNullOrEmpty(startDate))
+           
+            if (!string.IsNullOrEmpty(endDate) && !string.IsNullOrEmpty(startDate))
             {
                 var parsedStartDate = DateTime.ParseExact(startDate, "dd.MM.yyyy", CultureInfo.InvariantCulture);
                 var parsedEndDate = DateTime.ParseExact(endDate, "dd.MM.yyyy", CultureInfo.CurrentCulture);
 
                 ViewBag.DateFor = endDate;
                 ViewBag.DateFrom = startDate;
+                // documentCount = documents.Count(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
                 documents = documents.Where(x => x.Date >= parsedStartDate && x.Date < parsedEndDate);
             }
 
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
+                // documentCount = documents.Count(Search(searchText));
                 documents = documents.Where(Search(searchText));
             }
 
@@ -94,7 +107,6 @@ namespace DocumentProcessing.Controllers
 
         private Expression<Func<Document, bool>> Search(string searchText)
         {
-
             var upperSearchText = searchText.ToUpperInvariant();
 
             return x => x.Applicant.Name.ToUpperInvariant().Contains(upperSearchText)
@@ -105,17 +117,6 @@ namespace DocumentProcessing.Controllers
                         || x.Status.Name.ToUpperInvariant().Contains(upperSearchText);
                         //   || x.VisaType.Name.ToUpperInvariant().Contains(upperSearchText)
                         //  || x.VisaDateType.Name.ToUpperInvariant().Contains(upperSearchText);
-
-            var patternMatch = $"%{searchText}%";
-            return x => EF.Functions.ILike(x.Applicant.Name, patternMatch)
-                        || EF.Functions.ILike(x.Owner.Name, patternMatch)
-                        || EF.Functions.ILike(x.EntryNumber.ToString(), patternMatch)
-                        || EF.Functions.ILike(x.Recipient.Name, patternMatch)
-                        || EF.Functions.ILike(x.Purpose.Name, patternMatch)
-                        || EF.Functions.ILike(x.Status.Name, patternMatch)
-                        || EF.Functions.ILike(x.VisaType.Name, patternMatch)
-                        || EF.Functions.ILike(x.VisaDateType.Name, patternMatch);
-
         }
 
         [HttpGet]
@@ -154,6 +155,7 @@ namespace DocumentProcessing.Controllers
                     document.VisaId = VisaID;
                     string[] strArr = null;
                     RequestId req = new RequestId();
+                    Document doc = new Document();
                     char[] splitchar = { ',' };
                     if (String.IsNullOrEmpty(VisaID)) {  } else { strArr = VisaID.Split(splitchar); }
 
@@ -398,7 +400,8 @@ namespace DocumentProcessing.Controllers
             SetSelectedDropDownLists(viewModel);
             return View(viewModel);
         }
-        
+
+
         [HttpGet]
         public IActionResult View(Guid? id)
         {
@@ -425,7 +428,6 @@ namespace DocumentProcessing.Controllers
 
             return View(result);
         }
-
         [HttpGet]
         public IActionResult PreView(Guid? id)
         {
