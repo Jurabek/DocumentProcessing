@@ -89,6 +89,14 @@ namespace DocumentProcessing.Data
                 "Раводиди хуруҷии навъи «Хуруҷӣ»"
                 };
 
+                var registrationList = new List<string>
+                {
+                    "Нест",
+                    "2017",
+                    "2018",
+                    "2019",
+                    "2020"
+                };
 
                 var ownersList = new List<string>
                 {
@@ -122,6 +130,12 @@ namespace DocumentProcessing.Data
                 {
                     var visatype = visatypeList.Select(v => new VisaType { Name = v });
                     await context.AddRangeAsync(visatype);
+                }
+
+                if (!await context.Registration.AnyAsync())
+                {
+                    var registration = registrationList.Select(r => new Registration { Name = r });
+                    await context.AddRangeAsync(registration);
                 }
 
                 if (!await context.VisaDateType.AnyAsync())

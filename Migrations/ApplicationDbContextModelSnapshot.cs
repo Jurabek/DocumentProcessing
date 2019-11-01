@@ -136,13 +136,13 @@ namespace DocumentProcessing.Migrations
 
                     b.Property<Guid?>("StatusId");
 
+                    b.Property<Guid?>("VisaTypeId");
+
                     b.Property<string>("VisaDate");
 
+                    b.Property<Guid?>("RegistrationId");
+
                     b.Property<Guid?>("VisaDateTypeId");
-
-                    b.Property<string>("VisaId");
-
-                    b.Property<Guid?>("VisaTypeId");
 
                     b.HasKey("Id");
 
@@ -156,9 +156,11 @@ namespace DocumentProcessing.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.HasIndex("VisaDateTypeId");
-
                     b.HasIndex("VisaTypeId");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.HasIndex("VisaDateTypeId");
 
                     b.HasIndex("EntryNumber", "AppointmentNumber");
 
@@ -196,20 +198,21 @@ namespace DocumentProcessing.Migrations
                 });
 
             modelBuilder.Entity("DocumentProcessing.Models.RequestId", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("DocumentId");
+                b.Property<Guid>("DocumentId");
 
-                    b.Property<string>("Number");
+                b.Property<string>("Number");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("DocumentId");
+                b.HasIndex("DocumentId");
 
-                    b.ToTable("RequestId");
-                });
+                b.ToTable("RequestId");
+            });
+
 
             modelBuilder.Entity("DocumentProcessing.Models.ScannedFile", b =>
                 {
@@ -249,29 +252,41 @@ namespace DocumentProcessing.Migrations
                     b.ToTable("Statuses");
                 });
 
-            modelBuilder.Entity("DocumentProcessing.Models.VisaDateType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VisaDateType");
-                });
-
             modelBuilder.Entity("DocumentProcessing.Models.VisaType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("VisaType");
-                });
+                b.ToTable("VisaType");
+            });
+
+            modelBuilder.Entity("DocumentProcessing.Models.Registration", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
+
+                b.Property<string>("Name");
+
+                b.HasKey("Id");
+
+                b.ToTable("Registration");
+            });
+
+            modelBuilder.Entity("DocumentProcessing.Models.VisaDateType", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
+
+                b.Property<string>("Name");
+
+                b.HasKey("Id");
+
+                b.ToTable("VisaDateType");
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -411,13 +426,17 @@ namespace DocumentProcessing.Migrations
                         .WithMany("Documents")
                         .HasForeignKey("StatusId");
 
-                    b.HasOne("DocumentProcessing.Models.VisaDateType", "VisaDateType")
-                        .WithMany("Documents")
-                        .HasForeignKey("VisaDateTypeId");
-
                     b.HasOne("DocumentProcessing.Models.VisaType", "VisaType")
-                        .WithMany("Documents")
-                        .HasForeignKey("VisaTypeId");
+                       .WithMany("Documents")
+                       .HasForeignKey("VisaTypeId");
+
+                    b.HasOne("DocumentProcessing.Models.Registration", "Registration")
+                       .WithMany("Documents")
+                       .HasForeignKey("RegistrationId");
+
+                    b.HasOne("DocumentProcessing.Models.VisaDateType", "VisaDateType")
+                       .WithMany("Documents")
+                       .HasForeignKey("VisaDateTypeId");
                 });
 
             modelBuilder.Entity("DocumentProcessing.Models.RequestId", b =>

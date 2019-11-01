@@ -32,6 +32,11 @@ namespace DocumentProcessing.Migrations
                 table: "Documents",
                 nullable: true);
 
+            migrationBuilder.AddColumn<Guid>(
+                name: "RegistrationId",
+                table: "Documents",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "RequestId",
                 columns: table => new
@@ -75,6 +80,18 @@ namespace DocumentProcessing.Migrations
                     table.PrimaryKey("PK_VisaType", x => x.Id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Registration",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Registration", x => x.Id);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Statuses_Name",
                 table: "Statuses",
@@ -94,6 +111,11 @@ namespace DocumentProcessing.Migrations
                 name: "IX_Documents_VisaTypeId",
                 table: "Documents",
                 column: "VisaTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_RegistartionId",
+                table: "Documents",
+                column: "RegistrationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Documents_EntryNumber_AppointmentNumber",
@@ -135,6 +157,14 @@ namespace DocumentProcessing.Migrations
                 principalTable: "VisaType",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Documents_Registration_RegistrationId",
+                table: "Documents",
+                column: "RegistrationId",
+                principalTable: "Registration",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -155,6 +185,9 @@ namespace DocumentProcessing.Migrations
 
             migrationBuilder.DropTable(
                 name: "VisaType");
+
+            migrationBuilder.DropTable(
+                name: "Registration");
 
             migrationBuilder.DropIndex(
                 name: "IX_Statuses_Name",
@@ -207,6 +240,12 @@ namespace DocumentProcessing.Migrations
             migrationBuilder.DropColumn(
                 name: "VisaTypeId",
                 table: "Documents");
+
+            migrationBuilder.DropColumn(
+                name: "RegistrationId",
+                table: "Documents");
+
+
         }
     }
 }

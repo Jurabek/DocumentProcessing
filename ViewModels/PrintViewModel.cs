@@ -16,6 +16,8 @@ namespace DocumentProcessing.ViewModels
 
         public string VisaType { get; set; }
 
+        public string Registration { get; set; }
+
         public string VisaDateType { get; set; }
 
         public string VisaDate { get; set; }
