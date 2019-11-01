@@ -97,39 +97,6 @@ namespace DocumentProcessing.Migrations
                     table.PrimaryKey("PK_Statuses", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-               name: "VisaType",
-               columns: table => new
-               {
-                   Id = table.Column<Guid>(nullable: false),
-                   Name = table.Column<string>(nullable: true)
-               },
-               constraints: table =>
-               {
-                   table.PrimaryKey("PK_VisaType", x => x.Id);
-               });
-            migrationBuilder.CreateTable(
-              name: "Registration",
-              columns: table => new
-              {
-                  Id = table.Column<Guid>(nullable: false),
-                  Name = table.Column<string>(nullable: true)
-              },
-              constraints: table =>
-              {
-                  table.PrimaryKey("PK_Registration", x => x.Id);
-              });
-            migrationBuilder.CreateTable(
-              name: "VisaDateType",
-              columns: table => new
-              {
-                  Id = table.Column<Guid>(nullable: false),
-                  Name = table.Column<string>(nullable: true)
-              },
-              constraints: table =>
-              {
-                  table.PrimaryKey("PK_VisaDateType", x => x.Id);
-              });
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -250,12 +217,6 @@ namespace DocumentProcessing.Migrations
                     PurposeId = table.Column<Guid>(nullable: true),
                     OwnerId = table.Column<Guid>(nullable: false),
                     RecipientId = table.Column<string>(nullable: true),
-                    VisaTypeId = table.Column<Guid>(nullable: true),
-                    VisaDateTypeId = table.Column<Guid>(nullable: true),
-                    RegistrationId = table.Column<Guid>(nullable: true),
-                    VisaId = table.Column<string>(nullable: true),
-                    VisaDate = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
 
                 },
                 constraints: table =>
@@ -291,24 +252,6 @@ namespace DocumentProcessing.Migrations
                         principalTable: "Statuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Documents_VisaType_VisaTypeId",
-                        column: x => x.VisaTypeId,
-                        principalTable: "VisaType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                       name: "FK_Documents_Registration_RegistrationId",
-                       column: x => x.RegistrationId,
-                       principalTable: "Registration",
-                       principalColumn: "Id",
-                       onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Documents_VisaDateType_VisaDateTypeId",
-                        column: x => x.VisaDateTypeId,
-                        principalTable: "VisaDateType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -332,25 +275,6 @@ namespace DocumentProcessing.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateTable(
-               name: "RequestId",
-               columns: table => new
-               {
-                   Id = table.Column<Guid>(nullable: false),
-                   Number = table.Column<string>(nullable: true),
-                   DocumentId = table.Column<Guid>(nullable: false)
-               },
-               constraints: table =>
-               {
-                   table.PrimaryKey("PK_RequestId", x => x.Id);
-                   table.ForeignKey(
-                       name: "FK_RequestId_Documents_DocumentId",
-                       column: x => x.DocumentId,
-                       principalTable: "Documents",
-                       principalColumn: "Id",
-                       onDelete: ReferentialAction.Cascade);
-               });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -414,30 +338,12 @@ namespace DocumentProcessing.Migrations
                 table: "Documents",
                 column: "StatusId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_VisatypeId",
-                table: "Documents",
-                column: "VisaTypeId");
-
-            migrationBuilder.CreateIndex(
-               name: "IX_Documents_RegistrationId",
-               table: "Documents",
-               column: "RegistrationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_VisaDatetypeId",
-                table: "Documents",
-                column: "VisaDateTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ScannedFiles_DocumentId",
                 table: "ScannedFiles",
                 column: "DocumentId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_RequestId_DocumentId",
-                table: "RequestId",
-                column: "DocumentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -460,9 +366,6 @@ namespace DocumentProcessing.Migrations
             migrationBuilder.DropTable(
                 name: "ScannedFiles");
 
-             migrationBuilder.DropTable(
-                name: "VisaId");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
@@ -484,14 +387,6 @@ namespace DocumentProcessing.Migrations
             migrationBuilder.DropTable(
                 name: "Statuses");
 
-            migrationBuilder.DropTable(
-               name: "VisaType");
-
-            migrationBuilder.DropTable(
-             name: "Registration");
-
-            migrationBuilder.DropTable(
-              name: "VisaDateType");
         }
     }
 }
