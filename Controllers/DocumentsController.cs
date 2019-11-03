@@ -30,7 +30,6 @@ namespace DocumentProcessing.Controllers
         private const int PageSize = 10;
 
         private readonly IFileUploader _fileUploader;
-
         private readonly IElectronicStamp _electronicStamp;
         private readonly ILogger<DocumentsController> _logger;
         private readonly ApplicationDbContext _context;
@@ -62,13 +61,12 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
                 .Include(x => x.VisaType)
-                .Include(x => x.Registration)
                 .Include(x => x.VisaDateType)
                 .Include(x => x.ScannedFiles)
                 .Include(x => x.Owner)
                 .Include(x => x.Recipient)
                 .Include(x => x.Appointment).AsQueryable();
-           
+            
             if (!string.IsNullOrEmpty(endDate) && !string.IsNullOrEmpty(startDate))
             {
                 var parsedStartDate = DateTime.ParseExact(startDate, "dd.MM.yyyy", CultureInfo.InvariantCulture);
@@ -117,7 +115,6 @@ namespace DocumentProcessing.Controllers
             PopulateApplicantsDropDownList();
             PopulateStatusesDropDownList();
             PopulateVisaTypeDropDownList();
-            PopulateRegistrationDropDownList();
             PopulateVisaDateTypeDropDownList();
             PopulatePurposesDropDownList();
 
@@ -386,8 +383,6 @@ namespace DocumentProcessing.Controllers
             SetSelectedDropDownLists(viewModel);
             return View(viewModel);
         }
-
-
         
         [HttpGet]
         public IActionResult PreView(Guid? id)
@@ -405,7 +400,6 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
                 .Include(x => x.VisaType)
-                .Include(x => x.Registration)
                 .Include(x => x.VisaDateType)
                 .Include(x => x.Appointment)
 
@@ -449,7 +443,6 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Purpose)
                 .Include(x => x.Status)
                 .Include(x => x.VisaType)
-                .Include(x => x.Registration)
                 .Include(x => x.Appointment)
                 .Include(x => x.VisaDateType)
 
@@ -513,7 +506,6 @@ namespace DocumentProcessing.Controllers
                    || originalDocument.PurposeId != document.PurposeId
                    || originalDocument.StatusId != document.StatusId
                    || originalDocument.VisaTypeId != document.VisaTypeId
-                   || originalDocument.RegistrationId != document.RegistrationId
                    || originalDocument.VisaDateTypeId != document.VisaDateTypeId
                    || originalDocument.ApplicantId != document.ApplicantId;
         }
@@ -549,8 +541,9 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.Applicant)
                 .Include(x => x.Purpose)
                 .Include(x => x.VisaType)
-                .Include(x => x.Registration)
+                //.Include(x => x.VisaId)
                 .Include(x => x.VisaDateType)
+                //.Include(x => x.VisaDate)
                 .Include(x => x.Recipient)
                 .FirstOrDefault();
 
@@ -595,7 +588,6 @@ namespace DocumentProcessing.Controllers
                         Purpose = document.Purpose.Name,
                         Recipient = document.Recipient.Name,
                         VisaType = document.VisaType?.Name,
-                        Registration = document.Registration?.Name,
                         VisaId = str,
                         VisaDateType = document.VisaDateType?.Name,
                         VisaDate = document.VisaDate,
@@ -621,10 +613,6 @@ namespace DocumentProcessing.Controllers
                 .AsNoTracking()
                 .FirstOrDefault(x => x.Id == document.VisaTypeId);
 
-            var selectedRegistration = _context.Registration
-               .AsNoTracking()
-               .FirstOrDefault(x => x.Id == document.RegistrationId);
-
             var selectedVisaDateType = _context.VisaDateType
                 .AsNoTracking()
                 .FirstOrDefault(x => x.Id == document.VisaDateTypeId);
@@ -642,7 +630,6 @@ namespace DocumentProcessing.Controllers
             PopulatePurposesDropDownList(selectedPurpose);
             PopulateStatusesDropDownList(selectedStatus);
             PopulateVisaTypeDropDownList(selectedVisaType);
-            PopulateRegistrationDropDownList(selectedRegistration);
             PopulateVisaDateTypeDropDownList(selectedVisaDateType);
         }
 
@@ -710,14 +697,6 @@ namespace DocumentProcessing.Controllers
                 "Id",
                 "Name",
                 selectedVisaType);
-        }
-
-        private void PopulateRegistrationDropDownList(object selectedRegistration = null)
-        {
-            ViewBag.Registration = new SelectList(_context.Registration.AsNoTracking(),
-                "Id",
-                "Name",
-                selectedRegistration);
         }
 
         private void PopulateVisaDateTypeDropDownList(object selectedVisaDateType = null)

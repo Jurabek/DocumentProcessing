@@ -31,8 +31,6 @@ namespace DocumentProcessing.Mappings
                     map => map.MapFrom(x => x.Purpose.Name))
                 .ForMember(x => x.VisaType,
                     map => map.MapFrom(x => x.VisaType.Name))
-                .ForMember(x => x.Registration,
-                    map => map.MapFrom(x => x.Registration.Name))
                 .ForMember(x => x.VisaDateType,
                     map => map.MapFrom(x => x.VisaDateType.Name))
                 .ForMember(x => x.Status, 

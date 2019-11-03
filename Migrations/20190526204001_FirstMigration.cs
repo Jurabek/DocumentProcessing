@@ -97,7 +97,6 @@ namespace DocumentProcessing.Migrations
                     table.PrimaryKey("PK_Statuses", x => x.Id);
                 });
 
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
@@ -216,8 +215,7 @@ namespace DocumentProcessing.Migrations
                     StatusId = table.Column<Guid>(nullable: true),
                     PurposeId = table.Column<Guid>(nullable: true),
                     OwnerId = table.Column<Guid>(nullable: false),
-                    RecipientId = table.Column<string>(nullable: true),
-
+                    RecipientId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -338,12 +336,10 @@ namespace DocumentProcessing.Migrations
                 table: "Documents",
                 column: "StatusId");
 
-
             migrationBuilder.CreateIndex(
                 name: "IX_ScannedFiles_DocumentId",
                 table: "ScannedFiles",
                 column: "DocumentId");
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -386,7 +382,6 @@ namespace DocumentProcessing.Migrations
 
             migrationBuilder.DropTable(
                 name: "Statuses");
-
         }
     }
 }
