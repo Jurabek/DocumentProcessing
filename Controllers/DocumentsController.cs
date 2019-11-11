@@ -123,10 +123,7 @@ namespace DocumentProcessing.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(DocumentViewModel viewModel, IList<IFormFile> files, IFormCollection ifc)
-
         {
-            ValidateApplicant(viewModel);
-            ValidatePurpose(viewModel);
             string test = ifc["VisaId"];
             VisaID = test;
             if (ModelState.IsValid)
@@ -231,8 +228,6 @@ namespace DocumentProcessing.Controllers
 
             VisaID = test;
             if (String.IsNullOrEmpty(VisaID)) { } else { strArr = VisaID.Split(splitchar); }
-            ValidateApplicant(viewModel);
-            ValidatePurpose(viewModel);
 
             if (ModelState.IsValid)
             {
@@ -509,22 +504,6 @@ namespace DocumentProcessing.Controllers
                    || originalDocument.VisaDateTypeId != document.VisaDateTypeId
                    || originalDocument.ApplicantId != document.ApplicantId;
         }
-
-        private void ValidateApplicant(DocumentViewModel viewModel)
-        {
-            if (viewModel.ApplicantId == null && string.IsNullOrEmpty(viewModel.ApplicantName))
-            {
-                ModelState.AddModelError("ApplicantName", "Номи ташкилот холи аст!");
-            }
-        }
-        private void ValidatePurpose(DocumentViewModel viewModel)
-        {
-            if (viewModel.PurposeId == null && string.IsNullOrEmpty(viewModel.PurposeName))
-            {
-                ModelState.AddModelError("PurposeName", "Номи ташкилот холи аст!");
-            }
-        }
-
 
         [HttpGet]
         public IActionResult Print(Guid? id)

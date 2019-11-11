@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace DocumentProcessing.ViewModels
 {
-    public class DocumentViewModel : IDocumentModel
+    public class DocumentViewModel : IDocumentModel, IValidatableObject
     {
         public Guid Id { get; set; }
 
@@ -67,8 +67,19 @@ namespace DocumentProcessing.ViewModels
         [DisplayName("ID-и дархост")]
         
         public string VisaId { get; set; }
-
-
-        public int request_Id { get; set; }
+        
+        
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (PurposeId == null && string.IsNullOrEmpty(PurposeName))
+            {
+                yield return new ValidationResult("Номи ташкилот холи аст!", new []{ "PurposeName" });
+            }
+            
+            if (ApplicantId == null && string.IsNullOrEmpty(ApplicantName))
+            {
+                yield return new ValidationResult("Номи ташкилот холи аст!", new []{ "ApplicantName" });
+            }
+        }
     }
 }
