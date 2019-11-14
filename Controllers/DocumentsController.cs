@@ -117,6 +117,7 @@ namespace DocumentProcessing.Controllers
             PopulateVisaTypeDropDownList();
             PopulateVisaDateTypeDropDownList();
             PopulatePurposesDropDownList();
+            PopulateRegistrationDropDownList();
 
             return View(new DocumentViewModel());
         }
@@ -397,6 +398,7 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.VisaType)
                 .Include(x => x.VisaDateType)
                 .Include(x => x.Appointment)
+                .Include(x => x.Registration)
 
                 .FirstOrDefault();
 
@@ -440,6 +442,7 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.VisaType)
                 .Include(x => x.Appointment)
                 .Include(x => x.VisaDateType)
+                .Include(x => x.Registration)
 
                 .FirstOrDefault();
 
@@ -502,7 +505,8 @@ namespace DocumentProcessing.Controllers
                    || originalDocument.StatusId != document.StatusId
                    || originalDocument.VisaTypeId != document.VisaTypeId
                    || originalDocument.VisaDateTypeId != document.VisaDateTypeId
-                   || originalDocument.ApplicantId != document.ApplicantId;
+                   || originalDocument.ApplicantId != document.ApplicantId
+                   || originalDocument.RegistrationId != document.RegistrationId;
         }
 
         [HttpGet]
@@ -524,6 +528,7 @@ namespace DocumentProcessing.Controllers
                 .Include(x => x.VisaDateType)
                 //.Include(x => x.VisaDate)
                 .Include(x => x.Recipient)
+                .Include(x => x.Registration)
                 .FirstOrDefault();
 
             if (document == null)
@@ -570,6 +575,7 @@ namespace DocumentProcessing.Controllers
                         VisaId = str,
                         VisaDateType = document.VisaDateType?.Name,
                         VisaDate = document.VisaDate,
+                        Registration = document.Registration?.Name,
                         Base64Stamp = Convert.ToBase64String(ms.ToArray())
                     };
 
@@ -604,12 +610,17 @@ namespace DocumentProcessing.Controllers
                 .AsNoTracking()
                 .FirstOrDefault(x => x.Id == document.ApplicantId);
 
+            var selectedRegistration = _context.Registration
+              .AsNoTracking()
+              .FirstOrDefault(x => x.Id == document.RegistrationId);
+
             PopulateApplicantsDropDownList(selectedApplicant);
             PopulateOwnersDropDownList(selectedOwner);
             PopulatePurposesDropDownList(selectedPurpose);
             PopulateStatusesDropDownList(selectedStatus);
             PopulateVisaTypeDropDownList(selectedVisaType);
             PopulateVisaDateTypeDropDownList(selectedVisaDateType);
+            PopulateRegistrationDropDownList(selectedRegistration);
         }
 
         private async Task CreateApplicantIfNotExist(DocumentViewModel viewModel)
@@ -700,6 +711,13 @@ namespace DocumentProcessing.Controllers
                 "Id",
                 "Name",
                 selectedApplicant);
+        }
+        private void PopulateRegistrationDropDownList(object selectedRegistration = null)
+        {
+            ViewBag.Registration = new SelectList(_context.Registration.AsNoTracking(),
+                "Id",
+                "Name",
+                selectedRegistration);
         }
     }
 }

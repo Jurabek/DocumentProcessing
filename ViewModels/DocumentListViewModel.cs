@@ -53,5 +53,8 @@ namespace DocumentProcessing.ViewModels
 
         [DisplayName("ID - дархост")]
         public string RequestId { get; set; }
+
+        [DisplayName("Бақайдгирӣ")]
+        public string Registration { get; set; }
     }
 }

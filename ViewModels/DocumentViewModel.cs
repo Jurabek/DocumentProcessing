@@ -67,8 +67,11 @@ namespace DocumentProcessing.ViewModels
         [DisplayName("ID-и дархост")]
         
         public string VisaId { get; set; }
-        
-        
+
+        [DisplayName("Бақайдгирӣ")]
+        [Required(ErrorMessage = "Бақайдгирӣ холи аст!")]
+        public Guid? RegistrationId { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (PurposeId == null && string.IsNullOrEmpty(PurposeName))

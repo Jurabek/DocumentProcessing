@@ -5,6 +5,11 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\20191114083146_FifthMigrations.cs" />
+    <Compile Remove="Migrations\20191114083146_FifthMigrations.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="DinkToPdf" Version="1.0.8" />

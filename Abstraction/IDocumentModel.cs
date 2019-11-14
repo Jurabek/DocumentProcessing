@@ -13,5 +13,7 @@ namespace DocumentProcessing.Abstraction
         Guid? PurposeId { get; set; }
 
         Guid OwnerId { get; set; }
+
+         Guid? RegistrationId { get; set; }
     }
 }

@@ -112,6 +112,15 @@ namespace DocumentProcessing.Data
                     "ҶДММ Ташкилоти Д"
                 };
 
+                var registrationList = new List<string>
+                {
+                    "Нест",
+                    "2017",
+                    "2018",
+                    "2019",
+                    "2020"
+                };
+
                 if (!await context.Purposes.AnyAsync())
                 {
                     var purposes = purposesList.Select(p => new Purpose {Name = p});
@@ -147,6 +156,13 @@ namespace DocumentProcessing.Data
                     var applicants = applicantsList.Select(x => new Applicant {Name = x});
                     await context.AddRangeAsync(applicants);
                 }
+
+                if (!await context.Registration.AnyAsync())
+                {
+                    var registration = registrationList.Select(r => new Registration { Name = r });
+                    await context.AddRangeAsync(registration);
+                }
+
 
                 var _ = context.ChangeTracker.HasChanges() ? await context.SaveChangesAsync() : 0;
 

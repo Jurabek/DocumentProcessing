@@ -20,6 +20,8 @@ namespace DocumentProcessing.ViewModels
 
         public string VisaDate { get; set; }
 
+        public string Registration { get; set; }
+
         public string Base64Stamp { get; set; }
     }
 }

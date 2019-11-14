@@ -14,13 +14,13 @@ namespace DocumentProcessing.Models
         public Guid Id { get; set; }
 
         public DateTime Date { get; set; } = DateTime.Now;
-        
+
         public long EntryNumber { get; set; }
 
         public string AppointmentNumber { get; set; }
-        
+
         public Guid? ApplicantId { get; set; }
-        
+
         public Guid? StatusId { get; set; }
 
         public Guid? VisaTypeId { get; set; }
@@ -28,9 +28,9 @@ namespace DocumentProcessing.Models
         public Guid? VisaDateTypeId { get; set; }
 
         public Guid? PurposeId { get; set; }
-        
+
         public Guid OwnerId { get; set; }
-        
+
         public string RecipientId { get; set; }
 
         public string Description { set; get; }
@@ -38,16 +38,16 @@ namespace DocumentProcessing.Models
         public string VisaDate { get; set; }
 
         public virtual ApplicationUser Recipient { get; set; }
-        
+
         [ForeignKey("ApplicantId")]
         public virtual Applicant Applicant { get; set; }
-        
+
         [ForeignKey("OwnerId")]
         public virtual DocumentOwner Owner { get; set; }
-        
+
         [ForeignKey("PurposeId")]
         public virtual Purpose Purpose { get; set; }
-        
+
         [ForeignKey("StatusId")]
         public virtual Status Status { get; set; }
 
@@ -64,5 +64,11 @@ namespace DocumentProcessing.Models
         public virtual IEnumerable<RequestId> RequestId { get; set; }
 
         public string VisaId { get; set; }
+
+        [ForeignKey("RegistrationId")]
+        public virtual Registration Registration { get; set; }
+
+        public Guid? RegistrationId { get; set; }
+
     }
 }

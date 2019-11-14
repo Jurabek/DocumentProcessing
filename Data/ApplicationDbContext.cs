@@ -44,6 +44,8 @@ namespace DocumentProcessing.Data
 
         public DbSet<DocumentOwner> DocumentOwners { get; set; }
 
+        public DbSet<Registration> Registration { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -109,7 +111,12 @@ namespace DocumentProcessing.Data
                 .HasOne(x => x.Appointment)
                 .WithOne(x => x.Document)
                 .HasForeignKey<Appointment>(x => x.DocumentId);
-            
+
+            modelBuilder.Entity<Registration>()
+                .HasMany(x => x.Documents)
+                .WithOne(x => x.Registration)
+                .IsRequired(false);
+
             modelBuilder.Entity<Applicant>()
                 .HasIndex(x => x.Name);
             
@@ -120,6 +127,9 @@ namespace DocumentProcessing.Data
                 .HasIndex(x => x.Name);
             
             modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(x => x.Name);
+
+            modelBuilder.Entity<Registration>()
                 .HasIndex(x => x.Name);
         }
     }

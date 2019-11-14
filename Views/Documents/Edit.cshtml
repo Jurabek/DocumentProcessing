@@ -48,7 +48,7 @@
                 <span asp-validation-for="ApplicantType" class="text-danger"></span>
             </div>
 
-            
+
 
 
             <div class="form-group"
@@ -161,33 +161,33 @@
                 }
                 else
                 {
-                @foreach (var i in ViewBag.reg)
-                {
-                    count++;
-                    @if (count == 1)
+                    @foreach (var i in ViewBag.reg)
                     {
+                        count++;
+                        @if (count == 1)
+                        {
 
-                        <p class="col-md-12 row" style="margin-left: 0; padding: 0;">
-                            <label asp-for="VisaId" class="control-label"></label>
-                            <input asp-for="VisaId" class="form-control col-md-11" value="@i.Number" type="number" />
-                            <a href="#" id="addScnt" class="col-md-1" style="font-size: 2em; margin-top: -7px; padding-left: 10px;"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
-                            <span asp-validation-for="VisaId" class="text-danger"></span>
+                            <p class="col-md-12 row" style="margin-left: 0; padding: 0;">
+                                <label asp-for="VisaId" class="control-label"></label>
+                                <input asp-for="VisaId" class="form-control col-md-11" value="@i.Number" type="number" />
+                                <a href="#" id="addScnt" class="col-md-1" style="font-size: 2em; margin-top: -7px; padding-left: 10px;"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+                                <span asp-validation-for="VisaId" class="text-danger"></span>
 
 
-                        </p>
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="col-md-12 row" style="margin-left: 0;">
+                                <label asp-for="VisaId" class="control-label"></label>
+                                <input asp-for="VisaId" class="form-control col-md-11" value="@i.Number" type="number" />
+                                <span asp-validation-for="VisaId" class="text-danger"></span>
+                                <a href="#" class="remScnt col-md-1" id="remScnt" style="font-size: 2em; margin-top: -7px;">
+                                    <i class="fa fa-minus-circle" style="color: red;" aria-hidden="true"></i>
+                                </a>
+                            </p>
+                        }
                     }
-                    else
-                    {
-                        <p class="col-md-12 row" style="margin-left: 0;">
-                            <label asp-for="VisaId" class="control-label"></label>
-                            <input asp-for="VisaId" class="form-control col-md-11" value="@i.Number" type="number" />
-                            <span asp-validation-for="VisaId" class="text-danger"></span>
-                            <a href="#" class="remScnt col-md-1" id="remScnt" style="font-size: 2em; margin-top: -7px;">
-                                <i class="fa fa-minus-circle" style="color: red;" aria-hidden="true"></i>
-                            </a>
-                        </p>
-                    }
-                }
                 }
 
 
@@ -213,6 +213,14 @@
                     <input asp-for="VisaDate" class="form-control" type="number" min="1" max="30" />
                     <span asp-validation-for="VisaDate" class="text-danger" id="textChange"></span>
                 </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegistrationId" class="control-label"></label>
+                <select class="form-control" asp-for="RegistrationId"
+                        asp-items="ViewBag.Registration">
+                    <option></option>
+                </select>
+                <span asp-validation-for="RegistrationId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
