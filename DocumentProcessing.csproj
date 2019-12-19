@@ -8,6 +8,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20191114083146_FifthMigrations.cs" />
     <Compile Remove="Migrations\20191114083146_FifthMigrations.Designer.cs" />
+    <Compile Remove="Migrations\20191219052009_AppoinmentCharacter_Add_H.cs" />
+    <Compile Remove="Migrations\20191219052009_AppoinmentCharacter_Add_H.Designer.cs" />
   </ItemGroup>
 
 
